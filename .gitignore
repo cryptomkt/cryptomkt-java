@@ -33,4 +33,9 @@ hs_err_pid*
 # Ignore all local history of files
 .history
 
+.classpath
+.project
+.settings/
+target/
+
 # End of https://www.gitignore.io/api/java,visualstudiocode
