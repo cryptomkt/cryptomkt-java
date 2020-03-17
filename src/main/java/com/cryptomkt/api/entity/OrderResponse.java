@@ -2,18 +2,16 @@ package com.cryptomkt.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
-public class OrderResponse extends Response{
+public class OrderResponse extends Response {
 
     @JsonProperty("data")
-    private List<Order> orders;
+    private Order order;
 
-    public List<Order> getOrders() {
-        return orders;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setOrder(Order orders) {
+        this.order = orders;
     }
 }

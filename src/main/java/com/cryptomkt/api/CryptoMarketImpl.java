@@ -10,6 +10,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -39,7 +41,7 @@ public class CryptoMarketImpl implements CryptoMarket {
 
         try {
             if (this.baseApiUrl == null) {
-                this.baseApiUrl = new URL("https://api.cryptomkt.com/v1/");
+                this.baseApiUrl = new URL("https://api.cryptomkt.com/v2/");
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -235,7 +237,10 @@ public class CryptoMarketImpl implements CryptoMarket {
     }
 
     private String doHttp(URL url, String method, List<NameValuePair> requestBody) throws IOException, CryptoMarketException{
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setCookieSpec(CookieSpecs.STANDARD).build())
+                .build();
         HttpRequestBase httpRequest;
         try {
             if(method.equals("POST")){
