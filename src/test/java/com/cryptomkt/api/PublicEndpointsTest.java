@@ -26,49 +26,33 @@ public class PublicEndpointsTest extends TestCase{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptoMarket= new CryptoMarketBuilder()
-                .withApiKey(apiKey, apiSecret)
-                .build();
+        cryptoMarket= new CryptoMarketImpl(apiKey, apiSecret);
 
     }
 
     public void testGetMarkets() {
         try {
             List<Market> markets = cryptoMarket.getMarkets().getMarkets();
-            /* print as a list of objects, doesn't use toString of inner objects...
+            /*// print as a list of objects, doesn't use toString of inner objects...
             System.out.println(markets);*/
-            /* print as json
+
+            /*// print as json
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
             String json = ow.writeValueAsString(markets);
             System.out.println((json));*/
-            /* print as a list of marketpairs
+
+            // print as a list of marketpairs (List of Strings)
             for (Market market : markets) {
                 System.out.println((market.toSting()));
-            }*/
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testGetBook() {
-        try {
-            List<Market> markets = cryptoMarket.getMarkets().getMarkets();
-            /* print as a list of objects, doesn't use toString of inner objects...
-            System.out.println(markets);*/
-            /* print as json
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String json = ow.writeValueAsString(markets);
-            System.out.println((json));*/
-            /* print as a list of marketpairs
-            for (Market market : markets) {
-                System.out.println((market.toSting()));
-            }*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assertTrue(true);
-    }
+
 
 
 }

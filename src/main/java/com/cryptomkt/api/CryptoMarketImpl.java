@@ -2,87 +2,42 @@ package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CryptoMarketImpl implements CryptoMarket {
+    private static String apiUrl = "https://api.cryptomkt.com";
+    private static String apiVersion = "v2";
+    private HTTPClient httpClient;
 
-    private static final ObjectMapper objectMapper = ObjectMapperProvider.createDefaultMapper();
-
-    private URL baseApiUrl;
-    private String apiKey;
-    private String apiSecret;
-
-    public CryptoMarketImpl(CryptoMarketBuilder cryptoMarketBuilder) {
-        this.baseApiUrl = cryptoMarketBuilder.getBaseApiUrl();
-        this.apiKey = cryptoMarketBuilder.getApiKey();
-        this.apiSecret = cryptoMarketBuilder.getApiSecret();
-
-        try {
-            if (this.baseApiUrl == null) {
-                this.baseApiUrl = new URL("https://api.cryptomkt.com/v2/");
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    public CryptoMarketImpl() {
+        this.httpClient = new HTTPClientImpl(apiUrl, apiVersion, "", "");
     }
 
+    public CryptoMarketImpl(String apiKey, String apiSecret) {
+        this.httpClient = new HTTPClientImpl(apiUrl, apiVersion, apiKey, apiSecret);
+    }
 
     @Override
     public MarketsResponse getMarkets() throws IOException, CryptoMarketException{
-        URL marketsUrl;
-        try{
-            marketsUrl = new URL(this.baseApiUrl, "market");
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(marketsUrl, MarketsResponse.class);
+        return httpClient.get("market", null, MarketsResponse.class);
     }
 
     @Override
     public TickersResponse getTickers() throws IOException, CryptoMarketException {
-        URL tickerUrl;
-        try{
-            tickerUrl = new URL(this.baseApiUrl, "ticker");
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(tickerUrl, TickersResponse.class);
+        return httpClient.get("ticker", null, TickersResponse.class);
     }
 
     @Override
     public TickersResponse getTickers(String market) throws IOException, CryptoMarketException {
-        URL tickerUrl;
-        try{
-            tickerUrl = new URL(this.baseApiUrl, "ticker?" + "market=" + market);
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(tickerUrl, TickersResponse.class);
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        return httpClient.get("ticker", payload, TickersResponse.class);
     }
 
     @Override
@@ -96,19 +51,13 @@ public class CryptoMarketImpl implements CryptoMarket {
     }
 
     @Override
-    public BookResponse getBook(String market, String type, int page, int limit) throws IOException, CryptoMarketException {
-        URL bookUrl;
-        try{
-            bookUrl = new URL(this.baseApiUrl, "book?" +
-                    "market=" + market +
-                    "&type=" + type +
-                    "&page=" + page +
-                    "&limit=" + limit);
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(bookUrl, BookResponse.class);
+    public BookResponse getBook(String market, String side, int page, int limit) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("side", side);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("book", payload, BookResponse.class);
     }
 
     @Override
@@ -133,153 +82,158 @@ public class CryptoMarketImpl implements CryptoMarket {
 
     @Override
     public TradeResponse getTrades(String market, String start, String end, int page, int limit) throws IOException, CryptoMarketException {
-        URL tradeUrl;
-        try{
-            String _start = start.isEmpty()?"":("&start=" + start);
-            String _end = end.isEmpty()?"":("&end=" + end);
-
-            tradeUrl = new URL(this.baseApiUrl, "trades?" +
-                    "market=" + market +
-                    _start +
-                    _end +
-                    "&page=" + page +
-                    "&limit=" + limit);
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(tradeUrl, TradeResponse.class);
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        String _start = start.isEmpty() ? "" : start;
+        String _end = end.isEmpty() ? "" : end;
+        payload.put("start", _start);
+        payload.put("end", _end);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("trades", payload, TradeResponse.class);
     }
 
     @Override
-    public OrderResponse getActiveOrders(String market) throws IOException, CryptoMarketException {
+    public PricesResponse getPrices(String market, String timeframe) throws IOException, CryptoMarketException {
+        return this.getPrices(market, timeframe, 0, 20);
+    }
+
+    @Override
+    public PricesResponse getPrices(String market, String timeframe, int page) throws IOException, CryptoMarketException {
+        return this.getPrices(market, timeframe, page, 20);
+    }
+
+    @Override
+    public PricesResponse getPrices(String market, String timeframe, int page, int limit) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("timeframe", timeframe);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("prices", payload, PricesResponse.class);
+    }
+
+    @Override
+    public AccountResponse getAccount() throws IOException, CryptoMarketException {
+        return httpClient.get("prices", null, AccountResponse.class);
+    }
+
+    @Override
+    public OrdersResponse getActiveOrders(String market) throws IOException, CryptoMarketException {
         return this.getActiveOrders(market, 0, 20);
     }
 
     @Override
-    public OrderResponse getActiveOrders(String market, int page) throws IOException, CryptoMarketException {
+    public OrdersResponse getActiveOrders(String market, int page) throws IOException, CryptoMarketException {
         return this.getActiveOrders(market, page, 20);
     }
 
     @Override
-    public OrderResponse getActiveOrders(String market, int page, int limit) throws IOException, CryptoMarketException {
-        URL orderUrl;
-        try{
-
-            orderUrl = new URL(this.baseApiUrl, "orders/active?" +
-                    "market=" + market +
-                    "&page=" + page +
-                    "&limit=" + limit);
-
-        }catch (MalformedURLException ex){
-            throw new AssertionError(ex);
-        }
-
-        return get(orderUrl, OrderResponse.class);
+    public OrdersResponse getActiveOrders(String market, int page, int limit) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("orders/active", payload, OrdersResponse.class);
     }
 
-
-    // ========    PRIVATE METHODS =========
-
-    private static <T> T deserialize(String json, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(json, clazz);
+    @Override
+    public OrdersResponse getExecutedOrders(String market) throws IOException, CryptoMarketException {
+        return this.getExecutedOrders(market, 0, 20);
     }
 
-    private static <T> T deserialize(String json, TypeReference<T> typeReference) throws IOException {
-        return objectMapper.readValue(json, typeReference);
+    @Override
+    public OrdersResponse getExecutedOrders(String market, int page) throws IOException, CryptoMarketException {
+        return this.getExecutedOrders(market, page, 20);
     }
 
-
-    private <T extends Response> T get(URL url, Class<T> responseClass) throws IOException, CryptoMarketException {
-        return handleErrors(deserialize(doHttp(url, "GET", null), responseClass));
+    @Override
+    public OrdersResponse getExecutedOrders(String market, int page, int limit) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("orders/executed", payload, OrdersResponse.class);
     }
 
-    private static <T extends Response> T handleErrors(T response) throws CryptoMarketException {
-        String errors = response.getError();
-        if (errors != null) {
-//            if (errors.contains("device_confirmation_required")) {
-//                throw new UnauthorizedDeviceException();
-//            } else if (errors.contains("2fa_required")) {
-//                throw new TwoFactorRequiredException();
-//            } else if (errors.contains("2fa_incorrect")) {
-//                throw new TwoFactorIncorrectException();
-//            } else if (errors.contains("incorrect_credentials")) {
-//                throw new CredentialsIncorrectException();
-//            }
-            throw new CryptoMarketException(response.getError());
-        }
-
-        if (!response.isSuccess()) {
-            throw new CryptoMarketException("Unknown error");
-        }
-
-        return response;
+    @Override
+    public OrderResponse createOrder(String market, String price, String side, String type, String amount) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("price", amount);
+        payload.put("side", side);
+        payload.put("type", type);
+        payload.put("amount", amount);
+        return httpClient.post("orders/create", payload, OrderResponse.class);
     }
 
-    private void doHmacAuthentication (URL url, List<NameValuePair> body, HttpRequestBase conn) throws IOException {
-        String nonce = String.valueOf(System.currentTimeMillis());
-
-        String message = nonce + url.toString() + (body != null ? body : "");
-
-        Mac mac = null;
-        try {
-            mac = Mac.getInstance("HmacSHA384");
-            mac.init(new SecretKeySpec(this.apiSecret.getBytes(), "HmacSHA384"));
-        } catch (Throwable t) {
-            throw new IOException(t);
-        }
-
-        String signature = new String(Hex.encodeHex(mac.doFinal(message.getBytes())));
-
-        conn.setHeader("X-MKT-APIKEY", this.apiKey);
-        conn.setHeader("X-MKT-SIGNATURE", signature);
-        conn.setHeader("X-MKT-TIMESTAMP", nonce);
+    @Override
+    public OrdersResponse createMultiOrders(List<Order> orderList) {
+        return null;
     }
 
-    private String doHttp(URL url, String method, List<NameValuePair> requestBody) throws IOException, CryptoMarketException{
-        CloseableHttpClient httpclient = HttpClients.custom()
-                .setDefaultRequestConfig(RequestConfig.custom()
-                        .setCookieSpec(CookieSpecs.STANDARD).build())
-                .build();
-        HttpRequestBase httpRequest;
-        try {
-            if(method.equals("POST")){
-                httpRequest = new HttpPost(url.toURI());
+    @Override
+    public OrderResponse getOrderStatus(String id) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-            }else if(method.equals("GET")){
-                httpRequest = new HttpGet(url.toURI());
-            }else{
-                throw new CryptoMarketException("Method not supported");
-            }
-        } catch (URISyntaxException e) {
-            throw new CryptoMarketException("Malformed URL");
-        }
+    @Override
+    public OrderResponse cancelOrder(String id) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        String body = null;
-        if (requestBody != null) {
+    @Override
+    public OrdersResponse cancelMultiOrder(List<String> idList) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        }
+    @Override
+    public BalanceResponse getBalance() throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        if (this.apiKey != null && this.apiSecret != null) {
-            doHmacAuthentication(url, requestBody, httpRequest);
-        }
+    @Override
+    public TransactionsResponse getTransactions(String currency) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-            @Override
-            public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
-                int status = httpResponse.getStatusLine().getStatusCode();
-                if (status >= 200 && status < 300) {
-                    HttpEntity entity = httpResponse.getEntity();
-                    return entity != null ? EntityUtils.toString(entity) : null;
-                } else {
-                    throw new ClientProtocolException("Unexpected response status: " + status);
-                }
-            }
-        };
+    @Override
+    public TransactionsResponse getTransactions(String currency, int page) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        String responseBody = httpclient.execute(httpRequest, responseHandler);
+    @Override
+    public TransactionsResponse getTransactions(String currency, int page, int limit) throws IOException, CryptoMarketException {
+        return null;
+    }
 
-        httpclient.close();
-        return responseBody;
+    @Override
+    public Response notifyDeposit(String amount, String bankAccount) throws IOException, CryptoMarketException {
+        return null;
+    }
+
+    @Override
+    public Response notifyDeposit(String amount, String bankAccount, File voucher) throws IOException, CryptoMarketException {
+        return null;
+    }
+
+    @Override
+    public Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, File voucher) throws IOException, CryptoMarketException {
+        return null;
+    }
+
+    @Override
+    public Response notifyWithdrawal(String amount, String bankAccount) throws IOException, CryptoMarketException {
+        return null;
+    }
+
+    @Override
+    public Response transfer(String address, String amount, String currency, String memo) throws IOException, CryptoMarketException {
+        return null;
+    }
+
+    @Override
+    public Response transfer(String address, String amount, String currency) throws IOException, CryptoMarketException {
+        return null;
     }
 }
