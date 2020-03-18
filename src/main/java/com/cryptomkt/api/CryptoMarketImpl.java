@@ -115,7 +115,7 @@ public class CryptoMarketImpl implements CryptoMarket {
 
     @Override
     public AccountResponse getAccount() throws IOException, CryptoMarketException {
-        return httpClient.get("prices", null, AccountResponse.class);
+        return httpClient.get("account", null, AccountResponse.class);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class CryptoMarketImpl implements CryptoMarket {
     public OrderResponse createOrder(String market, String price, String side, String type, String amount) throws IOException, CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("market", market);
-        payload.put("price", amount);
+        payload.put("price", price);
         payload.put("side", side);
         payload.put("type", type);
         payload.put("amount", amount);
@@ -174,66 +174,97 @@ public class CryptoMarketImpl implements CryptoMarket {
 
     @Override
     public OrderResponse getOrderStatus(String id) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("id", id);
+        return httpClient.post("orders/status", payload, OrderResponse.class);
     }
 
     @Override
     public OrderResponse cancelOrder(String id) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("id", id);
+        return httpClient.post("orders/cancel", payload, OrderResponse.class);
     }
 
     @Override
-    public OrdersResponse cancelMultiOrder(List<String> idList) throws IOException, CryptoMarketException {
-        return null;
-    }
+    public OrdersResponse cancelMultiOrder(List<String> ids) { return null; }
 
     @Override
     public BalanceResponse getBalance() throws IOException, CryptoMarketException {
-        return null;
+        return httpClient.get("balance", null, BalanceResponse.class);
     }
 
     @Override
     public TransactionsResponse getTransactions(String currency) throws IOException, CryptoMarketException {
-        return null;
+        return this.getTransactions(currency, 0, 20);
     }
 
     @Override
     public TransactionsResponse getTransactions(String currency, int page) throws IOException, CryptoMarketException {
-        return null;
+        return this.getTransactions(currency, page, 20);
     }
 
     @Override
     public TransactionsResponse getTransactions(String currency, int page, int limit) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("currency", currency);
+        payload.put("page", Integer.toString(page));
+        payload.put("limit", Integer.toString(limit));
+        return httpClient.get("transactions", payload, TransactionsResponse.class);
     }
 
     @Override
     public Response notifyDeposit(String amount, String bankAccount) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("bank_account", bankAccount);
+        return httpClient.post("deposit", payload, Response.class);
     }
 
     @Override
     public Response notifyDeposit(String amount, String bankAccount, File voucher) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("bank_account", bankAccount);
+        payload.put("voucher", "voucher");
+        return httpClient.post("deposit", payload, Response.class);
     }
 
     @Override
     public Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, File voucher) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("bank_account", bankAccount);
+        payload.put("date", date);
+        payload.put("traking_code", trakingCode);
+        payload.put("voucher", "voucher");
+        return httpClient.post("deposit", payload, Response.class);
     }
 
     @Override
     public Response notifyWithdrawal(String amount, String bankAccount) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("amount", amount);
+        payload.put("bank_account", bankAccount);
+        return httpClient.post("withdrawal", payload, Response.class);
     }
 
     @Override
     public Response transfer(String address, String amount, String currency, String memo) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("address", address);
+        payload.put("amount", amount);
+        payload.put("currency", currency);
+        payload.put("memo", memo);
+        return httpClient.post("transfer", payload, Response.class);
     }
 
     @Override
     public Response transfer(String address, String amount, String currency) throws IOException, CryptoMarketException {
-        return null;
+        Map<String, String> payload = new HashMap<>();
+        payload.put("address", address);
+        payload.put("amount", amount);
+        payload.put("currency", currency);
+        return httpClient.post("transfer", payload, Response.class);
     }
 }

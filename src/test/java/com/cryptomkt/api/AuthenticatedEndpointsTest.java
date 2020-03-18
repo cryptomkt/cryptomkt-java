@@ -1,6 +1,7 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
+import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -11,10 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class PublicEndpointsTest extends TestCase{
+public class AuthenticatedEndpointsTest extends TestCase {
 
     protected CryptoMarket cryptoMarket;
-
     private ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     protected void printObject(Object object) {
@@ -36,70 +36,70 @@ public class PublicEndpointsTest extends TestCase{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptoMarket= new CryptoMarketImpl(apiKey, apiSecret);
+        cryptoMarket = new CryptoMarketImpl(apiKey, apiSecret);
 
     }
 
-    public void testGetMarkets() {
+    public void testGetAccount() {
         try {
-            List<Market> markets = cryptoMarket.getMarkets().getMarkets();
-            this.printObject(markets);
-
+            Account account = cryptoMarket.getAccount().getAccount();
+            this.printObject(account);
         } catch (Exception e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testGetAllTickers() {
+    public void testCreateOrder() {
         try {
-            List<Ticker> tickers = cryptoMarket.getTickers().getTickers();
-            this.printObject(tickers);
-        } catch (Exception e) {
+            Order order = cryptoMarket.createOrder("XLMCLP", "104", "sell", "limit", "1")
+                    .getOrder();
+            this.printObject(order);
+        } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testGetOneTicker() {
+    public void testGetActiveOrders() {
         try {
-            List<Ticker> tickers = cryptoMarket.getTickers("BTCBRL").getTickers();
-            this.printObject(tickers);
-
-        } catch (Exception e) {
+            List<Order> orders = cryptoMarket.getActiveOrders("XLMCLP")
+                    .getOrders();
+            this.printObject(orders);
+        } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testBook() {
+    public void testExecutedOrders() {
         try {
-            List<Book> books = cryptoMarket.getBook("ETHCLP", "buy").getBooks();
-            this.printObject(books);
-        } catch (Exception e) {
+            List<Order> orders = cryptoMarket.getExecutedOrders("XLMCLP")
+                    .getOrders();
+            this.printObject(orders);
+        } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testGetTrades() {
+    public void testGetBalance() {
         try {
-            List<Trade> trades = cryptoMarket.getTrades("ETHARS").getTrades();
-            this.printObject(trades);
-        } catch (Exception e) {
+            List<Balance> balance = cryptoMarket.getBalance().getBalances();
+            this.printObject(balance);
+        } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
 
-    public void testGetPrices() {
+    public void testGetTransactions() {
         try {
-            Prices prices = cryptoMarket.getPrices("XLMCLP", "240", 1, 5).getPrices();
-            this.printObject(prices);
-        } catch (Exception e) {
+            List<Transaction> transactions = cryptoMarket.getTransactions("XLM").getTransactions();
+            this.printObject(transactions);
+        } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
     }
-
 }

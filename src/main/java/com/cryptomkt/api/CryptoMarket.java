@@ -57,7 +57,7 @@ public interface CryptoMarket {
     OrdersResponse cancelMultiOrder(List<String> idList) throws  IOException, CryptoMarketException; // orders/cancel/bulk
 
     // OrderResponse getInstant(String market, String side, String amount) throws  IOException, CryptoMarketException;
-    //      implemented from book
+    //      implement from book
 
     BalanceResponse getBalance() throws  IOException, CryptoMarketException; // balance
 
