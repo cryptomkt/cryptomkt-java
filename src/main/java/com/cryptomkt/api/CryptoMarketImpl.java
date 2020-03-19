@@ -2,10 +2,10 @@ package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,7 @@ public class CryptoMarketImpl implements CryptoMarket {
     private static String apiUrl = "https://api.cryptomkt.com";
     private static String apiVersion = "v2";
     private HTTPClient httpClient;
+
 
     public CryptoMarketImpl() {
         this.httpClient = new HTTPClientImpl(apiUrl, apiVersion, "", "");
@@ -169,7 +170,7 @@ public class CryptoMarketImpl implements CryptoMarket {
 
     @Override
     public OrdersResponse createMultiOrders(List<Order> orderList) {
-        return null;
+    return null;
     }
 
     @Override
@@ -221,6 +222,7 @@ public class CryptoMarketImpl implements CryptoMarket {
         return httpClient.post("deposit", payload, Response.class);
     }
 
+
     @Override
     public Response notifyDeposit(String amount, String bankAccount, File voucher) throws IOException, CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
@@ -266,5 +268,17 @@ public class CryptoMarketImpl implements CryptoMarket {
         payload.put("amount", amount);
         payload.put("currency", currency);
         return httpClient.post("transfer", payload, Response.class);
+    }
+
+    @Override
+    public SocAuthResponse getAuthSocket() throws IOException, CryptoMarketException{
+        return httpClient.get("socket/auth",null, SocAuthResponse.class);
+    }
+
+    @Override
+    public SocketIoImpl getSocket() throws IOException, CryptoMarketException, URISyntaxException {
+        SocAuthResponse auth =  getAuthSocket();
+        SocketIoImpl socket = new SocketIoImpl(auth);
+        return socket;
     }
 }

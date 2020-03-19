@@ -16,6 +16,9 @@ public class Order implements Serializable {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("side")
+    private String side;
+
     @JsonProperty("price")
     private Double price;
 
@@ -63,6 +66,10 @@ public class Order implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getSide() { return side; }
+
+    public void setSide(String side) { this.side = side; }
 
     public Double getPrice() {
         return price;

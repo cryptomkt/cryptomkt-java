@@ -6,6 +6,7 @@ import com.cryptomkt.api.exception.CryptoMarketException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public interface CryptoMarket {
@@ -60,6 +61,9 @@ public interface CryptoMarket {
     //      implement from book
 
     BalanceResponse getBalance() throws  IOException, CryptoMarketException; // balance
+
+    SocAuthResponse getAuthSocket() throws IOException, CryptoMarketException;
+    SocketIo getSocket() throws IOException, CryptoMarketException, URISyntaxException;
 
     TransactionsResponse getTransactions(String currency) throws  IOException, CryptoMarketException;
     TransactionsResponse getTransactions(String currency, int page) throws  IOException, CryptoMarketException;
