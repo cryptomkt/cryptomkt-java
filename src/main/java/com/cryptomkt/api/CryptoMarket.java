@@ -148,6 +148,7 @@ public interface CryptoMarket {
 
     /**
      * Get the account of the user.
+     *
      * @return the account information of the user.
      * @throws IOException
      * @throws CryptoMarketException
@@ -207,35 +208,95 @@ public interface CryptoMarket {
     OrdersResponse getExecutedOrders(String market, int page, int limit) throws  IOException, CryptoMarketException; // orders/executed
 
     /**
-     *  Creates an order in the exchenge,
+     *  Creates an order in a market,
      *
-     * @param market
-     * @param price
+     * @param market the market pair to put the order
+     * @param price  the price of a unit of crypto to buy or sell
      * @param side   "buy" or "sell", the side of the market on which to crete the order
-     * @param type
-     * @param amount
+     * @param type   "market", "limit" or "stop-limit", the type of order to make
+     * @param amount the amount of crypto to buy or sell
      * @return the order status
      * @throws IOException
      * @throws CryptoMarketException
      */
     OrderResponse createOrder(String market, String price, String side, String type, String amount) throws  IOException, CryptoMarketException; // orders/create
 
-    CreateMultiOrderResponse createMultiOrders(MultiOrder multiOrder) throws IOException, CryptoMarketException; // orders/create/bulk
+    /**
+     * Creates multiple orders in a single market.
+     *
+     * @param multiOrderRequest the description of the orders to make
+     * @return a list with the data of the requested orders and the published order, also returns a list with the orders not created, with an explanatory message.
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
+    CreateMultiOrderResponse createMultiOrders(MultiOrderRequest multiOrderRequest) throws IOException, CryptoMarketException; // orders/create/bulk
 
+    /**
+     * Get the status of an order
+     *
+     * @param id the id of the order
+     * @return the current status of an order
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     OrderResponse getOrderStatus(String id) throws  IOException, CryptoMarketException; // orders/status
 
+    /**
+     * Cancel an order
+     *
+     * @param id the id of the order to cancel
+     * @return the status of the order after is cancelled
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     OrderResponse cancelOrder(String id) throws  IOException, CryptoMarketException; // orders/cancel
 
+    /**
+     * cancel multiple orders
+     *
+     * @param idList a list of the ids of the orders to cancel
+     * @return a list with the orders cancelled and their ids, and a list with the orders ids not cancelled, and an explanatory message
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     CancelMultiOrderResponse cancelMultiOrder(List<String> idList) throws  IOException, CryptoMarketException;
 
-    // OrderResponse getInstant(String market, String side, String amount) throws  IOException, CryptoMarketException;
-    //      implement from book
 
+    /**
+     * Get all the wallets of the client.
+     *
+     * @return a list of wallets
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     BalanceResponse getBalance() throws  IOException, CryptoMarketException; // balance
 
+    /**
+     * Get the authentication information to create a socket
+     *
+     * @return the authentication information to create a socket
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     SocAuthResponse getAuthSocket() throws IOException, CryptoMarketException;
+
+    /**
+     * Get a socket
+     *
+     * @return a socket
+     * @throws IOException
+     * @throws CryptoMarketException
+     * @throws URISyntaxException
+     */
     SocketIo getSocket() throws IOException, CryptoMarketException, URISyntaxException;
 
+    /**
+     *
+     * @param currency
+     * @return
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     TransactionsResponse getTransactions(String currency) throws  IOException, CryptoMarketException;
     TransactionsResponse getTransactions(String currency, int page) throws  IOException, CryptoMarketException;
     TransactionsResponse getTransactions(String currency, int page, int limit) throws  IOException, CryptoMarketException; // transactions
@@ -246,11 +307,24 @@ public interface CryptoMarket {
 
     Response notifyWithdrawal(String amount, String bankAccount) throws  IOException, CryptoMarketException; // withdrawal
 
+    /**
+     * Transfer currency between wallets
+     *
+     * @param address  of the wallet to transfer
+     * @param amount   the quantity of currency to transfer
+     * @param currency the crypto to transfer
+     * @param memo     of the wallet to transfer (optional)
+     * @return the status of the transfer
+     * @throws IOException
+     * @throws CryptoMarketException
+     */
     Response transfer(String address, String amount, String currency, String memo) throws  IOException, CryptoMarketException; // transfer
+
+    /**
+     * Transfer currency between wallets
+     *
+     * @see #transfer(String, String, String, String)
+     */
     Response transfer(String address, String amount, String currency) throws  IOException, CryptoMarketException; // transfer
-
-    // getAuthSocket() throws  IOException, CryptoMarketException; // socket/auth
-
-    // getSocket() throws  IOException, CryptoMarketException;
 
 }

@@ -172,8 +172,8 @@ public class CryptoMarketImpl implements CryptoMarket {
     }
 
     @Override
-    public CreateMultiOrderResponse createMultiOrders(MultiOrder multiOrder) throws IOException, CryptoMarketException {
-        List<Map<String, String>> orders = multiOrder.getOrders();
+    public CreateMultiOrderResponse createMultiOrders(MultiOrderRequest multiOrderRequest) throws IOException, CryptoMarketException {
+        List<Map<String, String>> orders = multiOrderRequest.getOrders();
         Map<String, String> payload = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, false);
         String jsonOrders = mapper.writeValueAsString(orders);

@@ -63,6 +63,17 @@ public class AuthenticatedEndpointsTest extends TestCase {
         assertTrue(true);
     }
 
+    public void testCancelOrder() {
+        try {
+            Order order = cryptoMarket.cancelOrder("03303730")
+                    .getOrder();
+            this.printObject(order);
+        } catch (IOException | CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
+
     public void testGetActiveOrders() {
         try {
             List<Order> orders = cryptoMarket.getActiveOrders("XLMCLP")
@@ -107,12 +118,12 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testCreateMultiOrder() {
         try {
-            MultiOrder multiOrder = new MultiOrder()
+            MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
                 .add("XLMCLP", "limit", "sell", "110", "1")
                 .add("XLMCLP", "limit", "sell", "111", "1")
                 .add("XLMCLP", "limit", "sell", "112", "1")
                     .add("XLMCLP", "limit", "sell", "112", "1000000000");
-            CreateMultiOrderResponse createMultiOrderResponse = cryptoMarket.createMultiOrders(multiOrder);
+            CreateMultiOrderResponse createMultiOrderResponse = cryptoMarket.createMultiOrders(multiOrderRequest);
             printObject(createMultiOrderResponse);
         } catch (IOException | CryptoMarketException e) {
             e.printStackTrace();

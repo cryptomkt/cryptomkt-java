@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MultiOrder implements Serializable {
+public class MultiOrderRequest implements Serializable {
     private List<Map<String, String>> orders;
 
-    public  MultiOrder() {
+    public MultiOrderRequest() {
         orders = new ArrayList<>();
     }
 
-    public MultiOrder add(String market, String type, String side, String price, String amount) {
+    public MultiOrderRequest add(String market, String type, String side, String price, String amount) {
         Map<String, String> order = new HashMap<>();
         order.put("market", market);
         order.put("type", type);
