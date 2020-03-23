@@ -1,6 +1,7 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
+import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -67,6 +68,18 @@ public class PublicEndpointsTest extends TestCase{
             this.printObject(tickers);
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
+
+    public void testGetTickerWrongMarket() {
+        try {
+            List<Ticker> tickers = cryptoMarket.getTickers("BBBBB").getTickers();
+            this.printObject(tickers);
+
+        } catch (CryptoMarketException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         assertTrue(true);

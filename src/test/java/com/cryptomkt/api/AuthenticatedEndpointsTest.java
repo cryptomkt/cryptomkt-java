@@ -57,7 +57,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
             Order order = cryptoMarket.createOrder("XLMCLP", "104", "sell", "limit", "1")
                     .getOrder();
             this.printObject(order);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -68,7 +68,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
             Order order = cryptoMarket.cancelOrder("03303730")
                     .getOrder();
             this.printObject(order);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -79,7 +79,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
             List<Order> orders = cryptoMarket.getActiveOrders("XLMCLP")
                     .getOrders();
             this.printObject(orders);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -90,7 +90,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
             List<Order> orders = cryptoMarket.getExecutedOrders("XLMCLP")
                     .getOrders();
             this.printObject(orders);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -100,7 +100,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         try {
             List<Balance> balance = cryptoMarket.getBalance().getBalances();
             this.printObject(balance);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -110,7 +110,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         try {
             List<Transaction> transactions = cryptoMarket.getTransactions("XLM").getTransactions();
             this.printObject(transactions);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -125,7 +125,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
                     .add("XLMCLP", "limit", "sell", "112", "1000000000");
             CreateMultiOrderResponse createMultiOrderResponse = cryptoMarket.createMultiOrders(multiOrderRequest);
             printObject(createMultiOrderResponse);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);
@@ -141,7 +141,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
             ordersIds.add("12121212");
             CancelMultiOrderResponse cancelMultiOrderResponse = cryptoMarket.cancelMultiOrder(ordersIds);
             printObject(cancelMultiOrderResponse);
-        } catch (IOException | CryptoMarketException e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
         assertTrue(true);

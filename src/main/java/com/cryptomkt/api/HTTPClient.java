@@ -8,8 +8,8 @@ import java.util.Map;
 
 public interface HTTPClient {
     <T extends Response> T get(String endpoint, Map<String, String> payload, Class<T> responseClass)
-            throws IOException, CryptoMarketException;
+            throws CryptoMarketException;
 
     <T extends Response> T post(String endpoint, Map<String, String> payload, Class<T> responseClass)
-            throws IOException, CryptoMarketException;
+            throws CryptoMarketException;
 }

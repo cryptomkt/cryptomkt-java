@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -114,7 +115,7 @@ public class HTTPClientImpl implements HTTPClient {
 
     @Override
     public <T extends Response> T get(String endpoint, Map<String, String> payload, Class<T> responseClass)
-            throws IOException, CryptoMarketException {
+            throws CryptoMarketException {
         StringBuilder spec = new StringBuilder(endpoint);
         if (payload != null) {
             spec.append("?");
@@ -133,15 +134,22 @@ public class HTTPClientImpl implements HTTPClient {
             throw new AssertionError(ex);
         } catch (URISyntaxException e) {
             throw new CryptoMarketException("Malformed URL");
+        } catch (IOException e) {
+            throw new CryptoMarketException(e.getMessage());
         }
 
-
-        return handleErrors(deserialize(this.runRequest(getRequest), responseClass));
+        T response;
+        try {
+            response = deserialize(this.runRequest(getRequest), responseClass);
+        } catch (IOException e) {
+            throw new CryptoMarketException(e.getMessage());
+        }
+        return handleErrors(response);
     }
 
     @Override
     public <T extends Response> T post(String endpoint, Map<String, String> payload, Class<T> responseClass)
-            throws IOException, CryptoMarketException {
+            throws CryptoMarketException {
         List<String> keys = new ArrayList<>(payload.keySet());
         Collections.sort(keys);
         StringBuilder body = new StringBuilder();
@@ -158,18 +166,26 @@ public class HTTPClientImpl implements HTTPClient {
             throw new AssertionError(ex);
         } catch (URISyntaxException e) {
             throw new CryptoMarketException("Malformed URL");
+        } catch (IOException e) {
+            throw new CryptoMarketException(e.getMessage());
         }
 
         StringBuilder data = new StringBuilder();
-        for (Map.Entry<String, String> entry : payload.entrySet()) {
-            data.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            data.append("=");
-            data.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-            data.append("&");
-        }
-        data.deleteCharAt(data.length()-1);
-        postRequest.setEntity(new StringEntity(data.toString()));
+        T response;
+        try {
+            for (Map.Entry<String, String> entry : payload.entrySet()) {
+                data.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                data.append("=");
+                data.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                data.append("&");
+            }
+            data.deleteCharAt(data.length()-1);
+            postRequest.setEntity(new StringEntity(data.toString()));
 
-        return handleErrors(deserialize(this.runRequest(postRequest), responseClass));
+            response = deserialize(this.runRequest(postRequest), responseClass);
+        } catch (IOException e) {
+            throw new CryptoMarketException(e.getMessage());
+        }
+        return handleErrors(response);
     }
 }
