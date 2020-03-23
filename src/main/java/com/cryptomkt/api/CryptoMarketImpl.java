@@ -1,7 +1,10 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
+import com.cryptomkt.api.entity.orders.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.File;
 import java.io.IOException;
@@ -169,8 +172,13 @@ public class CryptoMarketImpl implements CryptoMarket {
     }
 
     @Override
-    public OrdersResponse createMultiOrders(List<Order> orderList) {
-    return null;
+    public CreateMultiOrderResponse createMultiOrders(MultiOrder multiOrder) throws IOException, CryptoMarketException {
+        List<Map<String, String>> orders = multiOrder.getOrders();
+        Map<String, String> payload = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, false);
+        String jsonOrders = mapper.writeValueAsString(orders);
+        payload.put("orders", jsonOrders);
+        return httpClient.post("orders/create/bulk", payload, CreateMultiOrderResponse.class);
     }
 
     @Override
@@ -188,7 +196,19 @@ public class CryptoMarketImpl implements CryptoMarket {
     }
 
     @Override
-    public OrdersResponse cancelMultiOrder(List<String> ids) { return null; }
+    public CancelMultiOrderResponse cancelMultiOrder(List<String> ids) throws IOException, CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        StringBuilder strBuilder = new StringBuilder("[");
+        for (String id : ids) {
+            strBuilder.append("{\"id\":\"");
+            strBuilder.append(id);
+            strBuilder.append("\"},");
+        }
+        strBuilder.deleteCharAt(strBuilder.length()-1);
+        strBuilder.append("]");
+        payload.put("ids", strBuilder.toString());
+        return httpClient.post("orders/cancel/bulk", payload, CancelMultiOrderResponse.class);
+    }
 
     @Override
     public BalanceResponse getBalance() throws IOException, CryptoMarketException {
@@ -278,7 +298,6 @@ public class CryptoMarketImpl implements CryptoMarket {
     @Override
     public SocketIoImpl getSocket() throws IOException, CryptoMarketException, URISyntaxException {
         SocAuthResponse auth =  getAuthSocket();
-        SocketIoImpl socket = new SocketIoImpl(auth);
-        return socket;
+        return new SocketIoImpl(auth);
     }
 }

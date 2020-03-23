@@ -1,6 +1,7 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.entity.*;
+import com.cryptomkt.api.entity.orders.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AuthenticatedEndpointsTest extends TestCase {
@@ -102,4 +104,37 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
         assertTrue(true);
     }
+
+    public void testCreateMultiOrder() {
+        try {
+            MultiOrder multiOrder = new MultiOrder()
+                .add("XLMCLP", "limit", "sell", "110", "1")
+                .add("XLMCLP", "limit", "sell", "111", "1")
+                .add("XLMCLP", "limit", "sell", "112", "1")
+                    .add("XLMCLP", "limit", "sell", "112", "1000000000");
+            CreateMultiOrderResponse createMultiOrderResponse = cryptoMarket.createMultiOrders(multiOrder);
+            printObject(createMultiOrderResponse);
+        } catch (IOException | CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
+
+    public void testCancelMultiOrders() {
+        try {
+            List<Order> orders =cryptoMarket.getActiveOrders("XLMCLP").getOrders();
+            List<String> ordersIds = new ArrayList<>();
+            for (Order order : orders) {
+                ordersIds.add(order.getId());
+            }
+            ordersIds.add("12121212");
+            CancelMultiOrderResponse cancelMultiOrderResponse = cryptoMarket.cancelMultiOrder(ordersIds);
+            printObject(cancelMultiOrderResponse);
+        } catch (IOException | CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
+
+
 }

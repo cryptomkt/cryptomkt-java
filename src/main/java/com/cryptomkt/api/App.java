@@ -2,6 +2,8 @@ package com.cryptomkt.api;
 
 
 import com.cryptomkt.api.entity.*;
+import com.cryptomkt.api.entity.orders.Order;
+import com.cryptomkt.api.entity.orders.OrdersResponse;
 import com.cryptomkt.api.exception.CryptoMarketException;
 
 import java.io.IOException;

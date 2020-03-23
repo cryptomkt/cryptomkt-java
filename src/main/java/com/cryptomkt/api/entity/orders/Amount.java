@@ -1,4 +1,4 @@
-package com.cryptomkt.api.entity;
+package com.cryptomkt.api.entity.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

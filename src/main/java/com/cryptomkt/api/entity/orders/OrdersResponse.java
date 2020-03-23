@@ -1,10 +1,12 @@
-package com.cryptomkt.api.entity;
+package com.cryptomkt.api.entity.orders;
 
+import com.cryptomkt.api.entity.Response;
+import com.cryptomkt.api.entity.orders.Order;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class OrdersResponse extends Response{
+public class OrdersResponse extends Response {
 
     @JsonProperty("data")
     private List<Order> orders;
