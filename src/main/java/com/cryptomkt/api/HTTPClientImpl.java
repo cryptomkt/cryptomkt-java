@@ -14,14 +14,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -179,9 +180,17 @@ public class HTTPClientImpl implements HTTPClient {
                 data.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
                 data.append("&");
             }
+
             data.deleteCharAt(data.length()-1);
             postRequest.setEntity(new StringEntity(data.toString()));
 
+            /*// for special case of deposit with voucher, returns error 403, so its not working
+            if (payload.containsKey("voucher")) {
+                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+                entityBuilder.addBinaryBody(payload.get("voucher"), new File(payload.get(("voucher"))));
+                entityBuilder.addTextBody("data", data.toString());
+                postRequest.setEntity(entityBuilder.build());
+            }*/
             response = deserialize(this.runRequest(postRequest), responseClass);
         } catch (IOException e) {
             throw new CryptoMarketException(e.getMessage());

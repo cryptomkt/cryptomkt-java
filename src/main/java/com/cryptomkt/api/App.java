@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class App {
-    public static void main( String[] args ) throws IOException, CryptoMarketException {
-        CryptoMarket cryptoMarket = new CryptoMarketImpl();
-        OrdersResponse ordersResponse = cryptoMarket.getActiveOrders("ETHCLP");
+    public static void main( String[] args ) throws CryptoMarketException {
+        Client client = new ClientImpl();
+        OrdersResponse ordersResponse = client.getActiveOrders("ETHCLP");
         List<Order> orders = ordersResponse.getOrders();
         Pagination pagination = ordersResponse.getPagination();
 

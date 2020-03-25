@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.List;
 
 public class AuthenticatedEndpointsTest extends TestCase {
 
-    protected CryptoMarket cryptoMarket;
+    protected Client client;
     private ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     protected void printObject(Object object) {
@@ -38,13 +40,13 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptoMarket = new CryptoMarketImpl(apiKey, apiSecret);
+        client = new ClientImpl(apiKey, apiSecret);
 
     }
 
     public void testGetAccount() {
         try {
-            Account account = cryptoMarket.getAccount().getAccount();
+            Account account = client.getAccount().getAccount();
             this.printObject(account);
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +56,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testCreateOrder() {
         try {
-            Order order = cryptoMarket.createOrder("XLMCLP", "104", "sell", "limit", "1")
+            Order order = client.createOrder("XLMCLP", "104", "sell", "limit", "1")
                     .getOrder();
             this.printObject(order);
         } catch (CryptoMarketException e) {
@@ -65,7 +67,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testCancelOrder() {
         try {
-            Order order = cryptoMarket.cancelOrder("03303730")
+            Order order = client.cancelOrder("03303730")
                     .getOrder();
             this.printObject(order);
         } catch (CryptoMarketException e) {
@@ -76,7 +78,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testGetActiveOrders() {
         try {
-            List<Order> orders = cryptoMarket.getActiveOrders("XLMCLP")
+            List<Order> orders = client.getActiveOrders("XLMCLP")
                     .getOrders();
             this.printObject(orders);
         } catch (CryptoMarketException e) {
@@ -87,7 +89,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testExecutedOrders() {
         try {
-            List<Order> orders = cryptoMarket.getExecutedOrders("XLMCLP")
+            List<Order> orders = client.getExecutedOrders("XLMCLP")
                     .getOrders();
             this.printObject(orders);
         } catch (CryptoMarketException e) {
@@ -98,7 +100,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testGetBalance() {
         try {
-            List<Balance> balance = cryptoMarket.getBalance().getBalances();
+            List<Balance> balance = client.getBalance().getBalances();
             this.printObject(balance);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
@@ -108,7 +110,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testGetTransactions() {
         try {
-            List<Transaction> transactions = cryptoMarket.getTransactions("XLM").getTransactions();
+            List<Transaction> transactions = client.getTransactions("XLM").getTransactions();
             this.printObject(transactions);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
@@ -123,7 +125,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
                 .add("XLMCLP", "limit", "sell", "111", "1")
                 .add("XLMCLP", "limit", "sell", "112", "1")
                     .add("XLMCLP", "limit", "sell", "112", "1000000000");
-            CreateMultiOrderResponse createMultiOrderResponse = cryptoMarket.createMultiOrders(multiOrderRequest);
+            CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
             printObject(createMultiOrderResponse);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
@@ -133,13 +135,13 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     public void testCancelMultiOrders() {
         try {
-            List<Order> orders =cryptoMarket.getActiveOrders("XLMCLP").getOrders();
+            List<Order> orders = client.getActiveOrders("XLMCLP").getOrders();
             List<String> ordersIds = new ArrayList<>();
             for (Order order : orders) {
                 ordersIds.add(order.getId());
             }
             ordersIds.add("12121212");
-            CancelMultiOrderResponse cancelMultiOrderResponse = cryptoMarket.cancelMultiOrder(ordersIds);
+            CancelMultiOrderResponse cancelMultiOrderResponse = client.cancelMultiOrder(ordersIds);
             printObject(cancelMultiOrderResponse);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
@@ -147,5 +149,15 @@ public class AuthenticatedEndpointsTest extends TestCase {
         assertTrue(true);
     }
 
-
+    public void testDepositWithVoucher() {
+        // get a pdf path
+        String path = "/home/ismael/cptmkt/scripts-and-tests/pdf_test.pdf";
+        try {
+            Response response = client.notifyDeposit("100", "63514", path);
+            System.out.println(response);
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        assertTrue(true);
+    }
 }

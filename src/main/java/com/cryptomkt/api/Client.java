@@ -6,11 +6,9 @@ import com.cryptomkt.api.entity.orders.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 
-public interface CryptoMarket {
+public interface Client {
 
     /* Public Endpoints */
 
@@ -260,7 +258,6 @@ public interface CryptoMarket {
      * Get the authentication information to create a socket
      *
      * @return the authentication information to create a socket
-     * @throws IOException
      * @throws CryptoMarketException
      */
     SocAuthResponse getAuthSocket() throws CryptoMarketException;
@@ -273,15 +270,43 @@ public interface CryptoMarket {
      */
     SocketIo getSocket() throws CryptoMarketException;
 
+    /**
+     * Get the transactions of a currency
+     *
+     * @see #getTransactions(String, int, int)
+     */
     TransactionsResponse getTransactions(String currency) throws  CryptoMarketException;
+
+    /**
+     * Get the transactions of a currency
+     *
+     * @see #getTransactions(String, int, int)
+     */
     TransactionsResponse getTransactions(String currency, int page) throws  CryptoMarketException;
+
+    /**
+     * Get the transactions of a currency
+     *
+     * @param currency the currency to get the list of transactions
+     * @param page     the page of all the orders to get. Default:0 (optional)
+     * @param limit    the number of orders per page. Default:20, Max:100 (optional)
+     * @return a list of transactions of the user using a currency
+     * @throws CryptoMarketException
+     */
     TransactionsResponse getTransactions(String currency, int page, int limit) throws  CryptoMarketException; // transactions
 
     Response notifyDeposit(String amount, String bankAccount) throws  CryptoMarketException;  // deposit
-    Response notifyDeposit(String amount, String bankAccount, File voucher) throws  CryptoMarketException;  // deposit
-    Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, File voucher) throws  CryptoMarketException;  // deposit
+    Response notifyDeposit(String amount, String bankAccount, String voucher) throws  CryptoMarketException;  // deposit
+    Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, String voucher) throws  CryptoMarketException;  // deposit
 
     Response notifyWithdrawal(String amount, String bankAccount) throws  CryptoMarketException; // withdrawal
+
+    /**
+     * Transfer currency between wallets
+     *
+     * @see #transfer(String, String, String, String)
+     */
+    Response transfer(String address, String amount, String currency) throws  CryptoMarketException; // transfer
 
     /**
      * Transfer currency between wallets
@@ -294,12 +319,4 @@ public interface CryptoMarket {
      * @throws CryptoMarketException
      */
     Response transfer(String address, String amount, String currency, String memo) throws  CryptoMarketException; // transfer
-
-    /**
-     * Transfer currency between wallets
-     *
-     * @see #transfer(String, String, String, String)
-     */
-    Response transfer(String address, String amount, String currency) throws  CryptoMarketException; // transfer
-
 }

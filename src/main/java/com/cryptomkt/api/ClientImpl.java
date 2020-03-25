@@ -13,17 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CryptoMarketImpl implements CryptoMarket {
+public class ClientImpl implements Client {
     private static String apiUrl = "https://api.cryptomkt.com";
     private static String apiVersion = "v2";
     private HTTPClient httpClient;
 
 
-    public CryptoMarketImpl() {
+    public ClientImpl() {
         this.httpClient = new HTTPClientImpl(apiUrl, apiVersion, "", "");
     }
 
-    public CryptoMarketImpl(String apiKey, String apiSecret) {
+    public ClientImpl(String apiKey, String apiSecret) {
         this.httpClient = new HTTPClientImpl(apiUrl, apiVersion, apiKey, apiSecret);
     }
 
@@ -249,22 +249,22 @@ public class CryptoMarketImpl implements CryptoMarket {
 
 
     @Override
-    public Response notifyDeposit(String amount, String bankAccount, File voucher) throws CryptoMarketException {
+    public Response notifyDeposit(String amount, String bankAccount, String voucher) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("amount", amount);
         payload.put("bank_account", bankAccount);
-        payload.put("voucher", "voucher");
+        payload.put("voucher", voucher);
         return httpClient.post("deposit", payload, Response.class);
     }
 
     @Override
-    public Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, File voucher) throws CryptoMarketException {
+    public Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, String voucher) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("amount", amount);
         payload.put("bank_account", bankAccount);
         payload.put("date", date);
         payload.put("traking_code", trakingCode);
-        payload.put("voucher", "voucher");
+        payload.put("voucher", voucher);
         return httpClient.post("deposit", payload, Response.class);
     }
 

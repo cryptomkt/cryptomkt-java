@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PublicEndpointsTest extends TestCase{
 
-    protected CryptoMarket cryptoMarket;
+    protected Client client;
 
     private ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
@@ -37,13 +37,13 @@ public class PublicEndpointsTest extends TestCase{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cryptoMarket= new CryptoMarketImpl(apiKey, apiSecret);
+        client = new ClientImpl(apiKey, apiSecret);
 
     }
 
     public void testGetMarkets() {
         try {
-            List<Market> markets = cryptoMarket.getMarkets().getMarkets();
+            List<Market> markets = client.getMarkets().getMarkets();
             this.printObject(markets);
 
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testGetAllTickers() {
         try {
-            List<Ticker> tickers = cryptoMarket.getTickers().getTickers();
+            List<Ticker> tickers = client.getTickers().getTickers();
             this.printObject(tickers);
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testGetOneTicker() {
         try {
-            List<Ticker> tickers = cryptoMarket.getTickers("BTCBRL").getTickers();
+            List<Ticker> tickers = client.getTickers("BTCBRL").getTickers();
             this.printObject(tickers);
 
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testGetTickerWrongMarket() {
         try {
-            List<Ticker> tickers = cryptoMarket.getTickers("BBBBB").getTickers();
+            List<Ticker> tickers = client.getTickers("BBBBB").getTickers();
             this.printObject(tickers);
 
         } catch (CryptoMarketException e) {
@@ -87,7 +87,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testBook() {
         try {
-            List<Book> books = cryptoMarket.getBook("ETHCLP", "buy").getBooks();
+            List<Book> books = client.getBook("ETHCLP", "buy").getBooks();
             this.printObject(books);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +97,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testGetTrades() {
         try {
-            List<Trade> trades = cryptoMarket.getTrades("ETHARS").getTrades();
+            List<Trade> trades = client.getTrades("ETHARS").getTrades();
             this.printObject(trades);
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +107,7 @@ public class PublicEndpointsTest extends TestCase{
 
     public void testGetPrices() {
         try {
-            Prices prices = cryptoMarket.getPrices("XLMCLP", "240", 1, 5).getPrices();
+            Prices prices = client.getPrices("XLMCLP", "240", 1, 5).getPrices();
             this.printObject(prices);
         } catch (Exception e) {
             e.printStackTrace();
