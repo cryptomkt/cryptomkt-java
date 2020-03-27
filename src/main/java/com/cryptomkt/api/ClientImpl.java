@@ -301,7 +301,7 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public SocketIoImpl getSocket() throws CryptoMarketException {
+    public SocketIo getSocket() throws CryptoMarketException {
         SocAuthResponse auth =  getAuthSocket();
         SocketIoImpl socket;
         try {

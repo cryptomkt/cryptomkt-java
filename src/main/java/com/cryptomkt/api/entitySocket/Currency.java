@@ -2,111 +2,94 @@ package com.cryptomkt.api.entitySocket;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
+public class Currency {
 
-public class Currency implements Serializable {
+    @JsonProperty("kind")
+    private Integer kind;
+
+    @JsonProperty("prefix")
+    private  String prefix;
+
+    @JsonProperty("decimals")
+    private Integer decimals;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("big_name")
+    private String bigName;
+
+    @JsonProperty("active")
+    private boolean active;
+
+    @JsonProperty("id")
+    private Integer id;
+
+    @JsonProperty("postfix")
+    private String postfix;
 
 
-    @JsonProperty("currency")
-    private String currency;
-
-    @JsonProperty("countable")
-    private String countable;
-
-    @JsonProperty("available")
-    private String available;
-
-    @JsonProperty("currency_kind")
-    private Integer currency_kind;
-
-    @JsonProperty("currency_name")
-    private String currency_name;
-
-    @JsonProperty("currency_big_name")
-    private String currency_big_name;
-
-    @JsonProperty("currency_prefix")
-    private String currency_prefix;
-
-    @JsonProperty("currency_postfix")
-    private String currency_postfix;
-
-    @JsonProperty("currency_decimals")
-    private Integer currency_decimals;
-
-    public String getCurrency() {
-        return currency;
+    public Integer getKind() {
+        return kind;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setKind(Integer kind) {
+        this.kind = kind;
     }
 
-    public String getCountable() {
-        return countable;
+    public String getPrefix() {
+        return prefix;
     }
 
-    public void setCountable(String countable) {
-        this.countable = countable;
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
-    public String getAvailable() {
-        return available;
+    public Integer getDecimals() {
+        return decimals;
     }
 
-    public void setAvailable(String available) {
-        this.available = available;
+    public void setDecimals(Integer decimals) {
+        this.decimals = decimals;
     }
 
-    public Integer getCurrency_kind() {
-        return currency_kind;
+    public String getName() {
+        return name;
     }
 
-    public void setCurrency_kind(Integer currency_kind) {
-        this.currency_kind = currency_kind;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCurrency_name() {
-        return currency_name;
+    public String getBigName() {
+        return bigName;
     }
 
-    public void setCurrency_name(String currency_name) {
-        this.currency_name = currency_name;
+    public void setBigName(String bigName) {
+        this.bigName = bigName;
     }
 
-    public String getCurrency_big_name() {
-        return currency_big_name;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setCurrency_big_name(String currency_big_name) {
-        this.currency_big_name = currency_big_name;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    public String getCurrency_prefix() {
-        return currency_prefix;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCurrency_prefix(String currency_prefix) {
-        this.currency_prefix = currency_prefix;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getCurrency_postfix() {
-        return currency_postfix;
+    public String getPostfix() {
+        return postfix;
     }
 
-    public void setCurrency_postfix(String currency_postfix) {
-        this.currency_postfix = currency_postfix;
+    public void setPostfix(String postfix) {
+        this.postfix = postfix;
     }
-
-    public Integer getCurrency_decimals() {
-        return currency_decimals;
-    }
-
-    public void setCurrency_decimals(Integer currency_decimals) {
-        this.currency_decimals = currency_decimals;
-    }
-
-
-
-
 }

@@ -1,19 +1,19 @@
 package com.cryptomkt.api.entitySocket;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties({"from_tx"})
-public class OnBalance {
+public class OnCurrencies {
 
     @JsonProperty("to_tx")
     private Integer tx;
 
-    @JsonProperty("data")
-    private Map<String, Balance> data;
+    @JsonAnySetter
+    private Map<String, Currency> data;
 
     public Integer getTx() {
         return tx;
@@ -23,11 +23,11 @@ public class OnBalance {
         this.tx = tx;
     }
 
-    public Map<String, Balance> getData() {
+    public Map<String, Currency> getData() {
         return data;
     }
 
-    public void setData(Map<String, Balance> data) {
+    public void setData(Map<String, Currency> data) {
         this.data = data;
     }
 }

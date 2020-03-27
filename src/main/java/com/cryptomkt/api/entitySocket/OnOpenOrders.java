@@ -4,12 +4,12 @@ import java.util.List;
 
 public class OnOpenOrders {
 
-    private List<OrderOwnActive> openOrders;
+    private List<OrderBook> openOrders;
 
-    public List<OrderOwnActive> getOpenOrders() {
+    public List<OrderBook> getOpenOrders() {
         return openOrders;
     }
-    public void setOpenOrders(List<OrderOwnActive> openOrders) {
+    public void setOpenOrders(List<OrderBook> openOrders) {
         this.openOrders = openOrders;
     }
 

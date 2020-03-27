@@ -255,22 +255,6 @@ public interface Client {
     BalanceResponse getBalance() throws  CryptoMarketException; // balance
 
     /**
-     * Get the authentication information to create a socket
-     *
-     * @return the authentication information to create a socket
-     * @throws CryptoMarketException
-     */
-    SocAuthResponse getAuthSocket() throws CryptoMarketException;
-
-    /**
-     * Get a socket
-     *
-     * @return a socket
-     * @throws CryptoMarketException
-     */
-    SocketIo getSocket() throws CryptoMarketException;
-
-    /**
      * Get the transactions of a currency
      *
      * @see #getTransactions(String, int, int)
@@ -319,4 +303,20 @@ public interface Client {
      * @throws CryptoMarketException
      */
     Response transfer(String address, String amount, String currency, String memo) throws  CryptoMarketException; // transfer
+
+    /**
+     * Get the authentication information to create a socket
+     *
+     * @return the authentication information to create a socket
+     * @throws CryptoMarketException
+     */
+    SocAuthResponse getAuthSocket() throws CryptoMarketException;
+
+    /**
+     * Get a socket
+     *
+     * @return a socket
+     * @throws CryptoMarketException
+     */
+    SocketIo getSocket() throws CryptoMarketException;
 }

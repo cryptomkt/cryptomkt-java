@@ -1,5 +1,6 @@
 package com.cryptomkt.api.entitySocket;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ public class CandleMarket implements Serializable {
     @JsonProperty("lastSellPrice")
     private Integer lastSellPrice;
 
+    @JsonAnySetter
     private Map<String,CandleSide> marketSides;
 
     public Integer getLastBuyPrice() {

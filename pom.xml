@@ -144,6 +144,12 @@
             <organization>CryptoMarket</organization>
             <organizationUrl>https://www.cryptomkt.com</organizationUrl>
         </developer>
+        <developer>
+            <name>T. Ismael Verdugo</name>
+            <email>ismael.verdugo@gmail.com</email>
+            <organization>CryptoMarket</organization>
+            <organizationUrl>https://www.cryptomkt.com</organizationUrl>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/cryptomkt/cryptomkt-java.git</connection>

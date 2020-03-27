@@ -8,27 +8,19 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface SocketIo {
 
+  void subscribe(String marketPair);
 
-  void currencies();
+  void subscribe(List<String> marketPairs);
 
-  void balance();
+  void unsubscribe(String marketPairs);
 
-  void openOrders();
+  void unsubscribe(List<String> marketPairs);
 
-  void historicalOrders();
-
-  void operated();
-
-  void openBook();
-
-  void historicalBook();
-
-  void candles();
-
-  void board();
+  // void on(callable);
 }
 

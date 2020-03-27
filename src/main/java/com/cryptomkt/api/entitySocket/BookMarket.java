@@ -8,24 +8,24 @@ import java.util.List;
 public class BookMarket implements Serializable {
 
     @JsonProperty("sell")
-    private List<OrderBookActive> sell;
+    private List<OrderBook> sell;
 
     @JsonProperty("buy")
-    private List<OrderBookActive> buy;
+    private List<OrderBook> buy;
 
-    public List<OrderBookActive> getSell() {
+    public List<OrderBook> getSell() {
         return sell;
     }
 
-    public void setSell(List<OrderBookActive> sell) {
+    public void setSell(List<OrderBook> sell) {
         this.sell = sell;
     }
 
-    public List<OrderBookActive> getBuy() {
+    public List<OrderBook> getBuy() {
         return buy;
     }
 
-    public void setBuy(List<OrderBookActive> buy) {
+    public void setBuy(List<OrderBook> buy) {
         this.buy = buy;
     }
 

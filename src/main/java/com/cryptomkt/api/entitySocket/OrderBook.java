@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.lang.model.type.NullType;
 import java.io.Serializable;
 
-public class OrderBookActive implements Serializable {
+public class OrderBook implements Serializable {
 
     @JsonProperty("requestId")
     private String requestId;
@@ -149,6 +149,4 @@ public class OrderBookActive implements Serializable {
     public void setDateReceived(Long dateReceived) {
         this.dateReceived = dateReceived;
     }
-
-
 }
