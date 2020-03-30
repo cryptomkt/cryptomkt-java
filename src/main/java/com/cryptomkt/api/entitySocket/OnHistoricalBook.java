@@ -1,17 +1,17 @@
 package com.cryptomkt.api.entitySocket;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
+@JsonIgnoreProperties({"from_tx"})
 public class OnHistoricalBook {
 
-    private Map<String, List<OrderBookExecuted>> historicalBook;
+    @JsonProperty("to_tx")
+    private Integer tx;
 
-    public Map<String, List<OrderBookExecuted>> getHistoricalBook() {
-        return historicalBook;
-    }
+    @JsonProperty("data")
+    private List<OrderBookExecuted> historicalBook;
 
-    public void setHistoricalBook(Map<String, List<OrderBookExecuted>> historicalBook) {
-        this.historicalBook = historicalBook;
-    }
 }

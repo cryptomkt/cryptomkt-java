@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.lang.model.type.NullType;
 import java.io.Serializable;
 
-public class OrderBookExecuted implements Serializable {
+public class OrderBookExecuted extends OrderBook implements Serializable {
 
     @JsonProperty("executed_price")
     private String executed_price;
@@ -39,6 +39,4 @@ public class OrderBookExecuted implements Serializable {
     public void setExecuted_date(Long executed_date) {
         this.executed_date = executed_date;
     }
-
-
 }

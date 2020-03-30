@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.lang.model.type.NullType;
 import java.io.Serializable;
 
-public class OrderOwnExecuted extends OrderBook {
+public class OrderOwnExecuted extends OrderBook implements Serializable{
 
-    @JsonProperty("DateTriggered")
-    private NullType DateTriggered;
+    @JsonProperty("dateTriggered")
+    private NullType dateTriggered;
 
-    public NullType getDateTriggered() { return DateTriggered; }
+    public NullType getDateTriggered() { return dateTriggered; }
 
-    public void setDateTriggered(NullType dateTriggered) { DateTriggered = dateTriggered; }
+    public void setDateTriggered(NullType dateTriggered) { this.dateTriggered = dateTriggered; }
 
 }

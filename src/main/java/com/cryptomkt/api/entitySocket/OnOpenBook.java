@@ -1,16 +1,17 @@
 package com.cryptomkt.api.entitySocket;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 
+@JsonIgnoreProperties({"from_tx"})
 public class OnOpenBook {
-    private Map<String,BookMarket> market;
 
-    public Map<String, BookMarket> getMarket() {
-        return market;
-    }
+    @JsonProperty("to_tx")
+    private Integer tx;
 
-    public void setMarket(Map<String, BookMarket> market) {
-        this.market = market;
-    }
-
+    @JsonProperty("data")
+    private BookMarket market;
 }

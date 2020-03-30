@@ -1,16 +1,16 @@
 package com.cryptomkt.api.entitySocket;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 
+@JsonIgnoreProperties({"from_tx"})
 public class OnCandles {
-    
-    private Map<String,CandleMarket> market;
 
-    public Map<String, CandleMarket> getMarket() {
-        return market;
-    }
+    @JsonProperty("to_tx")
+    private Integer tx;
 
-    public void setMarket(Map<String, CandleMarket> market) {
-        this.market = market;
-    }
+    @JsonProperty("data")
+    private CandleMarket market;
 }

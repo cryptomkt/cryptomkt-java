@@ -7,10 +7,10 @@ import java.util.List;
 
 public class BookMarket implements Serializable {
 
-    @JsonProperty("sell")
+    @JsonProperty("1")
     private List<OrderBook> sell;
 
-    @JsonProperty("buy")
+    @JsonProperty("2")
     private List<OrderBook> buy;
 
     public List<OrderBook> getSell() {
