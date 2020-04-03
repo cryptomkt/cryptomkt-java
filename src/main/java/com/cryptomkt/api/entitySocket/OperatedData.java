@@ -2,7 +2,7 @@ package com.cryptomkt.api.entitySocket;
 
 import java.util.List;
 
-public class OnOperated {
+public class OperatedData {
 
     private Operated onOperated;
 

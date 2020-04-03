@@ -303,9 +303,9 @@ public class ClientImpl implements Client {
     @Override
     public SocketIo getSocket() throws CryptoMarketException {
         SocAuthResponse auth =  getAuthSocket();
-        SocketIoImpl socket;
+        SocketIo socket;
         try {
-            socket = new SocketIoImpl(auth);
+            socket = new SocketIoV2(auth);
         } catch (URISyntaxException e) {
             throw new CryptoMarketException();
         }

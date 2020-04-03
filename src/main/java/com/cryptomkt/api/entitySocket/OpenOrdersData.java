@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonIgnoreProperties({"from_tx"})
-public class OnOpenOrders {
+public class OpenOrdersData {
 
     @JsonProperty("to_tx")
     private Integer tx;

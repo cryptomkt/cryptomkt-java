@@ -10,9 +10,9 @@ import java.util.Map;
 public class CandleMarket implements Serializable {
 
     @JsonProperty("1")
-    private Map<String, List<Candle>> buy;
+    private Map<String, List<Container>> buy;
 
     @JsonProperty("2")
-    private Map<String, List<Candle>> sell;
+    private Map<String, List<Container>> sell;
 
 }

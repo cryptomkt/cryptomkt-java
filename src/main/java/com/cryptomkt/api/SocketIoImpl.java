@@ -4,6 +4,7 @@ import com.cryptomkt.api.entity.SocAuthResponse;
 import com.cryptomkt.api.entitySocket.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -23,15 +24,15 @@ public class SocketIoImpl implements SocketIo {
     Socket socket;
 
     //data fields
-    OnCurrencies onCurrencies;
-    OnBalance onBalance;
+    VersionedContainerMap currenciesData;
+    BalanceData balanceData;
     CandlesData candlesData;
-    OnOpenBook onOpenBook;
-    OnHistoricalBook onHistoricalBook;
-    OnHistoricalOrders onHistoricalOrders;
-    OnOpenOrders onOpenOrders;
-    OnOperated onOperated;
-    OnBoard onBoard;
+    OpenBookData openBookData;
+    HistoricalBookData onHistoricalBookData;
+    VersionedContainerList historicalOrdersData;
+    VersionedContainerList openOrdersData;
+    VersionedContainer operatedData;
+    VersionedContainerMap tickerData;
 
 
 
@@ -70,26 +71,26 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onCurrencies = objectMapper.readValue(args[0].toString(), OnCurrencies.class);
+                    currenciesData = objectMapper.readValue(args[0].toString(), VersionedContainerMap.class);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                /*try {
+                try {
                     System.out.println("onCurrencies");
                     ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
-                    String jsonString = mapper.writeValueAsString(onCurrencies);
+                    String jsonString = mapper.writeValueAsString(currenciesData);
                     System.out.println(jsonString);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
-                }*/
+                }
             }
         }).on("balance", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 try {
-                    onBalance = objectMapper.readValue(args[0].toString(), OnBalance.class);
-                    for (Map.Entry<String, Balance> entry : onBalance.getData().entrySet()){
-                        entry.getValue().setCurrencyData(onCurrencies.getData().get(entry.getKey()));
+                    balanceData = objectMapper.readValue(args[0].toString(), BalanceData.class);
+                    for (Map.Entry<String, Balance> entry : balanceData.getData().entrySet()){
+                        entry.getValue().setCurrencyData(currenciesData.getData().get(entry.getKey()));
                     }
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
@@ -99,7 +100,7 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onOpenOrders = objectMapper.readValue(args[0].toString(), OnOpenOrders.class);
+                    openOrdersData = objectMapper.readValue(args[0].toString(), VersionedContainerList.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -108,7 +109,7 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onHistoricalOrders = objectMapper.readValue(args[0].toString(), OnHistoricalOrders.class);
+                    historicalOrdersData = objectMapper.readValue(args[0].toString(), VersionedContainerList.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -117,7 +118,7 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onOperated = objectMapper.readValue(args[0].toString(), OnOperated.class);
+                    operatedData = objectMapper.readValue(args[0].toString(), VersionedContainer.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -126,7 +127,7 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onOpenBook = objectMapper.readValue(args[0].toString(), OnOpenBook.class);
+                    openBookData = objectMapper.readValue(args[0].toString(), OpenBookData.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -135,7 +136,7 @@ public class SocketIoImpl implements SocketIo {
             @Override
             public void call(Object... args) {
                 try {
-                    onHistoricalBook = objectMapper.readValue(args[0].toString(), OnHistoricalBook.class);
+                    onHistoricalBookData = objectMapper.readValue(args[0].toString(), HistoricalBookData.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -156,7 +157,7 @@ public class SocketIoImpl implements SocketIo {
             public void call(Object... args) {
                 try {
                     System.out.println(args[0]);
-                    onBoard = objectMapper.readValue(args[0].toString(), OnBoard.class);
+                    tickerData = objectMapper.readValue(args[0].toString(), VersionedContainerMap.class);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }

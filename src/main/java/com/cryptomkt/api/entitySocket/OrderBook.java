@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class OrderBook implements Serializable {
 
+
     @JsonProperty("requestId")
     private String requestId;
 

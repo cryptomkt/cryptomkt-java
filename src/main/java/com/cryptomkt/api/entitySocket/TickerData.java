@@ -3,15 +3,14 @@ package com.cryptomkt.api.entitySocket;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties({"from_tx"})
-public class OnHistoricalBook {
+public class TickerData {
 
     @JsonProperty("to_tx")
     private Integer tx;
 
     @JsonProperty("data")
-    private List<OrderBookExecuted> historicalBook;
-
+    private Map<String, Container> data;
 }
