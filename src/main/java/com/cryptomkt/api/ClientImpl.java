@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
@@ -305,7 +304,7 @@ public class ClientImpl implements Client {
         SocAuthResponse auth =  getAuthSocket();
         SocketIo socket;
         try {
-            socket = new SocketIoV2(auth);
+            socket = new SocketIoImpl(auth);
         } catch (URISyntaxException e) {
             throw new CryptoMarketException();
         }
