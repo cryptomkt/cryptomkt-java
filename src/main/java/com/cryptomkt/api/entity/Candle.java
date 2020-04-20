@@ -85,4 +85,18 @@ public class Candle implements Serializable {
     public void setCandleDate(String candleDate) {
         this.candleDate = candleDate;
     }
+
+    @Override
+    public String toString() {
+        return "Candle{" +
+                "id='" + id + '\'' +
+                ", candleDate='" + candleDate + '\'' +
+                ", openPrice='" + openPrice + '\'' +
+                ", HighPrice='" + HighPrice + '\'' +
+                ", ClosePrice='" + ClosePrice + '\'' +
+                ", LowPrice='" + LowPrice + '\'' +
+                ", volumeSum='" + volumeSum + '\'' +
+                ", tickCount='" + tickCount + '\'' +
+                '}';
+    }
 }

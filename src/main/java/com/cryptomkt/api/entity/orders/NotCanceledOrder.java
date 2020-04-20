@@ -27,4 +27,12 @@ public class NotCanceledOrder implements Serializable {
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
+
+    @Override
+    public String toString() {
+        return "NotCanceledOrder{" +
+                "message='" + message + '\'' +
+                ", orderId='" + orderId + '\'' +
+                '}';
+    }
 }

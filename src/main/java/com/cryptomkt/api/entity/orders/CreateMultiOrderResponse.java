@@ -15,4 +15,12 @@ public class CreateMultiOrderResponse extends Response {
     public void setData(CreateMultiOrderData data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "CreateMultiOrderResponse{" +
+                super.toString() +
+                ", data=" + data +
+                '}';
+    }
 }

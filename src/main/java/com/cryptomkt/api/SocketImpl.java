@@ -4,7 +4,6 @@ import com.cryptomkt.api.entity.SocAuthResponse;
 import com.cryptomkt.api.utils.*;
 import io.socket.client.IO;
 import io.socket.client.Manager;
-import io.socket.client.Socket;
 import io.socket.engineio.client.Transport;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,14 +17,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-public class SocketIoImpl implements SocketIo {
+public class SocketImpl implements Socket {
     //logging
     Logger logger;
 
     // socket fields
     String url_worker = "https://worker.cryptomkt.com";
     IO.Options opts;
-    Socket socket;
+    io.socket.client.Socket socket;
 
     //data fields
     private JSONObject currenciesData;
@@ -38,7 +37,6 @@ public class SocketIoImpl implements SocketIo {
     private JSONObject candlesData;
     private JSONObject tickerData;
 
-    final SyncJson currenciesPub;
     final SyncJson balancePub;
     final SyncJson openOrdersPub;
     final SyncJson historicalOrdersPub;
@@ -50,14 +48,13 @@ public class SocketIoImpl implements SocketIo {
 
     //connect
 
-    public SocketIoImpl(SocAuthResponse authToken) throws URISyntaxException {
+    public SocketImpl(SocAuthResponse authToken) throws URISyntaxException {
         logger = Logger.getLogger(this.getClass().getName());
         logger.setLevel(Level.ALL);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.WARNING);
         logger.addHandler(handler);
-        currenciesPub = new SyncJson();
         balancePub = new SyncJson();
         openOrdersPub = new SyncJson();
         historicalOrdersPub = new SyncJson();
@@ -83,7 +80,7 @@ public class SocketIoImpl implements SocketIo {
             Transport transport = (Transport) args[0];
             logger.info(transport.toString());
         });
-        socket.on(Socket.EVENT_CONNECT, args -> {
+        socket.on(io.socket.client.Socket.EVENT_CONNECT, args -> {
             logger.fine("connected");
             JSONObject obj = new JSONObject();
             try {
@@ -93,16 +90,12 @@ public class SocketIoImpl implements SocketIo {
                 e.printStackTrace();
             }
             socket.emit("user-auth", obj);
-        }).on(Socket.EVENT_DISCONNECT, args -> logger.fine("disconnected")
+        }).on(io.socket.client.Socket.EVENT_DISCONNECT, args -> logger.fine("disconnected")
         ).on("currencies", args -> {
             logger.fine("currencies data received");
             logger.fine(args[0].toString());
             currenciesData = (JSONObject) args[0];
-            String jsonString = currenciesData.toString();
-            synchronized (currenciesPub) {
-                currenciesPub.setData(jsonString);
-                currenciesPub.notifyAll();
-            }
+            String jsonString = null;
         }).on("currencies-delta", args -> {
             logger.fine("currencies delta received");
             logger.fine(args[0].toString());
@@ -115,12 +108,6 @@ public class SocketIoImpl implements SocketIo {
                 }
                 currenciesData.put("data", JSONPatcher.patch(currenciesData.get("data"), patch.get("delta_data")));
                 currenciesData.put("to_tx", patch.get("to_tx"));
-                String jsonString = currenciesData.toString();
-                synchronized (currenciesPub) {
-                    currenciesPub.setData(jsonString);
-                    currenciesPub.notifyAll();
-                }
-
             } catch (JSONException | JSONPatchException e) {
                 e.printStackTrace();
             }
@@ -163,7 +150,12 @@ public class SocketIoImpl implements SocketIo {
             logger.fine("open orders data received");
             logger.fine(args[0].toString());
             openOrdersData = (JSONObject) args[0];
-            String jsonString = openOrdersData.toString();
+            String jsonString = null;
+            try {
+                jsonString = (new JSONObject().put("data",openOrdersData.get("data"))).toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             synchronized (openOrdersPub) {
                 openOrdersPub.setData(jsonString);
                 openOrdersPub.notifyAll();
@@ -181,7 +173,7 @@ public class SocketIoImpl implements SocketIo {
                 openOrdersData.put("data", JSONPatcher.patch(openOrdersData.get("data"), patch.get("delta_data")));
                 openOrdersData.put("to_tx", patch.get("to_tx"));
 
-                String jsonString = openOrdersData.toString();
+                String jsonString = (new JSONObject().put("data",openOrdersData.get("data"))).toString();
                 synchronized (openOrdersPub) {
                     openOrdersPub.setData(jsonString);
                     openOrdersPub.notifyAll();
@@ -194,10 +186,15 @@ public class SocketIoImpl implements SocketIo {
             logger.fine("historical orders data received");
             logger.fine(args[0].toString());
             historicalOrdersData = (JSONObject) args[0];
-            String jsonString = historicalOrdersData.toString();
-            synchronized (historicalOrdersPub) {
-                historicalOrdersPub.setData(jsonString);
-                historicalOrdersPub.notifyAll();
+            String jsonString = null;
+            try {
+                jsonString = (new JSONObject().put("data",historicalOrdersData.get("data"))).toString();
+                synchronized (historicalOrdersPub) {
+                    historicalOrdersPub.setData(jsonString);
+                    historicalOrdersPub.notifyAll();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }).on("historical-orders-delta", args -> {
             logger.fine("historical orders delta received");
@@ -212,7 +209,7 @@ public class SocketIoImpl implements SocketIo {
                 historicalOrdersData.put("data", JSONPatcher.patch(historicalOrdersData.get("data"), patch.get("delta_data")));
                 historicalOrdersData.put("to_tx", patch.get("to_tx"));
 
-                String jsonString = historicalOrdersData.toString();
+                String jsonString = (new JSONObject().put("data",historicalOrdersData.get("data"))).toString();
                 synchronized (historicalOrdersPub) {
                     historicalOrdersPub.setData(jsonString);
                     historicalOrdersPub.notifyAll();
@@ -225,10 +222,15 @@ public class SocketIoImpl implements SocketIo {
             logger.fine("operated data received");
             logger.fine(args[0].toString());
             operatedData = (JSONObject) args[0];
-            String jsonString = operatedData.toString();
-            synchronized (operatedPub) {
-                operatedPub.setData(jsonString);
-                operatedPub.notifyAll();
+            String jsonString = null;
+            try {
+                jsonString = operatedData.get("data").toString();
+                synchronized (operatedPub) {
+                    operatedPub.setData(jsonString);
+                    operatedPub.notifyAll();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }).on("operated-delta", args -> {
             logger.fine("operated delta received");
@@ -242,7 +244,7 @@ public class SocketIoImpl implements SocketIo {
                 }
                 operatedData.put("data", JSONPatcher.patch(operatedData.get("data"), patch.get("delta_data")));
                 operatedData.put("to_tx", patch.get("to_tx"));
-                String jsonString = operatedData.toString();
+                String jsonString = operatedData.get("data").toString();
                 synchronized (operatedPub) {
                     operatedPub.setData(jsonString);
                     operatedPub.notifyAll();
@@ -354,11 +356,11 @@ public class SocketIoImpl implements SocketIo {
                 String stockId = data.getString("stock_id");
                 candlesData.put(stockId, data);
                 JSONObject jsonObject = new JSONObject().put(stockId, new JSONObject());
-                if (candlesData.getJSONObject(stockId).has("1")) {
-                    jsonObject.put("buy", candlesData.getJSONObject(stockId).get("1"));
+                if (candlesData.getJSONObject(stockId).getJSONObject("data").has("1")) {
+                    jsonObject.getJSONObject(stockId).put("buy", candlesData.getJSONObject(stockId).getJSONObject("data").get("1"));
                 }
-                if (candlesData.getJSONObject(stockId).has("2")) {
-                    jsonObject.put("sell", candlesData.getJSONObject(stockId).get("2"));
+                if (candlesData.getJSONObject(stockId).getJSONObject("data").has("2")) {
+                    jsonObject.getJSONObject(stockId).put("sell", candlesData.getJSONObject(stockId).getJSONObject("data").get("2"));
                 }
                 String jsonString = jsonObject.toString();
                 synchronized (candlePub) {
@@ -379,7 +381,7 @@ public class SocketIoImpl implements SocketIo {
                                 candlesData.getJSONObject(stockId).get("to_tx"),
                                 patch.get("from_tx"))) {
                     logger.fine("received tx ahead of current tx or new stock id, retrieving data again");
-                    socket.emit("historical-book", new JSONObject().put("stockId", stockId));
+                    socket.emit("candles", new JSONObject().put("stockId", stockId));
                     return;
                 }
                 JSONObject stockData = candlesData.getJSONObject(stockId);
@@ -387,11 +389,11 @@ public class SocketIoImpl implements SocketIo {
                 candlesData.getJSONObject(stockId).put("to_tx",patch.get("to_tx"));
 
                 JSONObject jsonObject = new JSONObject().put(stockId, new JSONObject());
-                if (candlesData.getJSONObject(stockId).has("1")) {
-                    jsonObject.put("buy", candlesData.getJSONObject(stockId).get("1"));
+                if (candlesData.getJSONObject(stockId).getJSONObject("data").has("1")) {
+                    jsonObject.getJSONObject(stockId).put("buy", candlesData.getJSONObject(stockId).getJSONObject("data").get("1"));
                 }
-                if (candlesData.getJSONObject(stockId).has("2")) {
-                    jsonObject.put("sell", candlesData.getJSONObject(stockId).get("2"));
+                if (candlesData.getJSONObject(stockId).getJSONObject("data").has("2")) {
+                    jsonObject.getJSONObject(stockId).put("sell", candlesData.getJSONObject(stockId).getJSONObject("data").get("2"));
                 }
                 String jsonString = jsonObject.toString();
                 synchronized (candlePub) {
@@ -405,10 +407,15 @@ public class SocketIoImpl implements SocketIo {
             logger.fine("board data received");
             logger.fine(args[0].toString());
             tickerData = (JSONObject) args[0];
-            String jsonString = tickerData.toString();
-            synchronized (tickerPub) {
-                tickerPub.setData(jsonString);
-                tickerPub.notifyAll();
+            String jsonString = null;
+            try {
+                jsonString = tickerData.get("data").toString();
+                synchronized (tickerPub) {
+                    tickerPub.setData(jsonString);
+                    tickerPub.notifyAll();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }).on("board-delta", args -> {
             logger.fine("board delta received");
@@ -423,7 +430,7 @@ public class SocketIoImpl implements SocketIo {
                 tickerData.put("data", JSONPatcher.patch(tickerData.get("data"), patch.get("delta_data")));
                 tickerData.put("to_tx", patch.get("to_tx"));
 
-                String jsonString = tickerData.toString();
+                String jsonString = tickerData.get("data").toString();
                 synchronized (tickerPub) {
                     tickerPub.setData(jsonString);
                     tickerPub.notifyAll();
@@ -496,56 +503,50 @@ public class SocketIoImpl implements SocketIo {
     }
 
     @Override
-    public void onCurrencies(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, currenciesPub);
+    public void onBalance(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, balancePub);
         subscriber.start();
     }
 
     @Override
-    public void onBalance(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, balancePub);
+    public void onOpenOrders(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, openOrdersPub);
         subscriber.start();
     }
 
     @Override
-    public void onOpenOrders(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, openOrdersPub);
+    public void onHistoricalOrders(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, historicalOrdersPub);
         subscriber.start();
     }
 
     @Override
-    public void onHistoricalOrders(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, historicalOrdersPub);
+    public void onOperated(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, operatedPub);
         subscriber.start();
     }
 
     @Override
-    public void onOperated(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, operatedPub);
+    public void onOpenBook(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, openBookPub);
         subscriber.start();
     }
 
     @Override
-    public void onOpenBook(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, openBookPub);
+    public void onHistoricalBook(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, historicalBookPub);
         subscriber.start();
     }
 
     @Override
-    public void onHistoricalBook(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, historicalBookPub);
+    public void onCandles(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, candlePub);
         subscriber.start();
     }
 
     @Override
-    public void onCandles(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, candlePub);
-        subscriber.start();
-    }
-
-    @Override
-    public void onTicker(Listener listener) {
-        Subscriber subscriber = new Subscriber(listener, tickerPub);
+    public void onTicker(Callable callable) {
+        Subscriber subscriber = new Subscriber(callable, tickerPub);
         subscriber.start();
     }
 }

@@ -27,4 +27,12 @@ public class Prices {
     public void setBid(List<Candle> bid) {
         this.bid = bid;
     }
+
+    @Override
+    public String toString() {
+        return "Prices{" +
+                "ask=" + ask +
+                ", bid=" + bid +
+                '}';
+    }
 }

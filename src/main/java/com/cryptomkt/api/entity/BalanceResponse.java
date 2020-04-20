@@ -16,4 +16,12 @@ public class BalanceResponse extends Response {
     public void setBalances(List<Balance> balances) {
         this.balances = balances;
     }
+
+    @Override
+    public String toString() {
+        return "BalanceResponse{" +
+                super.toString() +
+                ", balances=" + balances +
+                '}';
+    }
 }

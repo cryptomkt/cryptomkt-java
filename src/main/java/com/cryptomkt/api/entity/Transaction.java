@@ -121,4 +121,20 @@ public class Transaction implements Serializable{
     public void setMemo(String memo) {
         this.memo = memo;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", address='" + address + '\'' +
+                ", memo='" + memo + '\'' +
+                ", date='" + date + '\'' +
+                ", type=" + type +
+                ", amount='" + amount + '\'' +
+                ", balance='" + balance + '\'' +
+                ", feePercent='" + feePercent + '\'' +
+                ", feeAmount='" + feeAmount + '\'' +
+                ", hash='" + hash + '\'' +
+                '}';
+    }
 }

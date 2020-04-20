@@ -44,23 +44,23 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public BookResponse getBook(String market, String type) throws CryptoMarketException {
+    public BooksResponse getBook(String market, String type) throws CryptoMarketException {
         return this.getBook(market, type, 0, 20);
     }
 
     @Override
-    public BookResponse getBook(String market, String type, int page) throws CryptoMarketException {
+    public BooksResponse getBook(String market, String type, int page) throws CryptoMarketException {
         return this.getBook(market, type, page, 20);
     }
 
     @Override
-    public BookResponse getBook(String market, String side, int page, int limit) throws CryptoMarketException {
+    public BooksResponse getBook(String market, String side, int page, int limit) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("market", market);
         payload.put("side", side);
         payload.put("page", Integer.toString(page));
         payload.put("limit", Integer.toString(limit));
-        return httpClient.get("book", payload, BookResponse.class);
+        return httpClient.get("book", payload, BooksResponse.class);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class ClientImpl implements Client {
     public OrderResponse getOrderStatus(String id) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("id", id);
-        return httpClient.post("orders/status", payload, OrderResponse.class);
+        return httpClient.get("orders/status", payload, OrderResponse.class);
     }
 
     @Override
@@ -238,6 +238,7 @@ public class ClientImpl implements Client {
         return httpClient.get("transactions", payload, TransactionsResponse.class);
     }
 
+    /*
     @Override
     public Response notifyDeposit(String amount, String bankAccount) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
@@ -266,6 +267,7 @@ public class ClientImpl implements Client {
         payload.put("voucher", voucher);
         return httpClient.post("deposit", payload, Response.class);
     }
+    */
 
     @Override
     public Response notifyWithdrawal(String amount, String bankAccount) throws CryptoMarketException {
@@ -300,11 +302,11 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public SocketIo getSocket() throws CryptoMarketException {
+    public Socket getSocket() throws CryptoMarketException {
         SocAuthResponse auth =  getAuthSocket();
-        SocketIo socket;
+        Socket socket;
         try {
-            socket = new SocketIoImpl(auth);
+            socket = new SocketImpl(auth);
         } catch (URISyntaxException e) {
             throw new CryptoMarketException();
         }

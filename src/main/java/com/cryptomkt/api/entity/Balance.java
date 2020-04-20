@@ -38,4 +38,13 @@ public class Balance implements Serializable {
     public void setBalance(String balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "Balance{" +
+                "wallet='" + wallet + '\'' +
+                ", available='" + available + '\'' +
+                ", balance='" + balance + '\'' +
+                '}';
+    }
 }

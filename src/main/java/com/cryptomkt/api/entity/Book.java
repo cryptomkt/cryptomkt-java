@@ -39,4 +39,13 @@ public class Book implements Serializable{
     public void setAmount(Double amount) {
         this.amount = amount;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "timestamp=" + timestamp +
+                ", price=" + price +
+                ", amount=" + amount +
+                '}';
+    }
 }

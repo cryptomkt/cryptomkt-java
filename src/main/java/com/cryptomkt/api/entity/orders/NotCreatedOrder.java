@@ -27,4 +27,12 @@ public class NotCreatedOrder implements Serializable {
     public void setOrder(OrderDescription order) {
         this.order = order;
     }
+
+    @Override
+    public String toString() {
+        return "NotCreatedOrder{" +
+                "message='" + message + '\'' +
+                ", order=" + order +
+                '}';
+    }
 }

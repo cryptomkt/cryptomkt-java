@@ -58,4 +58,15 @@ public class BankAccount {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "id='" + id + '\'' +
+                ", bank='" + bank + '\'' +
+                ", description='" + description + '\'' +
+                ", country='" + country + '\'' +
+                ", number='" + number + '\'' +
+                '}';
+    }
 }

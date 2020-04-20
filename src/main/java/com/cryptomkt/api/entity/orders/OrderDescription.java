@@ -60,4 +60,15 @@ public class OrderDescription implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "OrderDescription{" +
+                "amount='" + amount + '\'' +
+                ", market='" + market + '\'' +
+                ", price='" + price + '\'' +
+                ", side='" + side + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

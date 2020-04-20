@@ -4,12 +4,12 @@ import org.json.JSONObject;
 
 public class Subscriber extends Thread{
 
-    private final Listener listener;
+    private final Callable callable;
 
     private final SyncJson syncJson;
 
-    public Subscriber(Listener listener, SyncJson syncJson) {
-        this.listener = listener;
+    public Subscriber(Callable callable, SyncJson syncJson) {
+        this.callable = callable;
         this.syncJson = syncJson;
     }
 
@@ -22,7 +22,7 @@ public class Subscriber extends Thread{
                     syncJson.wait();
                     data = syncJson.getData();
                 }
-                listener.call(data);
+                callable.call(data);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -48,4 +48,13 @@ public class Response implements Serializable {
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
     }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status='" + status + '\'' +
+                ", error='" + error + '\'' +
+                ", pagination=" + pagination +
+                '}';
+    }
 }

@@ -14,4 +14,12 @@ public class AccountResponse extends Response {
     public void setAccount(Account account) {
         this.account = account;
     }
+
+    @Override
+    public String toString() {
+        return "AccountResponse{" +
+                super.toString() +
+                ", account=" + account +
+                '}';
+    }
 }

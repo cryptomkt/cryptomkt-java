@@ -16,4 +16,12 @@ public class TradeResponse extends Response{
     public void setTrades(List<Trade> trades) {
         this.trades = trades;
     }
+
+    @Override
+    public String toString() {
+        return "TradeResponse{" +
+                super.toString() +
+                ", trades=" + trades +
+                '}';
+    }
 }

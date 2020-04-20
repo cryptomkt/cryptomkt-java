@@ -5,18 +5,21 @@ import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import junit.framework.TestCase;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class PublicEndpointsTest extends TestCase{
+public class PublicEndpointsTest {
 
     protected Client client;
 
-    private ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
+    private final ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     protected void printObject(Object object) {
         try {
@@ -27,7 +30,8 @@ public class PublicEndpointsTest extends TestCase{
         }
     }
 
-    protected void setUp() {
+    @Before
+    public void setUp() {
         String apiKey = "";
         String apiSecret = "";
         try {
@@ -41,17 +45,17 @@ public class PublicEndpointsTest extends TestCase{
 
     }
 
+    @Test
     public void testGetMarkets() {
         try {
-            List<Market> markets = client.getMarkets().getMarkets();
+            List<String> markets = client.getMarkets().getMarkets();
             this.printObject(markets);
-
-        } catch (Exception e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
+    @Test
     public void testGetAllTickers() {
         try {
             List<Ticker> tickers = client.getTickers().getTickers();
@@ -59,52 +63,47 @@ public class PublicEndpointsTest extends TestCase{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
+    @Test
     public void testGetOneTicker() {
         try {
             List<Ticker> tickers = client.getTickers("BTCBRL").getTickers();
             this.printObject(tickers);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
-    public void testGetTickerWrongMarket() {
-        try {
-            List<Ticker> tickers = client.getTickers("BBBBB").getTickers();
-            this.printObject(tickers);
+    @Test(expected = CryptoMarketException.class)
+    public void testGetTickerWrongMarket() throws CryptoMarketException {
+        List<Ticker> tickers = client.getTickers("BBBBB").getTickers();
+        this.printObject(tickers);
 
-        } catch (CryptoMarketException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        assertTrue(true);
     }
 
+    @Test
     public void testBook() {
         try {
             List<Book> books = client.getBook("ETHCLP", "buy").getBooks();
             this.printObject(books);
-        } catch (Exception e) {
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
+    @Test
     public void testGetTrades() {
         try {
             List<Trade> trades = client.getTrades("ETHARS").getTrades();
             this.printObject(trades);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
+    @Test
     public void testGetPrices() {
         try {
             Prices prices = client.getPrices("XLMCLP", "240", 1, 5).getPrices();
@@ -112,7 +111,7 @@ public class PublicEndpointsTest extends TestCase{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(true);
+        Assert.assertTrue(true);
     }
 
 }

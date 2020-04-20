@@ -20,7 +20,7 @@ import java.util.*;
 
 public class SocketTest extends TestCase {
     protected Client client;
-    protected SocketIo socket;
+    protected Socket socket;
     private final ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     protected void printObject(Object object) {
@@ -47,7 +47,7 @@ public class SocketTest extends TestCase {
 
     public void testSocket() {
         try {
-            SocketIo socket = client.getSocket();
+            Socket socket = client.getSocket();
             socket.subscribe("ETHCLP");
             socket.onHistoricalBook(System.out::println);
         } catch (CryptoMarketException e) {
@@ -66,7 +66,7 @@ public class SocketTest extends TestCase {
 
     public void testmanyHandlersOneEvent() {
         try {
-            SocketIo socket = client.getSocket();
+            Socket socket = client.getSocket();
             System.out.println(Thread.currentThread().getName());
             socket.onTicker(data -> {
                 System.out.println("hello: " + Thread.currentThread().getName());
@@ -119,7 +119,7 @@ public class SocketTest extends TestCase {
 
     public void testmanyHandlersAllEventsOneToOne() {
         try {
-            SocketIo socket = client.getSocket();
+            Socket socket = client.getSocket();
             System.out.println(Thread.currentThread().getName());
             socket.onBalance(data -> {
                 System.out.println("balance. hello: " + Thread.currentThread().getName());
@@ -164,7 +164,7 @@ public class SocketTest extends TestCase {
 
     public void testBooksListeners() {
         try {
-            SocketIo socket = client.getSocket();
+            Socket socket = client.getSocket();
             System.out.println(Thread.currentThread().getName());
             socket.onOpenBook(data -> {
                 System.out.println("open book. hello: " + Thread.currentThread().getName());
@@ -378,7 +378,7 @@ public class SocketTest extends TestCase {
 
     public void testMakeTestData() {
         try {
-            SocketIo socket = client.getSocket();
+            Socket socket = client.getSocket();
             socket.subscribe("ETHCLP");
             try {
                 for (int i = 0; i <= 500; i++) {

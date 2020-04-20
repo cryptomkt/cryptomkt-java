@@ -49,4 +49,14 @@ public class Pagination implements Serializable {
     public void setNext(int next) {
         this.next = next;
     }
+
+    @Override
+    public String toString() {
+        return "Pagination{" +
+                "previous=" + previous +
+                ", page=" + page +
+                ", next=" + next +
+                ", limit=" + limit +
+                '}';
+    }
 }

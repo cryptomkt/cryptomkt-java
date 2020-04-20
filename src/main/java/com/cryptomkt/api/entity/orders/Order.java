@@ -134,4 +134,22 @@ public class Order implements Serializable {
     public void setExecutedAt(Date executedAt) {
         this.executedAt = executedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", status='" + status + '\'' +
+                ", type='" + type + '\'' +
+                ", side='" + side + '\'' +
+                ", price=" + price +
+                ", amount=" + amount +
+                ", executionPrice=" + executionPrice +
+                ", avgExecutionPrice=" + avgExecutionPrice +
+                ", market='" + market + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", executedAt=" + executedAt +
+                '}';
+    }
 }

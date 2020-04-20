@@ -15,4 +15,12 @@ public class CancelMultiOrderResponse extends Response {
     public void setData(CancelMultiOrderData data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "CancelMultiOrderResponse{" +
+                super.toString() +
+                ", data=" + data +
+                '}';
+    }
 }

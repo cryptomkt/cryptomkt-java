@@ -29,4 +29,12 @@ public class CreatedOrder implements Serializable {
     public void setOriginal(OrderDescription original) {
         this.original = original;
     }
+
+    @Override
+    public String toString() {
+        return "CreatedOrder{" +
+                "data=" + data +
+                ", original=" + original +
+                '}';
+    }
 }

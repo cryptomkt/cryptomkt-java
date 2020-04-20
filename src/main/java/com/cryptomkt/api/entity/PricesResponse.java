@@ -14,4 +14,12 @@ public class PricesResponse extends Response {
     public void setPrices(Prices prices) {
         this.prices = prices;
     }
+
+    @Override
+    public String toString() {
+        return "PricesResponse{" +
+                super.toString() +
+                ", prices=" + prices +
+                '}';
+    }
 }

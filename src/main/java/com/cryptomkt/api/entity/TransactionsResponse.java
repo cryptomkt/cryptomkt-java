@@ -16,4 +16,12 @@ public class TransactionsResponse extends Response {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionsResponse{" +
+                super.toString() +
+                ", transactions=" + transactions +
+                '}';
+    }
 }

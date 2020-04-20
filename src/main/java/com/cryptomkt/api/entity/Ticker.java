@@ -94,4 +94,18 @@ public class Ticker implements Serializable{
     public void setMarket(String market) {
         this.market = market;
     }
+
+    @Override
+    public String toString() {
+        return "Ticker{" +
+                "market='" + market + '\'' +
+                ", timestamp=" + timestamp +
+                ", ask=" + ask +
+                ", high=" + high +
+                ", bid=" + bid +
+                ", low=" + low +
+                ", lastPrice=" + lastPrice +
+                ", volume=" + volume +
+                '}';
+    }
 }

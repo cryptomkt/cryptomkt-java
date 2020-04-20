@@ -28,4 +28,12 @@ public class Rate implements Serializable {
     public void setMarketTaker(String marketTaker) {
         this.marketTaker = marketTaker;
     }
+
+    @Override
+    public String toString() {
+        return "Rate{" +
+                "marketMaker='" + marketMaker + '\'' +
+                ", marketTaker='" + marketTaker + '\'' +
+                '}';
+    }
 }

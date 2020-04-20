@@ -9,4 +9,11 @@ public class CanceledOrder {
     @JsonProperty("order_id")
     private String orderId;
 
+    @Override
+    public String toString() {
+        return "CanceledOrder{" +
+                "data=" + data +
+                ", orderId='" + orderId + '\'' +
+                '}';
+    }
 }

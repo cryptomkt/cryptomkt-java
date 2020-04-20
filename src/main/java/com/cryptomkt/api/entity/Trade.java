@@ -61,4 +61,15 @@ public class Trade implements Serializable{
     public void setMarket(String market) {
         this.market = market;
     }
+
+    @Override
+    public String toString() {
+        return "Trade{" +
+                "market='" + market + '\'' +
+                ", timestamp=" + timestamp +
+                ", marketTaker='" + marketTaker + '\'' +
+                ", price=" + price +
+                ", amount=" + amount +
+                '}';
+    }
 }

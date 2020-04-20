@@ -65,7 +65,7 @@ public class HTTPClientImpl implements HTTPClient {
         }
 
         if (!response.isSuccess()) {
-            throw new CryptoMarketException("Unknown error");
+            throw new CryptoMarketException("unsuccessful response");
         }
 
         return response;
@@ -103,7 +103,7 @@ public class HTTPClientImpl implements HTTPClient {
                 HttpEntity entity = httpResponse.getEntity();
                 return entity != null ? EntityUtils.toString(entity) : null;
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("response status " + status + ": " + httpResponse.getStatusLine().getReasonPhrase());
             }
         };
 

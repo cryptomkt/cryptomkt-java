@@ -51,4 +51,14 @@ public class Account implements Serializable {
     public void setBankAccounts(List<BankAccount> bankAccounts) {
         this.bankAccounts = bankAccounts;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", rate=" + rate +
+                ", bankAccounts=" + bankAccounts +
+                '}';
+    }
 }

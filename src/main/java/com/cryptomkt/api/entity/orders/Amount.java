@@ -38,4 +38,13 @@ public class Amount implements Serializable {
     public void setExecuted(Double executed) {
         this.executed = executed;
     }
+
+    @Override
+    public String toString() {
+        return "Amount{" +
+                "original=" + original +
+                ", remaining=" + remaining +
+                ", executed=" + executed +
+                '}';
+    }
 }

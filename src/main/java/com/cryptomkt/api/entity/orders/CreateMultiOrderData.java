@@ -28,4 +28,12 @@ public class CreateMultiOrderData {
     public void setNotCreated(List<NotCreatedOrder> notCreated) {
         this.notCreated = notCreated;
     }
+
+    @Override
+    public String toString() {
+        return "CreateMultiOrderData{" +
+                "created=" + created +
+                ", notCreated=" + notCreated +
+                '}';
+    }
 }

@@ -5,7 +5,6 @@ import com.cryptomkt.api.entity.*;
 import com.cryptomkt.api.entity.orders.*;
 import com.cryptomkt.api.exception.CryptoMarketException;
 
-import java.io.File;
 import java.util.List;
 
 public interface Client {
@@ -42,14 +41,14 @@ public interface Client {
      *
      * @see #getBook(String, String, int, int)
      */
-    BookResponse getBook(String market, String side) throws  CryptoMarketException;
+    BooksResponse getBook(String market, String side) throws  CryptoMarketException;
 
     /**
      * Get a list of the active orders of a side of a market.
      *
      * @see #getBook(String, String, int, int)
      */
-    BookResponse getBook(String market, String side, int page) throws  CryptoMarketException;
+    BooksResponse getBook(String market, String side, int page) throws  CryptoMarketException;
 
     /**
      * Get a list of the active orders of a side of a market.
@@ -61,7 +60,7 @@ public interface Client {
      * @return a page of all the active orders of a given side of a given market
      * @throws CryptoMarketException
      */
-    BookResponse getBook(String market, String side, int page, int limit) throws  CryptoMarketException;
+    BooksResponse getBook(String market, String side, int page, int limit) throws  CryptoMarketException;
 
     /**
      * Get a list of all trades of a market.
@@ -279,9 +278,11 @@ public interface Client {
      */
     TransactionsResponse getTransactions(String currency, int page, int limit) throws  CryptoMarketException; // transactions
 
+    /*
     Response notifyDeposit(String amount, String bankAccount) throws  CryptoMarketException;  // deposit
     Response notifyDeposit(String amount, String bankAccount, String voucher) throws  CryptoMarketException;  // deposit
     Response notifyDeposit(String amount, String bankAccount, String date, String trakingCode, String voucher) throws  CryptoMarketException;  // deposit
+    */
 
     Response notifyWithdrawal(String amount, String bankAccount) throws  CryptoMarketException; // withdrawal
 
@@ -318,5 +319,5 @@ public interface Client {
      * @return a socket
      * @throws CryptoMarketException
      */
-    SocketIo getSocket() throws CryptoMarketException;
+    Socket getSocket() throws CryptoMarketException;
 }

@@ -28,4 +28,12 @@ public class CancelMultiOrderData {
     public void setNotCanceledOrders(List<NotCanceledOrder> notCanceledOrders) {
         this.notCanceledOrders = notCanceledOrders;
     }
+
+    @Override
+    public String toString() {
+        return "CancelMultiOrderData{" +
+                "canceledOrders=" + canceledOrders +
+                ", notCanceledOrders=" + notCanceledOrders +
+                '}';
+    }
 }

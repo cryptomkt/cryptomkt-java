@@ -7,13 +7,13 @@ import java.util.List;
 public class MarketsResponse extends Response{
 
     @JsonProperty("data")
-    private List<Market> markets;
+    private List<String> markets;
 
-    public List<Market> getMarkets() {
+    public List<String> getMarkets() {
         return markets;
     }
 
-    public void setMarkets(List<Market> markets) {
+    public void setMarkets(List<String> markets) {
         this.markets = markets;
     }
 }

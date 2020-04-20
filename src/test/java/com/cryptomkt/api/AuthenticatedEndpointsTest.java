@@ -9,8 +9,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,29 +49,36 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testCreateOrder() {
         try {
-            Order order = client.createOrder("XLMCLP", "104", "sell", "limit", "1")
+            Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
                     .getOrder();
             this.printObject(order);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
+    }
+
+    public void testOrderStatus() {
+        try {
+            Order order = client.getOrderStatus("O5792153")
+                    .getOrder();
+            this.printObject(order);
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
     }
 
     public void testCancelOrder() {
         try {
-            Order order = client.cancelOrder("03303730")
+            Order order = client.cancelOrder("O5596915")
                     .getOrder();
             this.printObject(order);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testGetActiveOrders() {
@@ -84,7 +89,6 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testExecutedOrders() {
@@ -95,7 +99,6 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testGetBalance() {
@@ -105,7 +108,6 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testGetTransactions() {
@@ -115,22 +117,20 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testCreateMultiOrder() {
         try {
             MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
-                .add("XLMCLP", "limit", "sell", "110", "1")
-                .add("XLMCLP", "limit", "sell", "111", "1")
-                .add("XLMCLP", "limit", "sell", "112", "1")
+                    .add("XLMCLP", "limit", "sell", "110", "1")
+                    .add("XLMCLP", "limit", "sell", "111", "1")
+                    .add("XLMCLP", "limit", "sell", "112", "1")
                     .add("XLMCLP", "limit", "sell", "112", "1000000000");
             CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
             printObject(createMultiOrderResponse);
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
     public void testCancelMultiOrders() {
@@ -146,9 +146,9 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
 
+    /*
     public void testDepositWithVoucher() {
         // get a pdf path
         String path = "/home/ismael/cptmkt/scripts-and-tests/pdf_test.pdf";
@@ -158,6 +158,17 @@ public class AuthenticatedEndpointsTest extends TestCase {
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
-        assertTrue(true);
     }
+    */
+
+    public void testTransfer() {
+        Response result = null;
+        try {
+            result = client.transfer("GDMXNQBJMS3FYI4PFSYCCB4XODQMNMTKPQ5HIKOUWBOWJ2P3CF6WASBE", "1", "XLM", "25767435");
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        System.out.println(result.getStatus());
+    }
+
 }
