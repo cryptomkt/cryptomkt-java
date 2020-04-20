@@ -1,8 +1,10 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.utils.Callable;
+import org.json.JSONObject;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface Socket {
 
@@ -35,67 +37,67 @@ public interface Socket {
     void unsubscribe(List<String> marketPairs);
 
     /**
-     * onBalance is triggered every time an update to the user balance arrives, then calling the call method in the
+     * onBalance is triggered every time an update to the user balance arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onBalance(Callable callable);
+    void onBalance(Consumer<JSONObject> consumer);
 
     /**
-     * onOpenOrders is triggered every time an update to the user open orders arrives, then calling the call method in the
+     * onOpenOrders is triggered every time an update to the user open orders arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onOpenOrders(Callable callable);
+    void onOpenOrders(Consumer<JSONObject> consumer);
 
     /**
-     * onHistoricalOrders is triggered every time an update to the user historicalOrders arrives, then calling the call method in the
+     * onHistoricalOrders is triggered every time an update to the user historicalOrders arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onHistoricalOrders(Callable callable);
+    void onHistoricalOrders(Consumer<JSONObject> consumer);
 
     /**
-     * onOperated is triggered every time an update to the user operated trades arrives, then calling the call method in the
+     * onOperated is triggered every time an update to the user operated trades arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onOperated(Callable callable);
+    void onOperated(Consumer<JSONObject> consumer);
 
     /**
-     * onOpenBook is triggered every time an update to a subscribed market arrives, then calling the call method in the
+     * onOpenBook is triggered every time an update to a subscribed market arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onOpenBook(Callable callable);
+    void onOpenBook(Consumer<JSONObject> consumer);
 
     /**
-     * onHistoricalBook is triggered every time an update to the historical open book arrives, then calling the call method in the
+     * onHistoricalBook is triggered every time an update to the historical open book arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onHistoricalBook(Callable callable);
+    void onHistoricalBook(Consumer<JSONObject> consumer);
 
     /**
-     * onCandles is triggered every time an update to a subscribed market arrives, then calling the call method in the
+     * onCandles is triggered every time an update to a subscribed market arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable a class implementing a call method
+     * @param consumer a class implementing a call method
      */
-    void onCandles(Callable callable);
+    void onCandles(Consumer<JSONObject> consumer);
 
     /**
-     * onTicker is triggered every time an update from the markets arrives, then calling the call method in the
+     * onTicker is triggered every time an update from the markets arrives, then calling the accept method in the
      * provided class. Is a non blocking method, supports lambda notation.
      *
-     * @param callable
+     * @param consumer
      */
-    void onTicker(Callable callable);
+    void onTicker(Consumer<JSONObject> consumer);
 }
 

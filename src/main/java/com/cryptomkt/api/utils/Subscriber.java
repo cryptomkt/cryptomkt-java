@@ -2,14 +2,16 @@ package com.cryptomkt.api.utils;
 
 import org.json.JSONObject;
 
+import java.util.function.Consumer;
+
 public class Subscriber extends Thread{
 
-    private final Callable callable;
+    private final Consumer<JSONObject> consumer;
 
     private final SyncJson syncJson;
 
-    public Subscriber(Callable callable, SyncJson syncJson) {
-        this.callable = callable;
+    public Subscriber(Consumer<JSONObject> callable, SyncJson syncJson) {
+        this.consumer = callable;
         this.syncJson = syncJson;
     }
 
@@ -22,7 +24,7 @@ public class Subscriber extends Thread{
                     syncJson.wait();
                     data = syncJson.getData();
                 }
-                callable.call(data);
+                consumer.accept(data);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

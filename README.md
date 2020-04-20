@@ -35,9 +35,7 @@
 
 
 ## Installation
-
-`npm install cryptomarket`
-
+#TODO (maven?)(gradle?)
 ## Quick Start
 
 The first thing you'll need to do is [sign up for cryptomkt](https://www.cryptomkt.com).
@@ -72,52 +70,79 @@ Each API method returns an ``object`` representing the JSON response from the AP
 ### Public endpoints
 
 #### Using the functions
-Data from cryptomarket usually has useful metadata associated to it, data as 
-the success of the operation, the page number from the query, and the number 
-of entries per page.
+Every call to an endpoint of cryptomarket is a response type, holding the status of the response,
+the requested data, a possible error associated to the request, and the pagination of the query.
+The status and the possible error are self explanatory. A success status is a request that gives the 
+requested data. and if there is an error, the error would said what it is.
+The pagination of the request gives information for getting a big query in more than one call
 
-Every call to an endpoint of cryptomarket is an instance of a class that 
-inherit from the Response class. The Response class provides this methods for 
-getting the status and the pagination (getStatus() and getPagination()).
-The actual data requested is accessed via a getter method over the response, 
-depending on which class is, how is called the endpoint.
-
-The following code examples show the way to get the requested data. 
+The following code example show an usage of pagination
 
 ```java
-class Example {
-    Client client = new ClientImpl(apiKey, apiSecret);
-
-    void printPrices() {
-        try {
-            PricesResponse response = client.getPrices("XLMCLP", "240", 1, 5);
-            System.out.println("status: "+ response.getStatus());
-            if (response.isSuccess()) {
-                Prices prices = response.getPrices();
-                List<Candle> askCandles = prices.getAsk();
-                for (Candle candle: askCandles) {
-                    System.out.println("date "+candle.getCandleDate()+ " - open price "+candle.getOpenPrice());
-                }
+try {
+    Integer next = 0;
+    do {
+        PricesResponse response = client.getPrices("XLMCLP", "44640", next, 5);
+        System.out.println("status: " + response.getStatus());
+        if (response.isSuccess()) {
+            System.out.println(response.getPagination());
+            next = response.getPagination().getNext();
+            Prices prices = response.getPrices();
+            for (Candle candle: prices.getAsk()) {
+                System.out.println(candle);
             }
-        } catch (CryptoMarketException e) {
-            e.printStackTrace();
         }
-    }
+    } while (next != 0);
+} catch(CryptoMarketException e){
+    e.printStackTrace();
 }
-Example example = new Example();
-example.printPrices();
 ```
-##### Expected output
-```javascript
-//  calling printMarket() from the example gives (depending on the )
 
+<details>
+ <summary>Expected Output</summary>
+ 
+```
 status: success
-date 2020-02-14 16:00 - open price 66.25
-date 2020-02-14 12:00 - open price 67.75
-date 2020-02-14 08:00 - open price 65.35
-date 2020-02-14 04:00 - open price 66.3
-date 2020-02-14 00:00 - open price 67
+Pagination{previous=0, page=0, next=1, limit=5}
+Candle{id='78625', candleDate='2020-02-01 00:00', openPrice='48.85', HighPrice='70', ClosePrice='68.4', LowPrice='47.9', volumeSum='47.9', tickCount='14617'}
+Candle{id='78624', candleDate='2020-01-01 00:00', openPrice='35.45', HighPrice='51.15', ClosePrice='48.9', LowPrice='33.55', volumeSum='33.55', tickCount='22055'}
+Candle{id='78623', candleDate='2019-12-01 00:00', openPrice='48.4', HighPrice='48.6', ClosePrice='35.4', LowPrice='32.65', volumeSum='32.65', tickCount='17617'}
+Candle{id='78622', candleDate='2019-11-01 00:00', openPrice='48.25', HighPrice='66.25', ClosePrice='48.45', LowPrice='45', volumeSum='45', tickCount='19425'}
+Candle{id='78621', candleDate='2019-10-01 00:00', openPrice='47.05', HighPrice='51', ClosePrice='48.45', LowPrice='42.05', volumeSum='42.05', tickCount='23509'}
+status: success
+Pagination{previous=0, page=1, next=2, limit=5}
+Candle{id='78620', candleDate='2019-09-01 00:00', openPrice='45.9', HighPrice='65.05', ClosePrice='46.85', LowPrice='40.1', volumeSum='40.1', tickCount='23412'}
+Candle{id='78619', candleDate='2019-08-01 00:00', openPrice='59.2', HighPrice='60.85', ClosePrice='45.9', LowPrice='43.8', volumeSum='43.8', tickCount='13216'}
+Candle{id='78618', candleDate='2019-07-01 00:00', openPrice='74.2', HighPrice='76.75', ClosePrice='59.25', LowPrice='52.9', volumeSum='52.9', tickCount='33189'}
+Candle{id='78617', candleDate='2019-06-01 00:00', openPrice='97.8', HighPrice='100', ClosePrice='73.85', LowPrice='72.6', volumeSum='72.6', tickCount='27806'}
+Candle{id='78616', candleDate='2019-05-01 00:00', openPrice='68.35', HighPrice='112.85', ClosePrice='97.65', LowPrice='58.2', volumeSum='58.2', tickCount='51310'}
+status: success
+Pagination{previous=1, page=2, next=3, limit=5}
+Candle{id='78615', candleDate='2019-04-01 00:00', openPrice='71.95', HighPrice='90', ClosePrice='68.4', LowPrice='63', volumeSum='63', tickCount='41274'}
+Candle{id='78614', candleDate='2019-03-01 00:00', openPrice='56.45', HighPrice='80', ClosePrice='72', LowPrice='52.3', volumeSum='52.3', tickCount='41335'}
+Candle{id='78613', candleDate='2019-02-01 00:00', openPrice='55.4', HighPrice='64.25', ClosePrice='56.5', LowPrice='47.4', volumeSum='47.4', tickCount='40716'}
+Candle{id='78612', candleDate='2019-01-01 00:00', openPrice='80.75', HighPrice='89.7', ClosePrice='55.4', LowPrice='53.5', volumeSum='53.5', tickCount='35194'}
+Candle{id='78611', candleDate='2018-12-01 00:00', openPrice='109.5', HighPrice='116.65', ClosePrice='80.55', LowPrice='63', volumeSum='63', tickCount='32701'}
+status: success
+Pagination{previous=2, page=3, next=4, limit=5}
+Candle{id='78610', candleDate='2018-11-01 00:00', openPrice='152.5', HighPrice='192', ClosePrice='109.55', LowPrice='88.55', volumeSum='88.55', tickCount='44260'}
+Candle{id='78609', candleDate='2018-10-01 00:00', openPrice='174.75', HighPrice='176.5', ClosePrice='152.95', LowPrice='135', volumeSum='135', tickCount='12539'}
+Candle{id='78608', candleDate='2018-09-01 00:00', openPrice='152.7', HighPrice='189', ClosePrice='174.7', LowPrice='130', volumeSum='130', tickCount='15744'}
+Candle{id='78607', candleDate='2018-08-01 00:00', openPrice='184.85', HighPrice='189', ClosePrice='152.7', LowPrice='130.5', volumeSum='130.5', tickCount='24708'}
+Candle{id='78606', candleDate='2018-07-01 00:00', openPrice='129.3', HighPrice='225', ClosePrice='185.45', LowPrice='121.1', volumeSum='121.1', tickCount='28120'}
+status: success
+Pagination{previous=3, page=4, next=5, limit=5}
+Candle{id='78605', candleDate='2018-06-01 00:00', openPrice='186.6', HighPrice='197', ClosePrice='130.25', LowPrice='111.55', volumeSum='111.55', tickCount='41449'}
+Candle{id='78604', candleDate='2018-05-01 00:00', openPrice='800', HighPrice='800', ClosePrice='189.5', LowPrice='150', volumeSum='150', tickCount='2158'}
+Candle{id='78603', candleDate='2018-04-01 00:00', openPrice='124', HighPrice='148', ClosePrice='124', LowPrice='91', volumeSum='91', tickCount='1248'}
+Candle{id='78602', candleDate='2018-03-01 00:00', openPrice='208', HighPrice='249', ClosePrice='123', LowPrice='69', volumeSum='69', tickCount='8491'}
+Candle{id='78601', candleDate='2018-02-01 00:00', openPrice='5000', HighPrice='5000', ClosePrice='210', LowPrice='199', volumeSum='199', tickCount='6373'}
+status: success
+Pagination{previous=4, page=5, next=0, limit=5}
 ````
+
+</details>
+
 [(top &uarr;)](#cryptomkt-java)
 
 #### Listing available markets
@@ -278,8 +303,9 @@ Account{
 [(top &uarr;)](#cryptomkt-java)
 
 #### Create an order
-&$TODO$& explicación de los diferentes tipos de órdenes. 
 ```java
+//  the 'side' argument can be either "sell" or "buy", also the 'type' argument can be "limit", "stop-limit" or "market". 
+//  If you want to execute an 'stop-limit' order you need to specify the "limit" amount.
 try {
     Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
             .getOrder();
@@ -648,6 +674,40 @@ try {
 [(top &uarr;)](#cryptomkt-java)
 
 ### Receive socket events
+All socket events receive a consumer to handle the event. this consumers must 
+implement the accept method for a JSONObject argument. There are many ways to
+implement the consumers. some examples are given in the following code. 
+
+### Consumer examples
+```java
+// a class consumer of the event data
+class  CandleConsumer implements Consumer<JSONObject> {
+    @Override
+    public void accept(JSONObject jsonObject) {
+        System.out.println("class consumer "+jsonObject);
+    }
+}
+socket.onCandles(new CandleConsumer<>());
+
+// a lambda expression consumer for the event data
+socket.onCandles(data -> System.out.println("lambda consumer "+data));
+
+//and the method reference consumer
+socket.onCandles(System.out::println);
+
+socket.subscribe("ETHARS");
+```
+<details>
+ <summary>Expected Output</summary>
+ 
+```
+class consumer {"ETHARS":{"buy":{"10080":[{"date":"17/02/2020 00:00:00",...
+{"ETHARS":{"buy":{"10080":[{"date":"17/02/2020 00:00:00",...
+lambda consumer {"ETHARS":{"buy":{"10080":[{"date":"17/02/2020 00:00:00",...
+```
+</details>
+
+[(top &uarr;)](#cryptomkt-java)
 
 #### Market subscription
 ```java

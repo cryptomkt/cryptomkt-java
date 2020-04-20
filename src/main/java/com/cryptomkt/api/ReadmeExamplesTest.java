@@ -7,6 +7,7 @@ import com.cryptomkt.api.entity.orders.CreateMultiOrderResponse;
 import com.cryptomkt.api.entity.orders.MultiOrderRequest;
 import com.cryptomkt.api.entity.orders.Order;
 import com.cryptomkt.api.exception.CryptoMarketException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ReadmeExamplesTest {
 
@@ -34,26 +36,24 @@ public class ReadmeExamplesTest {
     }
 
     @Test
-    public void testFirstExample() {
-        class Example {
-            void printPrices() {
-                try {
-                    PricesResponse response = client.getPrices("XLMCLP", "240", 1, 5);
-                    System.out.println("status: "+ response.getStatus());
-                    if (response.isSuccess()) {
-                        Prices prices = response.getPrices();
-                        List<Candle> askCandles = prices.getAsk();
-                        for (Candle candle: askCandles) {
-                            System.out.println("date "+candle.getCandleDate()+ " - open price "+candle.getOpenPrice());
-                        }
+    public void testPaginationExample() {
+        try {
+            Integer next = 0;
+            do {
+                PricesResponse response = client.getPrices("XLMCLP", "44640", next, 5);
+                System.out.println("status: " + response.getStatus());
+                if (response.isSuccess()) {
+                    System.out.println(response.getPagination());
+                    next = response.getPagination().getNext();
+                    Prices prices = response.getPrices();
+                    for (Candle candle: prices.getAsk()) {
+                        System.out.println(candle);
                     }
-                } catch (CryptoMarketException e) {
-                    e.printStackTrace();
                 }
-            }
+            } while (next != 0);
+        } catch(CryptoMarketException e){
+            e.printStackTrace();
         }
-        Example example = new Example();
-        example.printPrices();
     }
 
 
@@ -210,6 +210,35 @@ public class ReadmeExamplesTest {
             List<Balance> balance = client.getBalance().getBalances();
             System.out.println(balance);
         } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSocketHandlersExample() {
+        Socket socket = null;
+        try {
+            socket = client.getSocket();
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+        assert socket != null;
+        class  CandleConsumer implements Consumer<JSONObject> {
+            @Override
+            public void accept(JSONObject jsonObject) {
+                System.out.println("class consumer "+jsonObject);
+            }
+        }
+        // a class consumer of the event data
+        socket.onCandles(new CandleConsumer());
+        // a lambda expression consumer for the event data
+        socket.onCandles(data -> System.out.println("lambda consumer "+data));
+        //and the method reference consumer
+        socket.onCandles(System.out::println);
+        socket.subscribe("ETHARS");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

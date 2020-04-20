@@ -124,9 +124,6 @@ public class SocketTest extends TestCase {
             socket.onBalance(data -> {
                 System.out.println("balance. hello: " + Thread.currentThread().getName());
                 System.out.println(data);});
-            socket.onCurrencies(data -> {
-                System.out.println("currencies. hello: " + Thread.currentThread().getName());
-                System.out.println(data);});
             socket.onOpenBook(data -> {
                 System.out.println("open book. hello: " + Thread.currentThread().getName());
                 System.out.println(data);});

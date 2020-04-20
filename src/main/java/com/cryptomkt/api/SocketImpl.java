@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -503,50 +504,50 @@ public class SocketImpl implements Socket {
     }
 
     @Override
-    public void onBalance(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, balancePub);
+    public void onBalance(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, balancePub);
         subscriber.start();
     }
 
     @Override
-    public void onOpenOrders(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, openOrdersPub);
+    public void onOpenOrders(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, openOrdersPub);
         subscriber.start();
     }
 
     @Override
-    public void onHistoricalOrders(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, historicalOrdersPub);
+    public void onHistoricalOrders(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, historicalOrdersPub);
         subscriber.start();
     }
 
     @Override
-    public void onOperated(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, operatedPub);
+    public void onOperated(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, operatedPub);
         subscriber.start();
     }
 
     @Override
-    public void onOpenBook(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, openBookPub);
+    public void onOpenBook(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, openBookPub);
         subscriber.start();
     }
 
     @Override
-    public void onHistoricalBook(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, historicalBookPub);
+    public void onHistoricalBook(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, historicalBookPub);
         subscriber.start();
     }
 
     @Override
-    public void onCandles(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, candlePub);
+    public void onCandles(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, candlePub);
         subscriber.start();
     }
 
     @Override
-    public void onTicker(Callable callable) {
-        Subscriber subscriber = new Subscriber(callable, tickerPub);
+    public void onTicker(Consumer<JSONObject> consumer) {
+        Subscriber subscriber = new Subscriber(consumer, tickerPub);
         subscriber.start();
     }
 }
