@@ -38,6 +38,8 @@ hs_err_pid*
 .settings/
 target/
 
+.idea
+
 *.versionsBackup
 
 # End of https://www.gitignore.io/api/java,visualstudiocode
