@@ -46,3 +46,4 @@ target/
 
 # Intellij Idea
 .idea/
+.cryptomarket.iml
