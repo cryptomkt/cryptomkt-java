@@ -16,4 +16,12 @@ public class TickersResponse extends Response{
     public void setTickers(List<Ticker> tickers) {
         this.tickers = tickers;
     }
+
+    @Override
+    public String toString() {
+        return "TickersResponse{" +
+                super.toString() +
+                ", tickers=" + tickers +
+                '}';
+    }
 }

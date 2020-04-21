@@ -1,4 +1,4 @@
-package com.cryptomkt.api.entity;
+package com.cryptomkt.api.entity.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,6 +15,9 @@ public class Order implements Serializable {
 
     @JsonProperty("type")
     private String type;
+
+    @JsonProperty("side")
+    private String side;
 
     @JsonProperty("price")
     private Double price;
@@ -63,6 +66,10 @@ public class Order implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getSide() { return side; }
+
+    public void setSide(String side) { this.side = side; }
 
     public Double getPrice() {
         return price;
@@ -126,5 +133,23 @@ public class Order implements Serializable {
 
     public void setExecutedAt(Date executedAt) {
         this.executedAt = executedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", status='" + status + '\'' +
+                ", type='" + type + '\'' +
+                ", side='" + side + '\'' +
+                ", price=" + price +
+                ", amount=" + amount +
+                ", executionPrice=" + executionPrice +
+                ", avgExecutionPrice=" + avgExecutionPrice +
+                ", market='" + market + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", executedAt=" + executedAt +
+                '}';
     }
 }

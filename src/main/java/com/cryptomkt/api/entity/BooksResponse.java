@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class BookResponse extends Response{
+public class BooksResponse extends Response{
 
     @JsonProperty("data")
     private List<Book> books;

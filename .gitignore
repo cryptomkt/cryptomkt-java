@@ -43,3 +43,6 @@ target/
 *.versionsBackup
 
 # End of https://www.gitignore.io/api/java,visualstudiocode
+
+# Intellij Idea
+.idea/
