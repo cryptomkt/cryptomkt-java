@@ -1,41 +1,58 @@
 # cryptomkt-java
 
-- [Installation](#Installation)
-- [Quick Start](#Quick-Start)
-- [API Key](#API-Key)
-- [Making API Calls](#Making-API-Calls)
-  - [Public Endpoints](#Using-the-functions)
-    - [Listing available markets](#Listing-available-markets)
-    - [Obtain Book](#Obtain-Book)
-    - [Obtain ticker info](#Obtain-ticker-info)
-  - [Authenticated endpoints](#Authenticated-endpoints)
-    - [Get account info](#Get-account-info)
-    - [Create an order](#Create-an-order)
-    - [Create multiple orders](#Create-multiple-orders)
-    - [Obtain active orders](#Obtain-active-orders)
-    - [Cancel an order](#Cancel-an-order)
-    - [Cancel multiple orders](#Cancel-multiple-orders)
-    - [Make a transfer](#Make-a-transfer)
-    - [Obtain executed orders](#Obtain-executed-orders)
-    - [Obtain order status](#Obtain-order-status)
-    - [Obtain account balance](#Obtain-account-balance)
-- [Using socket](#Using-socket)
-  - [Get socket instance](#Get-socket-instance)
-  - [Receive socket events](#Receive-socket-events)
-    - [Market subscription](#Market-subscription)
-    - [Unsubscribe from market](#Unsubscribe-from-market)
-    - [Receive open book info](#Receive-open-book-info)
-    - [Receive Historical book info](#Receive-Historical-book-info)
-    - [Receive candles info](#Receive-candles-info)
-    - [Receive ticker info](#Receive-ticker-info)
-    - [Receive balance info](#Receive-balance-info)
-    - [Receive user orders info](#Receive-user-orders-info)
-    - [Receive historical user orders info](#Receive-historical-user-orders-info)
-    - [Receive User´s operated volume](#Receive-Users-operated-volume)
+- [cryptomkt-java](#cryptomkt-java)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [API Key](#api-key)
+  - [Making API Calls](#making-api-calls)
+    - [Public endpoints](#public-endpoints)
+      - [Using the functions](#using-the-functions)
+      - [Listing available markets](#listing-available-markets)
+      - [Obtain Book](#obtain-book)
+      - [Obtain ticker info](#obtain-ticker-info)
+      - [Obtain Trades](#obtain-trades)
+    - [Authenticated endpoints](#authenticated-endpoints)
+      - [Get account info](#get-account-info)
+      - [Create an order](#create-an-order)
+      - [Create multiple orders](#create-multiple-orders)
+      - [Obtain active orders](#obtain-active-orders)
+      - [Cancel an order](#cancel-an-order)
+      - [Cancel multiple orders](#cancel-multiple-orders)
+      - [Make a transfer](#make-a-transfer)
+      - [Obtain executed orders](#obtain-executed-orders)
+      - [Obtain order status](#obtain-order-status)
+      - [Obtain account balance](#obtain-account-balance)
+  - [Using socket](#using-socket)
+    - [Get socket instance](#get-socket-instance)
+    - [Receive socket events](#receive-socket-events)
+    - [Consumer examples](#consumer-examples)
+      - [Market subscription](#market-subscription)
+      - [Unsubscribe from market](#unsubscribe-from-market)
+      - [Receive open book info](#receive-open-book-info)
+      - [Receive Historical book info](#receive-historical-book-info)
+      - [Receive candles info](#receive-candles-info)
+      - [Receive ticker info](#receive-ticker-info)
+      - [Receive balance info](#receive-balance-info)
+      - [Receive user orders info](#receive-user-orders-info)
+      - [Receive historical user orders info](#receive-historical-user-orders-info)
+      - [Receive User´s operated volume](#receive-user%c2%b4s-operated-volume)
 
 
 ## Installation
-#TODO (maven?)(gradle?)
+Maven
+```
+<dependency>
+    <groupId>com.cryptomkt.api</groupId>
+    <artifactId>cryptomarket</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
+
+Gradle
+```
+compile group: 'com.cryptomkt.api', name: 'cryptomarket', version: '1.0.4'
+```
+
 ## Quick Start
 
 The first thing you'll need to do is [sign up for cryptomkt](https://www.cryptomkt.com).
