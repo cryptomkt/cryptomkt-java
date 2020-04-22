@@ -165,7 +165,7 @@ Pagination{previous=4, page=5, next=0, limit=5}
 #### Listing available markets
 ```java
 try {
-    List<Market> markets = client.getMarkets().getMarkets();
+    List<String> markets = client.getMarkets().getMarkets();
     System.out.println(markets);
 } catch (CryptoMarketException e) {
     e.printStackTrace();
@@ -359,16 +359,18 @@ Order{
 
 
 #### Create multiple orders
-```javascript
-//  Receives object array that contains multiple orders. "market", "type", "side" and "amount" are mandatory.
-//  Example: [{"amount": 1, "market": "XLMCLP", "price": 50.5, "type": "limit", "side": "sell"}, {Order2},...]
-
-client.createMultiOrders(object, (err, output) => {
-   if(err){
-   console.log('error');
-   }
-   console.log(output);
-});
+```java
+try {
+    MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
+            .add("XLMCLP", "limit", "sell", "150", "1")
+            .add("XLMCLP", "limit", "sell", "151", "1")
+            .add("XLMCLP", "limit", "sell", "152", "1")
+            .add("XLMCLP", "limit", "sell", "353", "1000000000");
+    CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
+    System.out.println(createMultiOrderResponse);
+} catch (CryptoMarketException e) {
+    e.printStackTrace();
+}
 ```
 <details>
  <summary>Expected Output</summary>
@@ -901,7 +903,7 @@ lastSellPrice: 227220
 [(top &uarr;)](#cryptomkt-java)
 
 #### Receive ticker info
-```
+```java
 socket.onTicker(System.out::println);
 try {
     Thread.sleep(10000);
@@ -1023,7 +1025,7 @@ try {
 
 #### Receive historical user orders info
 
-```
+```java
 socket.onHistoricalOrders(System.out::println);
 try {
     Thread.sleep(10000);
