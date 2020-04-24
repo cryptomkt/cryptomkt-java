@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
-public class Response implements Serializable {
+public class Response {
 
     @JsonProperty("status")
     private String status;

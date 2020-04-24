@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class Balance implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("wallet")
     private String wallet;

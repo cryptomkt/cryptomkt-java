@@ -6,7 +6,8 @@ import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthenticatedEndpointsTest extends TestCase {
+public class AuthenticatedEndpointsTest {
 
     protected Client client;
     private ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -28,6 +29,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Before
     protected void setUp() {
         String apiKey = "";
         String apiSecret = "";
@@ -42,6 +44,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
 
     }
 
+    @Test
     public void testGetAccount() {
         try {
             Account account = client.getAccount().getAccount();
@@ -51,6 +54,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testCreateOrder() {
         try {
             Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
@@ -61,6 +65,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testOrderStatus() {
         try {
             Order order = client.getOrderStatus("O5792153")
@@ -71,6 +76,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testCancelOrder() {
         try {
             Order order = client.cancelOrder("O5596915")
@@ -81,6 +87,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetActiveOrders() {
         try {
             List<Order> orders = client.getActiveOrders("XLMCLP")
@@ -91,6 +98,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testExecutedOrders() {
         try {
             List<Order> orders = client.getExecutedOrders("XLMCLP")
@@ -101,6 +109,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetBalance() {
         try {
             List<Balance> balance = client.getBalance().getBalances();
@@ -110,6 +119,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetTransactions() {
         try {
             List<Transaction> transactions = client.getTransactions("XLM").getTransactions();
@@ -119,6 +129,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testCreateMultiOrder() {
         try {
             MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
@@ -133,6 +144,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
         }
     }
 
+    @Test
     public void testCancelMultiOrders() {
         try {
             List<Order> orders = client.getActiveOrders("XLMCLP").getOrders();
@@ -161,6 +173,7 @@ public class AuthenticatedEndpointsTest extends TestCase {
     }
     */
 
+    @Test
     public void testTransfer() {
         Response result = null;
         try {

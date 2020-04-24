@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Ticker implements Serializable{
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("high")
     private double high;

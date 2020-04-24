@@ -2,7 +2,10 @@ package com.cryptomkt.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BankAccount {
+import java.io.Serializable;
+
+public class BankAccount implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("id")
     private String id;

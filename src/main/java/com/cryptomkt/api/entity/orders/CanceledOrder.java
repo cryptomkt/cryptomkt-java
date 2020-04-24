@@ -2,7 +2,10 @@ package com.cryptomkt.api.entity.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CanceledOrder {
+import java.io.Serializable;
+
+public class CanceledOrder implements Serializable {
+    private static final long serialVersionUID = 1;
     @JsonProperty("data")
     private Order data;
 

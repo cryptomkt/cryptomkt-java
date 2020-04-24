@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Account implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("name")
     private String name;

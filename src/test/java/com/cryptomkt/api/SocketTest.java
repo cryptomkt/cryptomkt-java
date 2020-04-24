@@ -399,8 +399,9 @@ public class SocketTest extends TestCase {
             JSONObject data = new JSONObject(jsonString);
             List<String> keys = new ArrayList<>();
             System.out.println("all keys");
-            for (Iterator<String> it = data.keys(); it.hasNext(); ) {
-                String key = it.next();
+            Iterator<?> iter = data.keys();
+            while (iter.hasNext()) {
+                String key = (String) iter.next();
                 System.out.println(key);
                 if (!Objects.equals(key, "origin")) {
                         keys.add(key);

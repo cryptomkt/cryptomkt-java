@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class Amount implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("original")
     private Double original;

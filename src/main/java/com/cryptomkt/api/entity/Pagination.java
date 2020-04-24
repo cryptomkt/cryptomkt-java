@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class Pagination implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("previous")
     private int previous;

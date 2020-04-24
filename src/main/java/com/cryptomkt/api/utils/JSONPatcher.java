@@ -36,8 +36,9 @@ public class JSONPatcher {
     }
 
     private static JSONObject patchObject(JSONObject jsonObject, JSONObject delta) throws JSONException, JSONPatchException {
-        for (Iterator<String> it = delta.keys(); it.hasNext(); ) {
-            String key = it.next();
+        Iterator<?> iter = delta.keys();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
             if (!jsonObject.has(key)) {
                 jsonObject.put(key, JSONObject.NULL);
             }
@@ -88,10 +89,9 @@ public class JSONPatcher {
         List<IntPair> moveList = new ArrayList<>();
         List<Integer> patchList = new ArrayList<>();
         List<Integer> valuePatchList = new ArrayList<>();
-
-        for (Iterator<String> it = delta.keys(); it.hasNext(); ) {
-            String key = it.next();
-
+        Iterator<?> iter = delta.keys();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
             if (key.charAt(0) == '_' && key.charAt(1) != 't') { // is old index
                 int index = Integer.parseInt(key.substring(1));
                 Object innerDelta = delta.get(key);

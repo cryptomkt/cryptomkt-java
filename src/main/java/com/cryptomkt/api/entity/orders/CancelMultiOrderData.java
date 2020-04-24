@@ -3,9 +3,11 @@ package com.cryptomkt.api.entity.orders;
 import com.cryptomkt.api.entity.Response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CancelMultiOrderData {
+public class CancelMultiOrderData implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("canceled")
     private List<CanceledOrder> canceledOrders;

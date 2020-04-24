@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class CreatedOrder implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("data")
     private Order data;

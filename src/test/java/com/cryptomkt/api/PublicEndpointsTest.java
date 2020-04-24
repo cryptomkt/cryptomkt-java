@@ -5,7 +5,6 @@ import com.cryptomkt.api.exception.CryptoMarketException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -111,7 +110,6 @@ public class PublicEndpointsTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Assert.assertTrue(true);
     }
 
 }

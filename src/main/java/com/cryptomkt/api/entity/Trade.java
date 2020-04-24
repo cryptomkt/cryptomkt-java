@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Trade implements Serializable{
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("market_taker")
     private String marketTaker;

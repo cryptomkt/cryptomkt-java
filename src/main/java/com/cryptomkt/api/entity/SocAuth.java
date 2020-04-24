@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
-public class SocAuth implements Serializable {
+public class SocAuth {
 
     @JsonProperty("socid")
     private String socid;

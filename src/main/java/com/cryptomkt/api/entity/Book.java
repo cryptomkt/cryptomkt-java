@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Book implements Serializable{
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("timestamp")
     private Date timestamp;

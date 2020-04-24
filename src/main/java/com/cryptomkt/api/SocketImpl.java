@@ -447,8 +447,9 @@ public class SocketImpl implements Socket {
     private JSONObject balanceDataToSend() throws JSONException {
         JSONObject balanceD = balanceData.getJSONObject("data");
         JSONObject dataToSend = new JSONObject(balanceD.toString());
-        for (Iterator<String> it = balanceD.keys(); it.hasNext(); ) {
-            String key = it.next();
+        Iterator<?> iter = balanceD.keys();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
             try {
                 String currency = balanceD.getJSONObject(key).getString("currency");
                 JSONObject wallet = dataToSend.getJSONObject(key);

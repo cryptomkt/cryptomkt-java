@@ -2,9 +2,11 @@ package com.cryptomkt.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Prices {
+public class Prices implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("ask")
     private List<Candle> ask;
