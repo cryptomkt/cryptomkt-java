@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class Pagination implements Serializable {
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("previous")
     private int previous;
@@ -48,5 +49,15 @@ public class Pagination implements Serializable {
 
     public void setNext(int next) {
         this.next = next;
+    }
+
+    @Override
+    public String toString() {
+        return "Pagination{" +
+                "previous=" + previous +
+                ", page=" + page +
+                ", next=" + next +
+                ", limit=" + limit +
+                '}';
     }
 }

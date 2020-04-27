@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
-public class Response implements Serializable {
+public class Response {
 
     @JsonProperty("status")
     private String status;
 
-    @JsonProperty("error")
-    private String error;
+    @JsonProperty("message")
+    private String message;
 
     @JsonProperty("pagination")
     private Pagination pagination;
@@ -23,14 +23,6 @@ public class Response implements Serializable {
 
     public void setSuccess(String status) {
         this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
     public String getStatus() {
@@ -47,5 +39,22 @@ public class Response implements Serializable {
 
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", pagination=" + pagination +
+                '}';
     }
 }

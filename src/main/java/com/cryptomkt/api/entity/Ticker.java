@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Ticker implements Serializable{
+    private static final long serialVersionUID = 1;
 
     @JsonProperty("high")
     private double high;
@@ -93,5 +94,19 @@ public class Ticker implements Serializable{
 
     public void setMarket(String market) {
         this.market = market;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticker{" +
+                "market='" + market + '\'' +
+                ", timestamp=" + timestamp +
+                ", ask=" + ask +
+                ", high=" + high +
+                ", bid=" + bid +
+                ", low=" + low +
+                ", lastPrice=" + lastPrice +
+                ", volume=" + volume +
+                '}';
     }
 }
