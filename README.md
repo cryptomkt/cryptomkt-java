@@ -1,4 +1,6 @@
 # cryptomkt-java
+<!--- badges -->
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.cryptomkt.api/cryptomarket/badge.svg)](https://maven-badges.herokuapp.com/com.cryptomkt.api/cryptomarket)
 
 - [cryptomkt-java](#cryptomkt-java)
   - [Installation](#installation)
@@ -13,8 +15,8 @@
       - [Obtain Trades](#obtain-trades)
     - [Authenticated endpoints](#authenticated-endpoints)
       - [Get account info](#get-account-info)
-      - [Create market order](#create-a-market-order)
-      - [Create limit order](#create-a-limit-order)
+      - [Create a market order](#create-a-market-order)
+      - [Create a limit order](#create-a-limit-order)
       - [Create multiple orders](#create-multiple-orders)
       - [Obtain active orders](#obtain-active-orders)
       - [Cancel an order](#cancel-an-order)
