@@ -323,8 +323,6 @@ Account{
 
 #### Create a market order
 ```java
-//  the 'side' argument can be either "sell" or "buy", also the 'type' argument can be "limit", "stop-limit" or "market". 
-//  If you want to execute an 'stop-limit' order you need to specify the "limit" amount.
 try {
     Order order = client.createMarketOrder("XLMCLP" "sell", "1")
             .getOrder();
@@ -359,10 +357,8 @@ Order{
 
 #### Create a limit order
 ```java
-//  the 'side' argument can be either "sell" or "buy", also the 'type' argument can be "limit", "stop-limit" or "market". 
-//  If you want to execute an 'stop-limit' order you need to specify the "limit" amount.
 try {
-    Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
+    Order order = client.createLimitOrder("XLMCLP", "124", "sell", "1", "120")
             .getOrder();
     System.out.println(order);
 } catch (CryptoMarketException e) {
