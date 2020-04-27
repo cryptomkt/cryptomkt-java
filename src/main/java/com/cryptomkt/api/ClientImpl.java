@@ -160,13 +160,35 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public OrderResponse createOrder(String market, String price, String side, String type, String amount) throws CryptoMarketException {
+    public OrderResponse createMarketOrder(String market, String side, String amount) throws CryptoMarketException {
         Map<String, String> payload = new HashMap<>();
         payload.put("market", market);
-        payload.put("price", price);
+        payload.put("type", "market");
         payload.put("side", side);
-        payload.put("type", type);
         payload.put("amount", amount);
+        return httpClient.post("orders/create", payload, OrderResponse.class);
+    }
+
+    @Override
+    public OrderResponse createLimitOrder(String market, String side, String amount, String limit) throws CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("type", "limit");
+        payload.put("side", side);
+        payload.put("amount", amount);
+        payload.put("price", limit);
+        return httpClient.post("orders/create", payload, OrderResponse.class);
+    }
+
+    @Override
+    public OrderResponse createStopLimitOrder(String market, String side, String amount, String limit, String stop) throws CryptoMarketException {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("market", market);
+        payload.put("type", "stop-limit");
+        payload.put("side", side);
+        payload.put("amount", amount);
+        payload.put("price", limit);
+        payload.put("stop", stop);
         return httpClient.post("orders/create", payload, OrderResponse.class);
     }
 

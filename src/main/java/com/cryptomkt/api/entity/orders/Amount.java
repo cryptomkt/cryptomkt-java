@@ -10,9 +10,6 @@ public class Amount implements Serializable {
     @JsonProperty("original")
     private Double original;
 
-    @JsonProperty("remaining")
-    private Double remaining;
-
     @JsonProperty("executed")
     private Double executed;
 
@@ -22,14 +19,6 @@ public class Amount implements Serializable {
 
     public void setOriginal(Double original) {
         this.original = original;
-    }
-
-    public Double getRemaining() {
-        return remaining;
-    }
-
-    public void setRemaining(Double remaining) {
-        this.remaining = remaining;
     }
 
     public Double getExecuted() {
@@ -44,7 +33,6 @@ public class Amount implements Serializable {
     public String toString() {
         return "Amount{" +
                 "original=" + original +
-                ", remaining=" + remaining +
                 ", executed=" + executed +
                 '}';
     }

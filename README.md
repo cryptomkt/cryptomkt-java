@@ -6,21 +6,22 @@
   - [API Key](#api-key)
   - [Making API Calls](#making-api-calls)
     - [Public endpoints](#public-endpoints)
-      - [Using the functions](#using-the-functions)
+      - [Using pagination](#using-pagination)
       - [Listing available markets](#listing-available-markets)
       - [Obtain Book](#obtain-book)
       - [Obtain ticker info](#obtain-ticker-info)
       - [Obtain Trades](#obtain-trades)
     - [Authenticated endpoints](#authenticated-endpoints)
       - [Get account info](#get-account-info)
-      - [Create an order](#create-an-order)
+      - [Create market order](#create-a-market-order)
+      - [Create limit order](#create-a-limit-order)
       - [Create multiple orders](#create-multiple-orders)
       - [Obtain active orders](#obtain-active-orders)
       - [Cancel an order](#cancel-an-order)
       - [Cancel multiple orders](#cancel-multiple-orders)
-      - [Make a transfer](#make-a-transfer)
       - [Obtain executed orders](#obtain-executed-orders)
       - [Obtain order status](#obtain-order-status)
+      - [Make a transfer](#make-a-transfer)
       - [Obtain account balance](#obtain-account-balance)
   - [Using socket](#using-socket)
     - [Get socket instance](#get-socket-instance)
@@ -29,13 +30,13 @@
       - [Market subscription](#market-subscription)
       - [Unsubscribe from market](#unsubscribe-from-market)
       - [Receive open book info](#receive-open-book-info)
-      - [Receive Historical book info](#receive-historical-book-info)
+      - [Receive historical book info](#receive-historical-book-info)
       - [Receive candles info](#receive-candles-info)
       - [Receive ticker info](#receive-ticker-info)
       - [Receive balance info](#receive-balance-info)
       - [Receive user orders info](#receive-user-orders-info)
       - [Receive historical user orders info](#receive-historical-user-orders-info)
-      - [Receive User´s operated volume](#receive-user%c2%b4s-operated-volume)
+      - [Receive user operated volume](#receive-user-operated-volume)
 
 
 ## Installation
@@ -80,20 +81,14 @@ class Example {
 ## Making API Calls
 
 With a `client instance`, you can now make API calls. We've included some examples below.  
-Each API method returns an ``object`` representing the JSON response from the API.
+Each `client` method returns an ``object`` representing the JSON response from the API.
 
 [(top &uarr;)](#cryptomkt-java)
 
 ### Public endpoints
 
-#### Using the functions
-Every call to an endpoint of cryptomarket is a response type, holding the status of the response,
-the requested data, a possible error associated to the request, and the pagination of the query.
-The status and the possible error are self explanatory. A success status is a request that gives the 
-requested data. and if there is an error, the error would said what it is.
-The pagination of the request gives information for getting a big query in more than one call
-
-The following code example show an usage of pagination
+#### Using pagination
+The following code example shows the use of pagination
 
 ```java
 try {
@@ -202,19 +197,24 @@ try {
  <summary>Expected Output</summary>
  
 ```
-[Book{timestamp=Sun Apr 19 19:21:10 CLT 2020,
+[
+Book{
+     timestamp=Sun Apr 19 19:21:10 CLT 2020,
      price=156300.0,
-     amount=3.0798}, 
-Book{timestamp=Sun Apr 19 19:21:00 CLT 2020,
+     amount=3.0798
+}, Book{
+     timestamp=Sun Apr 19 19:21:00 CLT 2020,
      price=156280.0,
-     amount=27.6503}, 
-Book{timestamp=Sun Apr 19 18:57:57 CLT 2020,
+     amount=27.6503
+}, Book{
+     timestamp=Sun Apr 19 18:57:57 CLT 2020,
      price=156200.0,
-     amount=7.9244}, 
-Book{timestamp=Sun Apr 19 19:19:01 CLT 2020,
+     amount=7.9244
+}, Book{
+     timestamp=Sun Apr 19 19:19:01 CLT 2020,
      price=155940.0,
-     amount=3.9802}, 
-...
+     amount=3.9802
+}, ...]
 ```
 </details>
 
@@ -234,7 +234,8 @@ try {
  <summary>Expected Output</summary>
  
 ```
-[Ticker{
+[
+Ticker{
     market='BTCBRL', 
     timestamp=Sun Apr 19 19:34:15 CLT 2020, 
     ask=37942.0, 
@@ -264,25 +265,26 @@ try {
  <summary>Expected Output</summary>
  
 ```
-[Trade{
+[
+Trade{
     market='ETHARS', 
     timestamp=Sun Apr 19 19:22:27 CLT 2020, 
     marketTaker='buy', 
     price=17972.0, 
-    amount=1.9888}, 
-Trade{
+    amount=1.9888
+}, Trade{
     market='ETHARS', 
     timestamp=Sun Apr 19 18:34:21 CLT 2020, 
     marketTaker='buy', 
     price=17972.0, 
-    amount=0.5514}, 
-Trade{
+    amount=0.5514
+}, Trade{
     market='ETHARS', 
     timestamp=Sun Apr 19 17:45:23 CLT 2020, 
     marketTaker='buy', 
     price=17972.0, 
-    amount=0.011017137769864233}
-...
+    amount=0.011017137769864233
+}, ...]
 ```
 </details>
 
@@ -319,7 +321,43 @@ Account{
 
 [(top &uarr;)](#cryptomkt-java)
 
-#### Create an order
+#### Create a market order
+```java
+//  the 'side' argument can be either "sell" or "buy", also the 'type' argument can be "limit", "stop-limit" or "market". 
+//  If you want to execute an 'stop-limit' order you need to specify the "limit" amount.
+try {
+    Order order = client.createMarketOrder("XLMCLP" "sell", "1")
+            .getOrder();
+    System.out.println(order);
+} catch (CryptoMarketException e) {
+    e.printStackTrace();
+}
+```
+<details>
+ <summary>Expected Output</summary>
+ 
+```
+Order{
+    id='O6560362', 
+    status='filled', 
+    type='market', 
+    side='sell', 
+    stop='null', 
+    fee='0', 
+    price='0', 
+    amount=Amount{original=1.0, executed=1.0}, 
+    avgExecutionPrice=0.0, 
+    market='XLMCLP', 
+    createdAt=Mon Apr 27 13:35:13 CLT 2020, 
+    updatedAt=Mon Apr 27 13:35:13 CLT 2020, 
+    fillers=null
+}
+```
+</details>
+
+[(top &uarr;)](#cryptomkt-java)
+
+#### Create a limit order
 ```java
 //  the 'side' argument can be either "sell" or "buy", also the 'type' argument can be "limit", "stop-limit" or "market". 
 //  If you want to execute an 'stop-limit' order you need to specify the "limit" amount.
@@ -336,36 +374,32 @@ try {
  
 ```
 Order{
-    id='O5792153', 
+    id='O6560492', 
     status='queued', 
-    type='limit',
+    type='limit', 
     side='sell', 
-    price=124.0, 
-    amount=Amount{
-        original=1.0, 
-        remaining=null, 
-        executed=0.0}, 
-    executionPrice=null, 
+    stop='null', 
+    fee='0', 
+    price='120', 
+    amount=Amount{original=1.0, executed=0.0}, 
     avgExecutionPrice=0.0, 
     market='XLMCLP', 
-    createdAt=Sun Apr 19 19:39:59 CLT 2020, 
-    updatedAt=Sun Apr 19 19:39:59 CLT 2020, 
-    executedAt=null}
-
+    createdAt=Mon Apr 27 13:36:45 CLT 2020, 
+    updatedAt=Mon Apr 27 13:36:45 CLT 2020, 
+    fillers=null
+}
 ```
 </details>
 
 [(top &uarr;)](#cryptomkt-java)
 
-
 #### Create multiple orders
 ```java
 try {
     MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
-            .add("XLMCLP", "limit", "sell", "150", "1")
-            .add("XLMCLP", "limit", "sell", "151", "1")
-            .add("XLMCLP", "limit", "sell", "152", "1")
-            .add("XLMCLP", "limit", "sell", "353", "1000000000");
+                        .addMarketOrder("XLMCLP", "sell", "1")
+                        .addLimitOrder("XLMCLP", "buy", "1", "20")
+                        .addLimitOrder("AAAAAA", "sell", "1", "120");
     CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
     System.out.println(createMultiOrderResponse);
 } catch (CryptoMarketException e) {
@@ -377,30 +411,46 @@ try {
  
 ```
 CreateMultiOrderResponse{
-Response{status='success', error='null', pagination=null}, 
+Response{status='success', message='null', pagination=null}, 
 data=CreateMultiOrderData{
-    created=[
-        CreatedOrder{
-            data=Order{
-                id='O5795018', 
-                status='queued', 
-                type='limit', 
-                side='sell', 
-                price=150.0, 
-                amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-                executionPrice=null, 
-                avgExecutionPrice=0.0, 
-                market='XLMCLP', 
-                createdAt=Sun Apr 19 20:09:48 CLT 2020, 
-                updatedAt=Sun Apr 19 20:09:48 CLT 2020, 
-                executedAt=null}, 
-            original=OrderDescription{amount='1', market='XLMCLP', price='150', side='sell', type='limit'}}, 
-        CreatedOrder{
-            data=Order{
-                id='O5795019',
-                ...}, 
-            original=OrderDescription{...}},
-    ...
+created=[
+    CreatedOrder{
+        data=Order{
+            id='O6572150', 
+            status='filled', 
+            type='market', 
+            side='sell', 
+            stop='null', 
+            fee='0', 
+            price='0', 
+            amount=Amount{original=1.0, executed=1.0}, 
+            avgExecutionPrice=0.0, 
+            market='XLMCLP', 
+            createdAt=Mon Apr 27 16:35:41 CLT 2020, 
+            updatedAt=Mon Apr 27 16:35:41 CLT 2020, 
+            fillers=null}, 
+        original=OrderDescription{amount='1', market='XLMCLP', price='null', side='sell', type='market'}
+    }, CreatedOrder{
+        data=Order{
+            id='O6572151', 
+            status='queued', 
+            type='limit', 
+            side='buy', 
+            stop='null', 
+            fee='0', 
+            price='20', 
+            amount=Amount{original=1.0, executed=0.0}, 
+            avgExecutionPrice=0.0, 
+            market='XLMCLP', 
+            createdAt=Mon Apr 27 16:35:41 CLT 2020, 
+            updatedAt=Mon Apr 27 16:35:41 CLT 2020, 
+            fillers=null}, 
+        original=OrderDescription{amount='1', market='XLMCLP', price='20', side='buy', type='limit'}
+    }], notCreated=[
+NotCreatedOrder{
+    message='pair_not_active', 
+    order=OrderDescription{amount='1', market='AAAAAA', price='120', side='sell', type='limit'}}]}}
+
 ```
 </details>
 
@@ -420,33 +470,36 @@ try {
  <summary>Expected Output</summary>
  
 ```
-[Order{
-    id='O5795020', 
-    status='queued', 
-    type='limit', 
-    side='sell', 
-    price=152.0, 
-    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-    executionPrice=null, 
-    avgExecutionPrice=0.0, 
-    market='XLMCLP', 
-    createdAt=Sun Apr 19 20:09:48 CLT 2020, 
-    updatedAt=Sun Apr 19 20:09:48 CLT 2020, 
-    executedAt=null}, 
+[
 Order{
-    id='O5795019', 
+    id='O6572151', 
+    status='queued', 
+    type='limit', 
+    side='buy', 
+    stop='null', 
+    fee='0', 
+    price='20', 
+    amount=Amount{original=1.0, executed=0.0}, 
+    avgExecutionPrice=0.0, 
+    market='XLMCLP', 
+    createdAt=Mon Apr 27 16:35:41 CLT 2020, 
+    updatedAt=Mon Apr 27 16:35:41 CLT 2020, 
+    fillers=null
+}, Order{
+    id='O6572090', 
     status='queued', 
     type='limit', 
     side='sell', 
-    price=151.0, 
-    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-    executionPrice=null, 
+    stop='null', 
+    fee='0', 
+    price='120', 
+    amount=Amount{original=1.0, executed=0.0}, 
     avgExecutionPrice=0.0, 
     market='XLMCLP', 
-    createdAt=Sun Apr 19 20:09:48 CLT 2020, 
-    updatedAt=Sun Apr 19 20:09:48 CLT 2020, 
-    executedAt=null}, 
-...
+    createdAt=Mon Apr 27 16:34:49 CLT 2020, 
+    updatedAt=Mon Apr 27 16:34:49 CLT 2020, 
+    fillers=null
+}, ...]
 ```
 </details>
 
@@ -467,19 +520,20 @@ try {
  
 ```
 Order{
-    id='O5597597', 
+    id='O6326637', 
     status='cancelled', 
     type='limit', 
     side='sell', 
-    price=124.0, 
-    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-    executionPrice=null, 
+    stop='null', 
+    fee='0', 
+    price='120', 
+    amount=Amount{original=1.0, executed=0.0}, 
     avgExecutionPrice=0.0, 
     market='XLMCLP', 
-    createdAt=Fri Apr 17 18:55:38 CLT 2020, 
-    updatedAt=Mon Apr 20 10:10:55 CLT 2020, 
-    executedAt=null}
-
+    createdAt=Fri Apr 24 21:46:44 CLT 2020, 
+    updatedAt=Mon Apr 27 14:15:23 CLT 2020, 
+    fillers=null
+}
 ```
 </details>
 
@@ -506,45 +560,113 @@ try {
  
 ```
 CancelMultiOrderResponse{
-    Response{status='success', error='null', pagination=null}, 
-    data=CancelMultiOrderData{
-        canceledOrders=[
-            CanceledOrder{
-                data=Order{
-                    id='O5795020', 
-                    status='cancelled', 
-                    type='limit', 
-                    side='sell', 
-                    price=152.0, 
-                    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-                    executionPrice=null, 
-                    avgExecutionPrice=0.0, 
-                    market='XLMCLP', 
-                    createdAt=Sun Apr 19 20:09:48 CLT 2020, 
-                    updatedAt=Mon Apr 20 10:25:19 CLT 2020, 
-                    executedAt=null}, 
-                orderId='O5795020'}, 
-            CanceledOrder{
-                data=Order{
-                    id='O5795019', 
-                    status='cancelled', 
-                    type='limit', 
-                    side='sell', 
-                    price=151.0, 
-                    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-                    executionPrice=null, 
-                    avgExecutionPrice=0.0, 
-                    market='XLMCLP', 
-                    createdAt=Sun Apr 19 20:09:48 CLT 2020, 
-                    updatedAt=Mon Apr 20 10:25:20 CLT 2020, 
-                    executedAt=null}, 
-                orderId='O5795019'},
-            ... 
-        notCanceledOrders=[
-            NotCanceledOrder{
-                message='invalid_request', 
-                orderId='11111111'}]}}
+Response{status='success', message='null', pagination=null}, 
+data=CancelMultiOrderData{
+    canceledOrders=[
+        CanceledOrder{
+            data=Order{id='O6572151', status='cancelled', ...}, 
+            orderId='O6572151'
+        }, CanceledOrder{
+            data=Order{id='O6572090', status='cancelled', ...}, 
+            orderId='O6572090'
+        }, CanceledOrder{
+            data=Order{id='O6572089', status='cancelled', ...}, 
+            orderId='O6572089'
+        }, ...], 
+    notCanceledOrders=[
+        NotCanceledOrder{
+            message='invalid_request', 
+            orderId='11111111'}]}}
 
+```
+</details>
+
+[(top &uarr;)](#cryptomkt-java)
+
+#### Obtain executed orders
+```java
+try {
+    List<Order> orders = client.getExecutedOrders("XLMCLP")
+            .getOrders();
+    System.out.println(orders);
+} catch (CryptoMarketException e) {
+    e.printStackTrace();
+}
+```
+<details>
+ <summary>Expected Output</summary>
+ 
+```
+[
+Order{
+    id='O6572150', 
+    status='filled', 
+    type='market', 
+    side='sell', 
+    stop='null', 
+    fee='0.374', 
+    price='0', 
+    amount=Amount{original=1.0, executed=1.0}, 
+    avgExecutionPrice=55.0, 
+    market='XLMCLP', 
+    createdAt=Mon Apr 27 16:35:41 CLT 2020, 
+    updatedAt=Mon Apr 27 16:35:42 CLT 2020, 
+    fillers=[
+        Filler{price='55', fee='0.374', amount='55', date=Mon Apr 27 16:35:41 CLT 2020}
+    ]
+}, Order{
+    id='O6572086', 
+    status='filled', 
+    type='market', 
+    side='sell', 
+    stop='null', 
+    fee='0.374', 
+    price='0', 
+    amount=Amount{original=1.0, executed=1.0}, 
+    avgExecutionPrice=55.0, 
+    market='XLMCLP', 
+    createdAt=Mon Apr 27 16:34:48 CLT 2020, 
+    updatedAt=Mon Apr 27 16:34:49 CLT 2020, 
+    fillers=[
+        Filler{price='55', fee='0.374', amount='55', date=Mon Apr 27 16:34:48 CLT 2020}
+    ]
+}, ...]
+```
+</details>
+
+[(top &uarr;)](#cryptomkt-java)
+
+#### Obtain order status
+```java
+try {
+    Order order = client.getOrderStatus("O6572150")
+            .getOrder();
+    System.out.println(order);
+} catch (CryptoMarketException e) {
+    e.printStackTrace();
+}
+```
+<details>
+ <summary>Expected Output</summary>
+ 
+```
+Order{
+    id='O6572150', 
+    status='filled', 
+    type='market', 
+    side='sell', 
+    stop='null', 
+    fee='0.374', 
+    price='0', 
+    amount=Amount{original=1.0, executed=1.0}, 
+    avgExecutionPrice=55.0, 
+    market='XLMCLP', 
+    createdAt=Mon Apr 27 16:35:41 CLT 2020, 
+    updatedAt=Mon Apr 27 16:35:42 CLT 2020, 
+    fillers=[
+        Filler{price='55', fee='0.374', amount='55', date=Mon Apr 27 16:35:41 CLT 2020}
+    ]
+}
 ```
 </details>
 
@@ -571,84 +693,6 @@ Response{status='success', error='null', pagination=null}
 
 [(top &uarr;)](#cryptomkt-java)
 
-#### Obtain executed orders
-```java
-try {
-    List<Order> orders = client.getExecutedOrders("XLMCLP")
-            .getOrders();
-    System.out.println(orders);
-} catch (CryptoMarketException e) {
-    e.printStackTrace();
-}
-```
-<details>
- <summary>Expected Output</summary>
- 
-```
-[Order{
-    id='O2830196', 
-    status='filled', 
-    type='limit', 
-    side='sell', 
-    price=1.0, 
-    amount=Amount{original=1.0, remaining=null, executed=1.0}, 
-    executionPrice=null, 
-    avgExecutionPrice=31.45, 
-    market='XLMCLP', 
-    createdAt=Wed Mar 18 19:20:00 CLST 2020, 
-    updatedAt=Wed Mar 18 19:20:01 CLST 2020, 
-    executedAt=null}, 
-Order{
-    id='O2826919', 
-    status='filled', 
-    type='limit', 
-    side='sell', 
-    price=1.0, 
-    amount=Amount{original=1.0, remaining=null, executed=1.0}, 
-    executionPrice=null, 
-    avgExecutionPrice=31.7, 
-    market='XLMCLP', 
-    createdAt=Wed Mar 18 18:40:42 CLST 2020, 
-    updatedAt=Wed Mar 18 18:40:42 CLST 2020, 
-    executedAt=null}, 
-...
-```
-</details>
-
-[(top &uarr;)](#cryptomkt-java)
-
-#### Obtain order status
-```java
-try {
-    Order order = client.getOrderStatus("O5850367")
-            .getOrder();
-    System.out.println(order);
-} catch (CryptoMarketException e) {
-    e.printStackTrace();
-}
-```
-<details>
- <summary>Expected Output</summary>
- 
-```
-Order{
-    id='O5850367', 
-    status='queued', 
-    type='limit', 
-    side='sell', 
-    price=152.0, 
-    amount=Amount{original=1.0, remaining=null, executed=0.0}, 
-    executionPrice=null, 
-    avgExecutionPrice=0.0, 
-    market='XLMCLP', 
-    createdAt=Mon Apr 20 10:34:42 CLT 2020, 
-    updatedAt=Mon Apr 20 10:34:42 CLT 2020, 
-    executedAt=null}
-```
-</details>
-
-[(top &uarr;)](#cryptomkt-java)
-
 #### Obtain account balance
 ```java
 try {
@@ -662,15 +706,16 @@ try {
  <summary>Expected Output</summary>
 
 ```
-[Balance{
+[
+Balance{
     wallet='CLP', 
     available='120249.25638', 
-    balance='100249.25638'}, 
-Balance{
+    balance='100249.25638'
+}, Balance{
     wallet='ETH', 
     available='10.3399', 
-    balance='11.3399'}, 
-...
+    balance='11.3399'
+}, ...]
 ```
 </details>
 
@@ -789,7 +834,7 @@ try {
 
 [(top &uarr;)](#cryptomkt-java)
 
-#### Receive Historical book info
+#### Receive historical book info
 ```java
 //  Subscription required.
 socket.subscribe("ETHCLP");
@@ -1080,7 +1125,7 @@ try {
 
 [(top &uarr;)](#cryptomkt-java)
 
-#### Receive User´s operated volume
+#### Receive user operated volume
 
 ```java
 socket.onOperated(System.out::println);

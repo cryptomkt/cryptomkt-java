@@ -17,6 +17,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -59,16 +61,15 @@ public class HTTPClientImpl implements HTTPClient {
     }
 
     private static <T extends Response> T handleErrors(T response) throws CryptoMarketException {
-        String errors = response.getError();
-        if (errors != null) {
-            throw new CryptoMarketException(response.getError());
+        String errMessage = response.getMessage();
+        if (errMessage != null && response.isError()) {
+            throw new CryptoMarketException(errMessage);
         }
-
-        if (!response.isSuccess()) {
-            throw new CryptoMarketException("unsuccessful response");
+        if (response.isSuccess()) {
+            return response;
+        } else {
+            throw new CryptoMarketException("error");
         }
-
-        return response;
     }
 
     private void doHmacAuthentication (URL url, String body, HttpRequestBase conn) throws IOException {
@@ -99,11 +100,21 @@ public class HTTPClientImpl implements HTTPClient {
                 .build();
         ResponseHandler<String> responseHandler = httpResponse -> {
             int status = httpResponse.getStatusLine().getStatusCode();
+            HttpEntity entity = httpResponse.getEntity();
             if (status >= 200 && status < 300) {
-                HttpEntity entity = httpResponse.getEntity();
                 return entity != null ? EntityUtils.toString(entity) : null;
             } else {
-                throw new ClientProtocolException("response status " + status + ": " + httpResponse.getStatusLine().getReasonPhrase());
+                String content = EntityUtils.toString(entity);
+                JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(content);
+                    if (jsonObject.has("status") && jsonObject.getString("status").equals("error")) {
+                        return content;
+                    }
+                } catch (JSONException e) {
+                    throw new ClientProtocolException("status " + status + ": " + httpResponse.getStatusLine().getReasonPhrase());
+                }
+                throw new ClientProtocolException("status " + status + ": " + httpResponse.getStatusLine().getReasonPhrase());
             }
         };
 
@@ -192,6 +203,7 @@ public class HTTPClientImpl implements HTTPClient {
             }*/
             response = deserialize(this.runRequest(postRequest), responseClass);
         } catch (IOException e) {
+            System.out.println(e.toString());
             throw new CryptoMarketException(e.getMessage());
         }
         return handleErrors(response);

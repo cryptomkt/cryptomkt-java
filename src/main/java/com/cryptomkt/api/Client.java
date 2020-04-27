@@ -28,36 +28,36 @@ public interface Client {
     TickersResponse getTickers() throws  CryptoMarketException;
 
     /**
-     * Get a list of one item, with the ticker of the specified market.
+     * Get the ticker of one market.
      *
-     * @param market a marketpair to get the ticker from
+     * @param market the tickers market
      * @return a list of one item, the ticker of the specified market
      * @throws CryptoMarketException
      */
     TickersResponse getTickers(String market) throws  CryptoMarketException;
 
     /**
-     * Get a list of the active orders of a side of a market.
+     * Get a list of open orders of a market side.
      *
      * @see #getBook(String, String, int, int)
      */
     BooksResponse getBook(String market, String side) throws  CryptoMarketException;
 
     /**
-     * Get a list of the active orders of a side of a market.
+     * Get a list of open orders of a market side.
      *
      * @see #getBook(String, String, int, int)
      */
     BooksResponse getBook(String market, String side, int page) throws  CryptoMarketException;
 
     /**
-     * Get a list of the active orders of a side of a market.
+     * Get a list of open orders of a market side.
      *
-     * @param market a market pair to get the books from
-     * @param side   "buy" or "sell" the side of the market to get the books from
-     * @param page   the page of all the orders to get. Default:0 (optional)
-     * @param limit  the number of orders per page. Default:20, Max:100 (optional)
-     * @return a page of all the active orders of a given side of a given market
+     * @param market the open orders market
+     * @param side   the market side, "buy" or "sell".
+     * @param page   the requested page of the query. Default:0 (optional)
+     * @param limit  the number of entries per page. Default:20, Max:100 (optional)
+     * @return a page of all the open orders of a market side
      * @throws CryptoMarketException
      */
     BooksResponse getBook(String market, String side, int page, int limit) throws  CryptoMarketException;
@@ -97,12 +97,12 @@ public interface Client {
      * Get a list of all trades of a market, since <code>start</code> until
      * <code>end</code> date.
      *
-     * @param market a market pair to get trades from
-     * @param start  the earlier date to get trades from. Format: YYYY-MM-DD (optional)
-     * @param end    the later date to get trades from, exclusive. Format: YYYY-MM-DD (optional)
-     * @param page   the page of all the orders to get. Default:0 (optional)
-     * @param limit  the number of orders per page. Default:20, Max:100 (optional)
-     * @return a page of 20 trades of a list with trades between two dates
+     * @param market the trades market
+     * @param start  the first date to get trades, inclusive. Format: YYYY-MM-DD (optional)
+     * @param end    the last date to get trades, exclusive. Format: YYYY-MM-DD (optional)
+     * @param page   the requested page of the query. Default:0 (optional)
+     * @param limit  the number of entries per page. Default:20, Max:100 (optional)
+     * @return a page of a list with trades between two dates
      * @throws CryptoMarketException
      */
     TradeResponse getTrades(String market, String start, String end, int page, int limit) throws  CryptoMarketException;
@@ -122,13 +122,13 @@ public interface Client {
     PricesResponse getPrices(String market, String timeframe, int page) throws  CryptoMarketException;
 
     /**
-     * Get the candles of a market, with <code>timeframe</code> interval between candles.
+     * Get the market candles, with <code>timeframe</code> interval between candles.
      *
-     * @param market    a market pair to get the prices from
+     * @param market the prices market
      * @param timeframe time lapse between each candle: 1, 5, 15, 60, 240, 1440 or 10080
-     * @param page   the page of all the orders to get. Default:0 (optional)
-     * @param limit  the number of orders per page. Default:20, Max:100 (optional)
-     * @return two list of candles, one of ask prices and one of bid prices. From the market and timeframe
+     * @param page   the requested page of the query. Default:0 (optional)
+     * @param limit  the number of entries per page. Default:20, Max:100 (optional)
+     * @return a PricesResponse with two lists of candles, one of ask prices and one of bid prices.
      * @throws CryptoMarketException
      */
     PricesResponse getPrices(String market, String timeframe, int page, int limit) throws  CryptoMarketException;
@@ -138,7 +138,7 @@ public interface Client {
     /* Authenticated Endpoints*/
 
     /**
-     * Get the account of the user.
+     * Get the user account.
      *
      * @return the account information of the user.
      * @throws CryptoMarketException
@@ -146,82 +146,105 @@ public interface Client {
     AccountResponse getAccount() throws  CryptoMarketException;
 
     /**
-     * Get the user's active orders in a market
+     * Get the user active orders in a market.
      *
      * @see #getActiveOrders(String, int, int)
      */
-    OrdersResponse getActiveOrders(String market) throws  CryptoMarketException;
+    OrdersResponse getActiveOrders(String markedatat) throws  CryptoMarketException;
 
     /**
-     * Get the user's active orders in a market
+     * Get the user active orders in a market.
      *
      * @see #getActiveOrders(String, int, int)
      */
     OrdersResponse getActiveOrders(String market, int page) throws  CryptoMarketException;
 
     /**
-     * Get the user's active orders in a market
+     * Get the user active orders in a market.
      *
-     * @param market a market pair to get the orders from
-     * @param page   the page of all the orders to get. Default:0 (optional)
-     * @param limit  the number of orders per page. Default:20, Max:100 (optional)
-     * @return a list of active orders of the user in a market
+     * @param market the market of the active orders
+     * @param page   the requested page of the query. Default:0 (optional)
+     * @param limit  the number of entries per page. Default:20, Max:100 (optional)
+     * @return an OrderResponse with a list of user active orders in a market
      * @throws CryptoMarketException
      */
     OrdersResponse getActiveOrders(String market, int page, int limit) throws  CryptoMarketException;
 
     /**
-     * Get the user's executed orders in a market
+     * Get the user executed orders in a market.
      *
      * @see #getActiveOrders(String, int, int)
      */
     OrdersResponse getExecutedOrders(String market) throws  CryptoMarketException;
 
     /**
-     * Get the user's executed orders in a market
+     * Get the user executed orders in a market.
      *
      * @see #getActiveOrders(String, int, int)
      */
     OrdersResponse getExecutedOrders(String market, int page) throws  CryptoMarketException;
 
     /**
-     * Get the user's executed orders in a market
+     * Get the user executed orders in a market.
      *
-     * @param market a market pair to get the orders from
-     * @param page   the page of all the orders to get. Default:0 (optional)
-     * @param limit  the number of orders per page. Default:20, Max:100 (optional)
-     * @return a list of executed orders of the user in a market
+     * @param market a market to get the list of executed orders
+     * @param page   the requested page of the query. Default:0 (optional)
+     * @param limit  the number of entries per page. Default:20, Max:100 (optional)
+     * @return an OrderResopnse with a list of the user executed orders in a market
      * @throws CryptoMarketException
      */
     OrdersResponse getExecutedOrders(String market, int page, int limit) throws  CryptoMarketException; // orders/executed
 
     /**
-     *  Creates an order in a market,
+     *  Create an order at market price.
      *
-     * @param market the market pair to put the order
-     * @param price  the price of a unit of crypto to buy or sell
-     * @param side   "buy" or "sell", the side of the market on which to crete the order
-     * @param type   "market", "limit" or "stop-limit", the type of order to make
-     * @param amount the amount of crypto to buy or sell
-     * @return the order status
+     * @param market the market to make the order
+     * @param side   "buy" or "sell"
+     * @param amount the amount to buy or sell
+     * @return an OrderResopnse with the order status
      * @throws CryptoMarketException
      */
-    OrderResponse createOrder(String market, String price, String side, String type, String amount) throws  CryptoMarketException; // orders/create
+    OrderResponse createMarketOrder(String market, String side, String amount) throws  CryptoMarketException; // orders/create
 
     /**
-     * Creates multiple orders in a single market.
+     *  Creates a limit order.
+     *
+     * @param market the market to make the order
+     * @param side   "buy" or "sell"
+     * @param amount the amount to buy or sell
+     * @param limit the limit price of the order
+     * @return an OrderResopnse with the order status
+     * @throws CryptoMarketException
+     */
+    OrderResponse createLimitOrder(String market, String side, String amount, String limit) throws  CryptoMarketException; // orders/create
+
+    /**
+     *  Create a stop limit order.
+     *
+     * @param market the market to make the order
+     * @param side   "buy" or "sell"
+     * @param amount the amount to buy or sell
+     * @param limit the limit price of the order
+     * @param stop the stop price of the order
+     * @return an OrderResopnse with the order status
+     * @throws CryptoMarketException
+     */
+    OrderResponse createStopLimitOrder(String market, String side, String amount, String limit, String stop) throws  CryptoMarketException; // orders/create
+
+    /**
+     * Create multiple orders.
      *
      * @param multiOrderRequest the description of the orders to make
-     * @return a list with the data of the requested orders and the published order, also returns a list with the orders not created, with an explanatory message.
+     * @return a CreateMultiOrderResponse with two lists. A list with the created orders, and a list with the not created orders.
      * @throws CryptoMarketException
      */
     CreateMultiOrderResponse createMultiOrders(MultiOrderRequest multiOrderRequest) throws CryptoMarketException; // orders/create/bulk
 
     /**
-     * Get the status of an order
+     * Get the order status.
      *
-     * @param id the id of the order
-     * @return the current status of an order
+     * @param id the order id
+     * @return the order status
      * @throws CryptoMarketException
      */
     OrderResponse getOrderStatus(String id) throws  CryptoMarketException; // orders/status
@@ -229,24 +252,24 @@ public interface Client {
     /**
      * Cancel an order
      *
-     * @param id the id of the order to cancel
-     * @return the status of the order after is cancelled
+     * @param id the order id
+     * @return the cancelled order status
      * @throws CryptoMarketException
      */
     OrderResponse cancelOrder(String id) throws  CryptoMarketException; // orders/cancel
 
     /**
-     * cancel multiple orders
+     * Cancel multiple orders
      *
-     * @param idList a list of the ids of the orders to cancel
-     * @return a list with the orders cancelled and their ids, and a list with the orders ids not cancelled, and an explanatory message
+     * @param idList a list of order ids
+     * @return a CancelMultiOrderResponse with two lists. A list with the cancelled orders, and a list with the not cancelled order ids.
      * @throws CryptoMarketException
      */
     CancelMultiOrderResponse cancelMultiOrder(List<String> idList) throws  CryptoMarketException;
 
 
     /**
-     * Get all the wallets of the client.
+     * Get all the client wallets.
      *
      * @return a list of wallets
      * @throws CryptoMarketException
@@ -254,26 +277,26 @@ public interface Client {
     BalanceResponse getBalance() throws  CryptoMarketException; // balance
 
     /**
-     * Get the transactions of a currency
+     * Get the user transactions of a currency
      *
      * @see #getTransactions(String, int, int)
      */
     TransactionsResponse getTransactions(String currency) throws  CryptoMarketException;
 
     /**
-     * Get the transactions of a currency
+     * Get the user transactions of a currency
      *
      * @see #getTransactions(String, int, int)
      */
     TransactionsResponse getTransactions(String currency, int page) throws  CryptoMarketException;
 
     /**
-     * Get the transactions of a currency
+     * Get the user transactions of a currency
      *
-     * @param currency the currency to get the list of transactions
-     * @param page     the page of all the orders to get. Default:0 (optional)
-     * @param limit    the number of orders per page. Default:20, Max:100 (optional)
-     * @return a list of transactions of the user using a currency
+     * @param currency the currency of the transactions
+     * @param page     the requested page of the query. Default:0 (optional)
+     * @param limit    the number of entries per page. Default:20, Max:100 (optional)
+     * @return a Transaction response with a list of transactions
      * @throws CryptoMarketException
      */
     TransactionsResponse getTransactions(String currency, int page, int limit) throws  CryptoMarketException; // transactions
@@ -296,11 +319,11 @@ public interface Client {
     /**
      * Transfer currency between wallets
      *
-     * @param address  of the wallet to transfer
-     * @param amount   the quantity of currency to transfer
-     * @param currency the crypto to transfer
-     * @param memo     of the wallet to transfer (optional)
-     * @return the status of the transfer
+     * @param address  the receiving wallet of the transfer
+     * @param amount   the quantity of currency
+     * @param currency the currency to transfer
+     * @param memo     the receiving wallet memo (optional)
+     * @return the result of the transfer
      * @throws CryptoMarketException
      */
     Response transfer(String address, String amount, String currency, String memo) throws  CryptoMarketException; // transfer

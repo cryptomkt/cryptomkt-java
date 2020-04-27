@@ -99,7 +99,7 @@ public class ReadmeExamplesTest {
     }
 
     @Test
-    public void testAccountExamples() {
+    public void testAccountExample() {
         try {
             Account account = client.getAccount().getAccount();
             System.out.println(account.toString());
@@ -109,11 +109,34 @@ public class ReadmeExamplesTest {
     }
 
     @Test
-    public void testCreateOrderExample() {
+    public void testCreateMarketOrderExample() {
         try {
-            Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
+            Order order = client.createMarketOrder("XLMCLP", "sell", "1")
                     .getOrder();
-            System.out.println(order);
+            System.out.println(order.toString());
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testCreateLimitOrderExample() {
+        try {
+            Order order = client.createLimitOrder("XLMCLP", "sell", "1", "120")
+                    .getOrder();
+            System.out.println(order.toString());
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCreateStopLimitOrderExample() {
+        try {
+            Order order = client.createStopLimitOrder("XLMCLP", "sell", "1", "150", "140")
+                    .getOrder();
+            System.out.println(order.toString());
         } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
@@ -123,10 +146,9 @@ public class ReadmeExamplesTest {
     public void testMultiOrderExample() {
         try {
             MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
-                    .add("XLMCLP", "limit", "sell", "150", "1")
-                    .add("XLMCLP", "limit", "sell", "151", "1")
-                    .add("XLMCLP", "limit", "sell", "152", "1")
-                    .add("XLMCLP", "limit", "sell", "353", "1000000000");
+                    .addMarketOrder("XLMCLP", "sell", "1")
+                    .addLimitOrder("XLMCLP", "buy", "1", "20")
+                    .addLimitOrder("AAAAAA", "sell", "1", "120");
             CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
             System.out.println(createMultiOrderResponse);
         } catch (CryptoMarketException e) {
@@ -148,7 +170,7 @@ public class ReadmeExamplesTest {
     @Test
     public void testCancelOrderExample() {
         try {
-            Order order = client.cancelOrder("O5597537")
+            Order order = client.cancelOrder("O6326637")
                     .getOrder();
             System.out.println(order);
         } catch (CryptoMarketException e) {
@@ -196,7 +218,7 @@ public class ReadmeExamplesTest {
     @Test
     public void testOrderStatusExample() {
         try {
-            Order order = client.getOrderStatus("O5850367")
+            Order order = client.getOrderStatus("O6572150")
                     .getOrder();
             System.out.println(order);
         } catch (CryptoMarketException e) {

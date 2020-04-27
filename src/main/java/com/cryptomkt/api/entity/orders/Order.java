@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Order implements Serializable {
     private static final long serialVersionUID = 1;
@@ -20,14 +21,17 @@ public class Order implements Serializable {
     @JsonProperty("side")
     private String side;
 
+    @JsonProperty("stop")
+    private String stop;
+
+    @JsonProperty("fee")
+    private String fee;
+
     @JsonProperty("price")
-    private Double price;
+    private String price;
 
     @JsonProperty("amount")
     private Amount amount;
-
-    @JsonProperty("execution_price")
-    private Double executionPrice;
 
     @JsonProperty("avg_execution_price")
     private Double avgExecutionPrice;
@@ -41,8 +45,8 @@ public class Order implements Serializable {
     @JsonProperty("updated_at")
     private Date updatedAt;
 
-    @JsonProperty("executed_at")
-    private Date executedAt;
+    @JsonProperty("fills")
+    private List<Filler> fills;
 
     public String getId() {
         return id;
@@ -72,11 +76,11 @@ public class Order implements Serializable {
 
     public void setSide(String side) { this.side = side; }
 
-    public Double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -86,14 +90,6 @@ public class Order implements Serializable {
 
     public void setAmount(Amount amount) {
         this.amount = amount;
-    }
-
-    public Double getExecutionPrice() {
-        return executionPrice;
-    }
-
-    public void setExecutionPrice(Double executionPrice) {
-        this.executionPrice = executionPrice;
     }
 
     public Double getAvgExecutionPrice() {
@@ -128,12 +124,28 @@ public class Order implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Date getExecutedAt() {
-        return executedAt;
+    public String getStop() {
+        return stop;
     }
 
-    public void setExecutedAt(Date executedAt) {
-        this.executedAt = executedAt;
+    public void setStop(String stop) {
+        this.stop = stop;
+    }
+
+    public String getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
+
+    public List<Filler> getFills() {
+        return fills;
+    }
+
+    public void setFills(List<Filler> fills) {
+        this.fills = fills;
     }
 
     @Override
@@ -143,14 +155,15 @@ public class Order implements Serializable {
                 ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", side='" + side + '\'' +
-                ", price=" + price +
+                ", stop='" + stop + '\'' +
+                ", fee='" + fee + '\'' +
+                ", price='" + price + '\'' +
                 ", amount=" + amount +
-                ", executionPrice=" + executionPrice +
                 ", avgExecutionPrice=" + avgExecutionPrice +
                 ", market='" + market + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", executedAt=" + executedAt +
+                ", fillers=" + fills +
                 '}';
     }
 }

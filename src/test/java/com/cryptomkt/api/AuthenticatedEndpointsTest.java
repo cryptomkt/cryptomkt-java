@@ -30,7 +30,7 @@ public class AuthenticatedEndpointsTest {
     }
 
     @Before
-    protected void setUp() {
+    public void setUp() {
         String apiKey = "";
         String apiSecret = "";
         try {
@@ -55,9 +55,32 @@ public class AuthenticatedEndpointsTest {
     }
 
     @Test
-    public void testCreateOrder() {
+    public void testCreateMarketOrder() {
         try {
-            Order order = client.createOrder("XLMCLP", "124", "sell", "limit", "1")
+            Order order = client.createMarketOrder("XLMCLP", "sell", "1")
+                    .getOrder();
+            this.printObject(order);
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testCreateLimitOrder() {
+        try {
+            Order order = client.createLimitOrder("XLMCLP", "sell", "1", "120")
+                    .getOrder();
+            this.printObject(order);
+        } catch (CryptoMarketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCreateOrderStopLimit() {
+        try {
+            Order order = client.createStopLimitOrder("XLMCLP", "sell", "1", "120", "120")
                     .getOrder();
             this.printObject(order);
         } catch (CryptoMarketException e) {
@@ -133,10 +156,11 @@ public class AuthenticatedEndpointsTest {
     public void testCreateMultiOrder() {
         try {
             MultiOrderRequest multiOrderRequest = new MultiOrderRequest()
-                    .add("XLMCLP", "limit", "sell", "110", "1")
-                    .add("XLMCLP", "limit", "sell", "111", "1")
-                    .add("XLMCLP", "limit", "sell", "112", "1")
-                    .add("XLMCLP", "limit", "sell", "112", "1000000000");
+                    .addMarketOrder("XLMCLP", "sell", "1")
+                    .addLimitOrder("XLMCLP", "sell", "1", "100")
+                    .addLimitOrder("XLMCLP", "sell", "1", "110")
+                    .addLimitOrder("XLMCLP", "sell", "1", "120")
+                    .addStopLimitOrder("XLMCLP", "sell", "1", "100", "110");
             CreateMultiOrderResponse createMultiOrderResponse = client.createMultiOrders(multiOrderRequest);
             printObject(createMultiOrderResponse);
         } catch (CryptoMarketException e) {
