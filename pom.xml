@@ -5,7 +5,7 @@
     <groupId>com.cryptomkt.api</groupId>
     <artifactId>cryptomarket</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
