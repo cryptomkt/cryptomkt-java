@@ -444,7 +444,9 @@ public class SocketTest extends TestCase {
             //socket.subscribe("ETHARS");
             socket.subscribe("XLMCLP");
             socket.subscribe("ETHARS");
+            socket.onOperated(System.out::println);
             socket.onBalance(System.out::println);
+            socket.onHistoricalOrders(System.out::println);
             try {
                 for (int i = 0; i <= 500; i++) {
                     System.out.println(i + " seconds");

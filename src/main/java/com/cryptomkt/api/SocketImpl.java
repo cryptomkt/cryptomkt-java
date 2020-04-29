@@ -55,7 +55,7 @@ public class SocketImpl implements Socket {
         logger.setLevel(Level.ALL);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());
-        handler.setLevel(Level.FINE);
+        handler.setLevel(Level.WARNING);
         logger.addHandler(handler);
         balancePub = new SyncJson();
         openOrdersPub = new SyncJson();
