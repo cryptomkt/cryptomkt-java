@@ -5,6 +5,7 @@ import com.cryptomkt.api.utils.*;
 import io.socket.client.IO;
 import io.socket.client.Manager;
 import io.socket.engineio.client.Transport;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -104,7 +105,7 @@ public class SocketImpl implements Socket {
             try {
                 if (!Objects.equals(currenciesData.get("to_tx"), (patch.get("from_tx")))) {
                     logger.fine("received tx ahead of current tx, retrieving data again");
-                    //socket.emit("");
+                    socket.emit("currencies");
                     return;
                 }
                 currenciesData.put("data", JSONPatcher.patch(currenciesData.get("data"), patch.get("delta_data")));
@@ -129,15 +130,19 @@ public class SocketImpl implements Socket {
         }).on("balance-delta", args -> {
             logger.fine("balance delta received");
             logger.fine(args[0].toString());
-            JSONObject patch = (JSONObject) args[0];
+            JSONArray patchList = (JSONArray) args[0];
             try {
-                if (!Objects.equals(balanceData.get("to_tx"), (patch.get("from_tx")))) {
-                    logger.fine("received tx ahead of current tx, retrieving data again");
-                    //socket.emit("");
-                    return;
+                for (int i = 0; i < patchList.length(); i++) {
+                    JSONObject patch = patchList.getJSONObject(i);
+                    if (!Objects.equals(balanceData.get("to_tx"), (patch.get("from_tx")))) {
+                        logger.fine("received tx ahead of current tx, retrieving data again");
+                        socket.emit("balance");
+                        return;
+                    }
+                    balanceData.put("data", JSONPatcher.patch(balanceData.get("data"), patch.get("delta_data")));
+                    balanceData.put("to_tx", patch.get("to_tx"));
                 }
-                balanceData.put("data", JSONPatcher.patch(balanceData.get("data"), patch.get("delta_data")));
-                balanceData.put("to_tx", patch.get("to_tx"));
+
                 String jsonString = balanceDataToSend().toString();
                 synchronized (balancePub) {
                     balancePub.setData(jsonString);
@@ -164,15 +169,18 @@ public class SocketImpl implements Socket {
         }).on("open-orders-delta", args -> {
             logger.fine("open orders delta received");
             logger.fine(args[0].toString());
-            JSONObject patch = (JSONObject) args[0];
+            JSONArray patchList = (JSONArray) args[0];
             try {
-                if (!Objects.equals(openOrdersData.get("to_tx"), (patch.get("from_tx")))) {
-                    logger.fine("received tx ahead of current tx, retrieving data again");
-                    //socket.emit("");
-                    return;
+                for (int i = 0; i < patchList.length(); i++) {
+                    JSONObject patch = patchList.getJSONObject(i);
+                    if (!Objects.equals(openOrdersData.get("to_tx"), (patch.get("from_tx")))) {
+                        logger.fine("received tx ahead of current tx, retrieving data again");
+                        socket.emit("open-orders");
+                        return;
+                    }
+                    openOrdersData.put("data", JSONPatcher.patch(openOrdersData.get("data"), patch.get("delta_data")));
+                    openOrdersData.put("to_tx", patch.get("to_tx"));
                 }
-                openOrdersData.put("data", JSONPatcher.patch(openOrdersData.get("data"), patch.get("delta_data")));
-                openOrdersData.put("to_tx", patch.get("to_tx"));
 
                 String jsonString = (new JSONObject().put("data",openOrdersData.get("data"))).toString();
                 synchronized (openOrdersPub) {
@@ -200,17 +208,20 @@ public class SocketImpl implements Socket {
         }).on("historical-orders-delta", args -> {
             logger.fine("historical orders delta received");
             logger.fine(args[0].toString());
-            JSONObject patch = (JSONObject) args[0];
+            JSONArray patchList = (JSONArray) args[0];
             try {
-                if (!Objects.equals(historicalOrdersData.get("to_tx"), (patch.get("from_tx")))) {
-                    logger.fine("received tx ahead of current tx, retrieving data again");
-                    //socket.emit("");
-                    return;
+                for (int i = 0; i < patchList.length(); i++) {
+                    JSONObject patch = patchList.getJSONObject(i);
+                    if (!Objects.equals(historicalOrdersData.get("to_tx"), (patch.get("from_tx")))) {
+                        logger.fine("received tx ahead of current tx, retrieving data again");
+                        socket.emit("historical-orders");
+                        return;
+                    }
+                    historicalOrdersData.put("data", JSONPatcher.patch(historicalOrdersData.get("data"), patch.get("delta_data")));
+                    historicalOrdersData.put("to_tx", patch.get("to_tx"));
                 }
-                historicalOrdersData.put("data", JSONPatcher.patch(historicalOrdersData.get("data"), patch.get("delta_data")));
-                historicalOrdersData.put("to_tx", patch.get("to_tx"));
 
-                String jsonString = (new JSONObject().put("data",historicalOrdersData.get("data"))).toString();
+                String jsonString = (new JSONObject().put("data", historicalOrdersData.get("data"))).toString();
                 synchronized (historicalOrdersPub) {
                     historicalOrdersPub.setData(jsonString);
                     historicalOrdersPub.notifyAll();
@@ -236,15 +247,19 @@ public class SocketImpl implements Socket {
         }).on("operated-delta", args -> {
             logger.fine("operated delta received");
             logger.fine(args[0].toString());
-            JSONObject patch = (JSONObject) args[0];
+            JSONArray patchList = (JSONArray) args[0];
             try {
-                if (!Objects.equals(operatedData.get("to_tx"), (patch.get("from_tx")))) {
-                    logger.fine("received tx ahead of current tx, retrieving data again");
-                    //socket.emit("");
-                    return;
+                for (int i = 0; i < patchList.length(); i++) {
+                    JSONObject patch = patchList.getJSONObject(i);
+                    if (!Objects.equals(operatedData.get("to_tx"), (patch.get("from_tx")))) {
+                        logger.fine("received tx ahead of current tx, retrieving data again");
+                        socket.emit("operated");
+                        return;
+                    }
+                    operatedData.put("data", JSONPatcher.patch(operatedData.get("data"), patch.get("delta_data")));
+                    operatedData.put("to_tx", patch.get("to_tx"));
                 }
-                operatedData.put("data", JSONPatcher.patch(operatedData.get("data"), patch.get("delta_data")));
-                operatedData.put("to_tx", patch.get("to_tx"));
+
                 String jsonString = operatedData.get("data").toString();
                 synchronized (operatedPub) {
                     operatedPub.setData(jsonString);
