@@ -251,7 +251,7 @@ public class SocketImpl implements Socket {
             try {
                 for (int i = 0; i < patchList.length(); i++) {
                     JSONObject patch = patchList.getJSONObject(i);
-                    if (!Objects.equals(operatedData.get("to_tx"), (patch.get("from_tx")))) {
+                    if (!Objects.equals(operatedData.get("to_tx"), patch.get("from_tx"))) {
                         logger.fine("received tx ahead of current tx, retrieving data again");
                         socket.emit("operated");
                         return;
@@ -298,7 +298,7 @@ public class SocketImpl implements Socket {
                         !Objects.equals(
                                 openBookData.getJSONObject(stockId).get("to_tx"),
                                 patch.get("from_tx"))) {
-                    logger.warning("open book received tx ahead of current tx or new stock id, retrieving data again");
+                    logger.fine("open book received tx ahead of current tx or new stock id, retrieving data again");
                     socket.emit("open-book", new JSONObject().put("stockId", stockId));
                     return;
                 }
@@ -346,7 +346,7 @@ public class SocketImpl implements Socket {
                         !Objects.equals(
                                 historicalBookData.getJSONObject(stockId).get("to_tx"),
                                 patch.get("from_tx"))) {
-                    logger.warning("historical book received tx ahead of current tx or new stock id, retrieving data again");
+                    logger.fine("historical book received tx ahead of current tx or new stock id, retrieving data again");
                     socket.emit("historical-book", new JSONObject().put("stockId", stockId));
                     return;
                 }

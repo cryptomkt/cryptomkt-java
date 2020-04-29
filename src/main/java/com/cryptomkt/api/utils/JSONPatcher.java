@@ -58,7 +58,8 @@ public class JSONPatcher {
             throw new JSONPatchException("removal should not happen here");
         } else if (JSONPatcher.isTextModification(delta)) {
             LinkedList<DiffMatchPatch.Patch> patches = (LinkedList<DiffMatchPatch.Patch>) dmp.patch_fromText((String) delta.get(0));
-            return dmp.patch_apply(patches, (String) object);
+            Object[] patched = dmp.patch_apply(patches, (String) object);
+            return patched[0];
         } else { // there are no more cases, so an error just happen if we are here
             throw new JSONPatchException("invalid delta of value");
         }

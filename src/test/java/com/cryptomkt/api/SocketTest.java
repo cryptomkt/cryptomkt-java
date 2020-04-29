@@ -1,6 +1,7 @@
 package com.cryptomkt.api;
 
 import com.cryptomkt.api.exception.CryptoMarketException;
+import com.cryptomkt.api.utils.DiffMatchPatch;
 import com.cryptomkt.api.utils.IntPair;
 import com.cryptomkt.api.utils.JSONPatchException;
 import com.cryptomkt.api.utils.JSONPatcher;
@@ -117,7 +118,7 @@ public class SocketTest extends TestCase {
         assertTrue(true);
     }
 
-    public void testmanyHandlersAllEventsOneToOne() {
+    public void testManyHandlersAllEventsOneToOne() {
         try {
             Socket socket = client.getSocket();
             System.out.println(Thread.currentThread().getName());
@@ -322,10 +323,8 @@ public class SocketTest extends TestCase {
         strb.append("suggest that the lands newly discovered by Europeans were");
         strb.append("not India, but a New World unknown to Europeans.");
         String origin = strb.toString();
+
         StringBuilder strb2 = new StringBuilder();
-
-
-
         strb2.append("South America (Spanish: América del Sur, Sudamérica or");
         strb2.append("Suramérica; Portuguese: América do Sul; Quechua and Aymara:");
         strb2.append("Urin Awya Yala; Guarani: Ñembyamérika; Dutch: Zuid-Amerika;");
@@ -357,17 +356,21 @@ public class SocketTest extends TestCase {
 
         try {
             JSONObject jsonOrigin = new JSONObject();
-            jsonOrigin.put("data",origin);
+            jsonOrigin.put("data", origin);
             JSONObject delta = new JSONObject();
             delta.put("data",new JSONArray(patchString));
-            Object result = JSONPatcher.patch(jsonOrigin, delta);
-            // seeing the change from "s" to "z" in brazil y the "also known as" to "a.k.a"
-            // it works
-            System.out.println(origin);
+            JSONObject result = (JSONObject) JSONPatcher.patch(jsonOrigin, delta);
+
+            DiffMatchPatch dmp = new DiffMatchPatch();
+            LinkedList<DiffMatchPatch.Patch> patches =
+                    (LinkedList<DiffMatchPatch.Patch>) dmp.patch_fromText((String) delta.getJSONArray("data").get(0));
+            Object[] patched = dmp.patch_apply(patches, origin);
+            //System.out.println(origin);
             assert result != null;
-            System.out.println(result.toString());
-            // BUT, trying equalitiy fails...?
-            System.out.println(destiny.equals(result));
+            System.out.println(destiny);
+            System.out.println(patched[0].toString());
+            System.out.println((result.get("data")).toString());
+            System.out.println(Objects.equals(destiny, result.get("data")));
         } catch (JSONException | JSONPatchException e ) {
             e.printStackTrace();
         }
@@ -430,6 +433,29 @@ public class SocketTest extends TestCase {
 
 
         } catch (IOException | JSONException | JSONPatchException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void testOnOpenOrders() {
+        Socket socket = null;
+        try {
+            socket = client.getSocket();
+            //socket.subscribe("ETHARS");
+            socket.subscribe("XLMCLP");
+            socket.subscribe("ETHARS");
+            socket.onOperated(System.out::println);
+            socket.onBalance(System.out::println);
+            socket.onHistoricalOrders(System.out::println);
+            try {
+                for (int i = 0; i <= 500; i++) {
+                    System.out.println(i + " seconds");
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (CryptoMarketException e) {
             e.printStackTrace();
         }
     }
