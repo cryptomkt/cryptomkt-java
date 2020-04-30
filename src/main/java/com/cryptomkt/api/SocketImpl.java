@@ -5,6 +5,7 @@ import com.cryptomkt.api.utils.*;
 import io.socket.client.IO;
 import io.socket.client.Manager;
 import io.socket.engineio.client.Transport;
+import jdk.internal.jline.internal.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +28,9 @@ public class SocketImpl implements Socket {
     String url_worker = "https://worker.cryptomkt.com";
     IO.Options opts;
     io.socket.client.Socket socket;
+
+    // auth fields
+    private SocAuthResponse authToken;
 
     //data fields
     private JSONObject currenciesData;
@@ -57,6 +61,9 @@ public class SocketImpl implements Socket {
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.WARNING);
         logger.addHandler(handler);
+
+        this.authToken = authToken;
+
         balancePub = new SyncJson();
         openOrdersPub = new SyncJson();
         historicalOrdersPub = new SyncJson();
@@ -76,7 +83,7 @@ public class SocketImpl implements Socket {
         opts.reconnectionDelay = 1000;
         opts.reconnectionDelayMax = 15000;
         opts.transports = new String[]{"websocket"};
-        System.out.println("creating socket");
+
         socket = IO.socket(url_worker, opts);
         socket.io().on(Manager.EVENT_TRANSPORT, args -> {
             Transport transport = (Transport) args[0];
@@ -84,14 +91,7 @@ public class SocketImpl implements Socket {
         });
         socket.on(io.socket.client.Socket.EVENT_CONNECT, args -> {
             logger.fine("connected");
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("socid", authToken.getSocAuth().getSocid());
-                obj.put("uid", authToken.getSocAuth().getUid());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            socket.emit("user-auth", obj);
+            this.auth();
         }).on(io.socket.client.Socket.EVENT_DISCONNECT, args -> logger.fine("disconnected")
         ).on("currencies", args -> {
             logger.fine("currencies data received");
@@ -565,5 +565,33 @@ public class SocketImpl implements Socket {
     public void onTicker(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, tickerPub);
         subscriber.start();
+    }
+
+    private void auth() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("socid", this.authToken.getSocAuth().getSocid());
+            obj.put("uid", this.authToken.getSocAuth().getUid());
+
+            socket.emit("user-auth", obj);
+        } catch (JSONException e) {
+            Log.error(e.toString());
+        }
+    }
+
+    @Override
+    public void setAuthToken(SocAuthResponse authToken) {
+        this.authToken = authToken;
+        this.auth();
+    }
+
+    @Override
+    public void connect() {
+        this.socket.connect();
+    }
+
+    @Override
+    public void disconnect() {
+        this.socket.disconnect();
     }
 }

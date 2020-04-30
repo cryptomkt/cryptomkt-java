@@ -1,5 +1,6 @@
 package com.cryptomkt.api;
 
+import com.cryptomkt.api.entity.SocAuthResponse;
 import com.cryptomkt.api.utils.Callable;
 import org.json.JSONObject;
 
@@ -99,5 +100,22 @@ public interface Socket {
      * @param consumer
      */
     void onTicker(Consumer<JSONObject> consumer);
+
+    /**
+     * Set credentials for socket auth
+     *
+     * @param authToken: Credentials for socket auth
+     */
+    void setAuthToken(SocAuthResponse authToken);
+
+    /**
+     * Connect socket
+     */
+    void connect();
+
+    /**
+     * Disconnect socket
+     */
+    void disconnect();
 }
 
