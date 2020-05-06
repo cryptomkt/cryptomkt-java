@@ -21,6 +21,5 @@ public class App {
             System.out.println("Status: " + order.getStatus());
             System.out.println("Type: " + order.getType());
         }
-
     }
 }

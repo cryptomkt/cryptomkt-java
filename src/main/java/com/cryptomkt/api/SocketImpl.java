@@ -5,12 +5,12 @@ import com.cryptomkt.api.utils.*;
 import io.socket.client.IO;
 import io.socket.client.Manager;
 import io.socket.engineio.client.Transport;
-import jdk.internal.jline.internal.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +42,7 @@ public class SocketImpl implements Socket {
     private JSONObject historicalBookData;
     private JSONObject candlesData;
     private JSONObject tickerData;
+    private List<Subscriber> subscribers;
 
     final SyncJson balancePub;
     final SyncJson openOrdersPub;
@@ -76,6 +77,7 @@ public class SocketImpl implements Socket {
         historicalBookData = new JSONObject();
         openBookData = new JSONObject();
         candlesData = new JSONObject();
+        subscribers = new ArrayList<>();
 
         opts = new IO.Options();
         opts.reconnection = true;
@@ -522,48 +524,56 @@ public class SocketImpl implements Socket {
     @Override
     public void onBalance(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, balancePub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openOrdersPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalOrdersPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOperated(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, operatedPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openBookPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalBookPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onCandles(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, candlePub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onTicker(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, tickerPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
@@ -575,8 +585,14 @@ public class SocketImpl implements Socket {
 
             socket.emit("user-auth", obj);
         } catch (JSONException e) {
-            Log.error(e.toString());
+            logger.severe(e.toString());
         }
+    }
+
+    @Override
+    public void close() {
+        this.socket.close();
+        this.subscribers.forEach(Thread::interrupt);
     }
 
     @Override
@@ -592,6 +608,6 @@ public class SocketImpl implements Socket {
 
     @Override
     public void disconnect() {
-        this.socket.disconnect();
+        this.close();
     }
 }
