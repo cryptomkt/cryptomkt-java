@@ -1,12 +1,12 @@
 package com.cryptomkt.api;
 
-import com.cryptomkt.api.utils.Callable;
 import org.json.JSONObject;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface Socket {
+public interface Socket extends Closeable {
 
     /**
      * subscribe to start receiving candle data and open book data from a market pair
