@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +39,7 @@ public class SocketImpl implements Socket {
     private JSONObject historicalBookData;
     private JSONObject candlesData;
     private JSONObject tickerData;
+    private List<Subscriber> subscribers;
 
     final SyncJson balancePub;
     final SyncJson openOrdersPub;
@@ -69,6 +71,7 @@ public class SocketImpl implements Socket {
         historicalBookData = new JSONObject();
         openBookData = new JSONObject();
         candlesData = new JSONObject();
+        subscribers = new ArrayList<>();
 
         opts = new IO.Options();
         opts.reconnection = true;
@@ -520,50 +523,64 @@ public class SocketImpl implements Socket {
     }
 
     @Override
+    public void close() {
+        socket.close();
+        subscribers.forEach(Thread::interrupt);
+    }
+
+    @Override
     public void onBalance(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, balancePub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openOrdersPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalOrdersPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOperated(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, operatedPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openBookPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalBookPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onCandles(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, candlePub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onTicker(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, tickerPub);
+        subscribers.add(subscriber);
         subscriber.start();
     }
 }
