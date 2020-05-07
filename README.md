@@ -47,13 +47,13 @@ Maven
 <dependency>
     <groupId>com.cryptomkt.api</groupId>
     <artifactId>cryptomarket</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.7</version>
 </dependency>
 ```
 
 Gradle
 ```
-compile group: 'com.cryptomkt.api', name: 'cryptomarket', version: '1.0.4'
+compile group: 'com.cryptomkt.api', name: 'cryptomarket', version: '1.0.7'
 ```
 
 ## Quick Start
