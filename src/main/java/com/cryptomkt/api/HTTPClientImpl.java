@@ -89,7 +89,6 @@ public class HTTPClientImpl implements HTTPClient {
         conn.setHeader("X-MKT-SIGNATURE", signature);
         conn.setHeader("X-MKT-TIMESTAMP", nonce);
         conn.setHeader("Content-Type", "application/x-www-form-urlencoded");
-
     }
 
     private String runRequest(HttpRequestBase httpRequest)

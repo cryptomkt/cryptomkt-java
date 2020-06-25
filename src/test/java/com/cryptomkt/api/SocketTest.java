@@ -2,7 +2,7 @@ package com.cryptomkt.api;
 
 import com.cryptomkt.api.exception.CryptoMarketException;
 import com.cryptomkt.api.utils.DiffMatchPatch;
-import com.cryptomkt.api.utils.IntPair;
+import com.cryptomkt.api.utils.Int3Tuple;
 import com.cryptomkt.api.utils.JSONPatchException;
 import com.cryptomkt.api.utils.JSONPatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -243,7 +243,7 @@ public class SocketTest extends TestCase {
         }
     }
 
-    public void testAddingTolist() {
+    public void testAddingToList() {
         List<Integer> list = new ArrayList<>();
         for (int i=0;i<10;i++) {
             list.add(i);
@@ -251,17 +251,17 @@ public class SocketTest extends TestCase {
         list.add(3,100);
         System.out.println(list);
     }
-    public void testPairList() {
-        List<IntPair> moveList = new ArrayList<>();
-        moveList.add(new IntPair(1,2));
-        moveList.add(new IntPair(40,8));
-        moveList.add(new IntPair(21,12));
-        moveList.add(new IntPair(18,2333));
-        moveList.add(new IntPair(132,25));
+    public void test3TupleOrdering() {
+        List<Int3Tuple> moveList = new ArrayList<>();
+        moveList.add(new Int3Tuple(1,2, 1));
+        moveList.add(new Int3Tuple(40,8, 1));
+        moveList.add(new Int3Tuple(21,12, 1));
+        moveList.add(new Int3Tuple(18,2333, 1));
+        moveList.add(new Int3Tuple(132,25, 1));
 
-        moveList.sort(Comparator.comparing(pair -> pair.snd));
-        for (IntPair pair: moveList) {
-            System.out.println(pair);
+        moveList.sort(Comparator.comparing(tuple -> tuple.snd));
+        for (Int3Tuple tuple: moveList) {
+            System.out.println(tuple);
         }
     }
 

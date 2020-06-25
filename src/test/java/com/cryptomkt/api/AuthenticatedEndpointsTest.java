@@ -34,7 +34,7 @@ public class AuthenticatedEndpointsTest {
         String apiKey = "";
         String apiSecret = "";
         try {
-            List<String> allLines = Files.readAllLines(Paths.get("/home/ismael/cptmkt/keys.txt"));
+            List<String> allLines = Files.readAllLines(Paths.get("/home/ismael/cptmkt/apis/keys.txt"));
             apiKey = allLines.get(0);
             apiSecret = allLines.get(1);
         } catch (IOException e) {

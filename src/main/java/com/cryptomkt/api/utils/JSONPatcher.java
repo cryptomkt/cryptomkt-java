@@ -81,15 +81,10 @@ public class JSONPatcher {
         return jsonArray.length() == 1;
     }
 
-    // only works when the json array is inside a json object, so we keep the object, and change the pointer
-    // to the array to point to a new array.
-    // if this is not the case, and the array is in no structure, then we cannot make removals in the
-    // json array and thus is no use for us.
     private static JSONArray patchArray(JSONArray jsonArray, JSONObject delta) throws JSONException, JSONPatchException {
         List<Integer> removeList = new ArrayList<>();
-        List<IntPair> moveList = new ArrayList<>();
+        List<Int3Tuple> insertList = new ArrayList<>();
         List<Integer> patchList = new ArrayList<>();
-        List<Integer> valuePatchList = new ArrayList<>();
         Iterator<?> iter = delta.keys();
         while (iter.hasNext()) {
             String key = (String) iter.next();
@@ -100,7 +95,9 @@ public class JSONPatcher {
                     if (JSONPatcher.isRemoval((JSONArray) innerDelta)) { // is a removal in array
                         removeList.add(index);
                     } else if (JSONPatcher.isMovement((JSONArray) innerDelta)) { // is a movement in array
-                        moveList.add(new IntPair(index, (Integer) ((JSONArray) innerDelta).get(1)));
+                        removeList.add(index);
+                        // 3-tuple is (from idx, to idx, arr or delta ref)
+                        insertList.add(Int3Tuple.newArrayRef(index, (Integer) ((JSONArray) innerDelta).get(1)));
                     } else { // if we are here, the change with an old index
                         // is not a removal or a movement, so its an error
                         throw new JSONPatchException("old index delta is not a remove or a move:" + key);
@@ -111,12 +108,12 @@ public class JSONPatcher {
             } else if (key.charAt(0) != '_') { // is new index
                 int index = Integer.parseInt(key);
                 Object innerDelta = delta.get(key);
-                if (innerDelta instanceof JSONObject) { // is an inner delta to apply over a json object in the array
-                    patchList.add(index);
-                } else if (innerDelta instanceof JSONArray) { // is a delta to apply over a json value in the array
-                    valuePatchList.add(index);
-                } else { // if we are here, then it wasn't a value change, so its an error
-                    throw new JSONPatchException("new index delta is not an inner delta or a delta of a value");
+                if ((innerDelta instanceof JSONArray) && (((JSONArray) innerDelta).length() == 1)) { // is an insertion
+                        // 3-tuple is (from idx, to idx, arr or delta ref)
+                        insertList.add(Int3Tuple.newDeltaRef(index, index));
+                } else {
+                    // is a patch to apply over an existing value in the array
+                        patchList.add(index);
                 }
             } else { // if we are here, then it was the "_t" key in the delta to indicate an array delta
                 // otherwise is an error
@@ -130,38 +127,36 @@ public class JSONPatcher {
         // using a temporal list<Object> to hold the new data is the ideal, as JSONArray support
         // additions of new elements and reassignment of old, but not removals.
         List<Object> tempList = new ArrayList<>();
+        // temp data list
+        for (int i = 0; i < jsonArray.length(); i++) {
+            tempList.add(jsonArray.get(i));
+        }
 
-        // first removals, then movement, then patchs of inner objects and arrays and patchs of values
+        // first removals, then insertions, then patches
 
         // removals must be from greater index to lower index
         Collections.sort(removeList);
         Collections.reverse(removeList);
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            tempList.add(jsonArray.get(i));
-        }
         for (int idx : removeList) {
             tempList.remove(idx);
         }
 
-        // now to add the elements that were moved, from the lower idx to the greatest.
-        moveList.sort(Comparator.comparing(pair -> pair.snd));
-        // the first index is from, the second is to.
-        for (IntPair pair : moveList) {
-            tempList.add(pair.snd, jsonArray.get(pair.fst));
-        }
-
-        for (int idx : valuePatchList) {
-            if (tempList.size() <= idx) {
-                tempList.add(idx, JSONPatcher.patch(JSONObject.NULL, delta.get(String.valueOf(idx))));
-            } else {
-                tempList.add(idx, JSONPatcher.patch(tempList.get(idx), delta.get(String.valueOf(idx))));
+        // insertions go from the lower idx to the greatest. the ordering is over the
+        // index in the new array, so over the 'to' value (snd) in the tuples
+        insertList.sort(Comparator.comparing(tuple -> tuple.snd));
+        // the first index is from, the second is to, the third is an indicator for the from ref (from index of array or of delta)
+        for (Int3Tuple tuple : insertList) {
+            if (tuple.isDeltaRef()) {
+                tempList.add(tuple.snd, ((JSONArray) delta.get(String.valueOf(tuple.fst))).get(0));
+            } else {// tuple.isArrayRef()
+                tempList.add(tuple.snd, jsonArray.get(tuple.fst));
             }
         }
 
         // last is to apply the inner deltas
         for (int idx : patchList) {
-            JSONPatcher.patch(tempList.get(idx), delta.get(String.valueOf(idx)));
+            tempList.set(idx, JSONPatcher.patch(tempList.get(idx), delta.get(String.valueOf(idx))));
         }
         // and now to get our finished json array
         return new JSONArray(tempList);
