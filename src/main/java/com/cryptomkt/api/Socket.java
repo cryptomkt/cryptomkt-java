@@ -1,12 +1,13 @@
 package com.cryptomkt.api;
 
-import com.cryptomkt.api.utils.Callable;
+import com.cryptomkt.api.entity.SocAuthResponse;
 import org.json.JSONObject;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface Socket {
+public interface Socket extends Closeable {
 
     /**
      * subscribe to start receiving candle data and open book data from a market pair
@@ -99,5 +100,22 @@ public interface Socket {
      * @param consumer
      */
     void onTicker(Consumer<JSONObject> consumer);
+
+    /**
+     * Set credentials for socket auth
+     *
+     * @param authToken: Credentials for socket auth
+     */
+    void setAuthToken(SocAuthResponse authToken);
+
+    /**
+     * Connect socket
+     */
+    void connect();
+
+    /**
+     * Disconnect socket
+     */
+    void disconnect();
 }
 

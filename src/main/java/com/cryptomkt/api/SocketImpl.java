@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,9 @@ public class SocketImpl implements Socket {
     IO.Options opts;
     io.socket.client.Socket socket;
 
+    // auth fields
+    private SocAuthResponse authToken;
+
     //data fields
     private JSONObject currenciesData;
     private JSONObject balanceData;
@@ -38,6 +42,7 @@ public class SocketImpl implements Socket {
     private JSONObject historicalBookData;
     private JSONObject candlesData;
     private JSONObject tickerData;
+    private List<Subscriber> subscribers;
 
     final SyncJson balancePub;
     final SyncJson openOrdersPub;
@@ -57,6 +62,9 @@ public class SocketImpl implements Socket {
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.WARNING);
         logger.addHandler(handler);
+
+        this.authToken = authToken;
+
         balancePub = new SyncJson();
         openOrdersPub = new SyncJson();
         historicalOrdersPub = new SyncJson();
@@ -69,6 +77,7 @@ public class SocketImpl implements Socket {
         historicalBookData = new JSONObject();
         openBookData = new JSONObject();
         candlesData = new JSONObject();
+        subscribers = new ArrayList<>();
 
         opts = new IO.Options();
         opts.reconnection = true;
@@ -76,7 +85,7 @@ public class SocketImpl implements Socket {
         opts.reconnectionDelay = 1000;
         opts.reconnectionDelayMax = 15000;
         opts.transports = new String[]{"websocket"};
-        System.out.println("creating socket");
+
         socket = IO.socket(url_worker, opts);
         socket.io().on(Manager.EVENT_TRANSPORT, args -> {
             Transport transport = (Transport) args[0];
@@ -84,14 +93,7 @@ public class SocketImpl implements Socket {
         });
         socket.on(io.socket.client.Socket.EVENT_CONNECT, args -> {
             logger.fine("connected");
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("socid", authToken.getSocAuth().getSocid());
-                obj.put("uid", authToken.getSocAuth().getUid());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            socket.emit("user-auth", obj);
+            this.auth();
         }).on(io.socket.client.Socket.EVENT_DISCONNECT, args -> logger.fine("disconnected")
         ).on("currencies", args -> {
             logger.fine("currencies data received");
@@ -522,48 +524,90 @@ public class SocketImpl implements Socket {
     @Override
     public void onBalance(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, balancePub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openOrdersPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalOrders(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalOrdersPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOperated(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, operatedPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onOpenBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, openBookPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onHistoricalBook(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, historicalBookPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onCandles(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, candlePub);
+        this.subscribers.add(subscriber);
         subscriber.start();
     }
 
     @Override
     public void onTicker(Consumer<JSONObject> consumer) {
         Subscriber subscriber = new Subscriber(consumer, tickerPub);
+        this.subscribers.add(subscriber);
         subscriber.start();
+    }
+
+    private void auth() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("socid", this.authToken.getSocAuth().getSocid());
+            obj.put("uid", this.authToken.getSocAuth().getUid());
+
+            socket.emit("user-auth", obj);
+        } catch (JSONException e) {
+            logger.severe(e.toString());
+        }
+    }
+
+    @Override
+    public void close() {
+        this.socket.close();
+        this.subscribers.forEach(Thread::interrupt);
+    }
+
+    @Override
+    public void setAuthToken(SocAuthResponse authToken) {
+        this.authToken = authToken;
+        this.auth();
+    }
+
+    @Override
+    public void connect() {
+        this.socket.connect();
+    }
+
+    @Override
+    public void disconnect() {
+        this.close();
     }
 }
