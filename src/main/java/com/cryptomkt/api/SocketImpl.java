@@ -57,7 +57,7 @@ public class SocketImpl implements Socket {
 
     public SocketImpl(SocAuthResponse authToken) throws URISyntaxException {
         logger = Logger.getLogger(this.getClass().getName());
-        logger.setLevel(Level.ALL);
+        logger.setLevel(Level.SEVERE);
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new SimpleFormatter());
         handler.setLevel(Level.WARNING);
