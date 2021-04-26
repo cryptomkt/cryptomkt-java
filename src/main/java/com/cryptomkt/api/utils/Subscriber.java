@@ -18,7 +18,8 @@ public class Subscriber extends Thread{
     @Override
     public void run() {
         JSONObject data;
-        while (true) {
+        boolean interrupted = false;
+        while (!interrupted) {
             try {
                 synchronized (syncJson) {
                     syncJson.wait();
@@ -27,6 +28,7 @@ public class Subscriber extends Thread{
                 consumer.accept(data);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                interrupted = true;
             }
 
         }
