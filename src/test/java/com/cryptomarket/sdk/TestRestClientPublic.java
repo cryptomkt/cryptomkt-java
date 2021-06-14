@@ -22,7 +22,7 @@ import com.cryptomarket.params.Sort;
 import org.junit.Test;
 
 public class TestRestClientPublic {
-    CryptomktRestClient client = new CryptomktRestClientImpl();
+    CryptomarketRestClient client = new CryptomarketRestClientImpl();
     
 
     @Test

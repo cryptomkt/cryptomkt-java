@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Client
  */
-public interface CryptomktRestClient {
+public interface CryptomarketRestClient {
 
     /**
      * Get a list of all currencies or specified currencies.
@@ -403,17 +403,16 @@ public interface CryptomktRestClient {
     public Order createOrder(OrderRequest orderRequest) throws CryptomarketSDKException;
 
     /**
-     * Cancel all active orders, or all active orders for a specified symbol.
+     * Cancel all active orders.
      * <p>
      * Requires authentication
      * <p>
      * https://api.exchange.cryptomkt.com/#cancel-orders
      * 
-     * @param symbol Optional. If given, cancels all orders of the symbol. If not given, cancels all orders of all symbols
      * @return All the canceled orders
      * @throws CryptomarketSDKException
      */
-    public List<Order> cancelAllOrders(@Nullable String symbol) throws CryptomarketSDKException;
+    public List<Order> cancelAllOrders() throws CryptomarketSDKException;
 
     /**
      * Cancel the order with clientOrderId.

@@ -12,7 +12,7 @@ import com.cryptomarket.sdk.models.Trade;
 import org.junit.Test;
 
 public class TestRestClientTradingHistory {
-    CryptomktRestClient client = new CryptomktRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    CryptomarketRestClient client = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
 
     @Test
     public void testGetOrderHistoryAndGetOrders() {

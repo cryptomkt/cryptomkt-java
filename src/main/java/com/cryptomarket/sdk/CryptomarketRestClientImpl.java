@@ -30,17 +30,17 @@ import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
 
-public class CryptomktRestClientImpl implements CryptomktRestClient {
+public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     HttpClient httpClient;
     Adapter adapter = new Adapter();
 
-    public CryptomktRestClientImpl(String apiKey, String apiSecret) {
+    public CryptomarketRestClientImpl(String apiKey, String apiSecret) {
         // httpClient = new HttpClientImpl(apiKey, apiSecret);
         // httpClient = new HttpClientApacheWithBasic(apiKey, apiSecret);
         httpClient = new HttpClientImpl(apiKey, apiSecret);
     }
 
-    public CryptomktRestClientImpl() {
+    public CryptomarketRestClientImpl() {
         this("","");
     }
 
@@ -314,9 +314,8 @@ public class CryptomktRestClientImpl implements CryptomktRestClient {
     }
 
     @Override
-    public List<Order> cancelAllOrders(String symbol) throws CryptomarketSDKException {
+    public List<Order> cancelAllOrders() throws CryptomarketSDKException {
         Map<String, String> params = new HashMap<String, String>();
-        if (symbol != null) params.put("symbol", symbol);
         String jsonResponse = httpClient.delete("order", params);
         return adapter.listFromJson(jsonResponse, Order.class);
     }

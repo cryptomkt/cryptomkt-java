@@ -16,7 +16,7 @@ import com.cryptomarket.params.Side;
 import org.junit.Test;
 
 public class TestRestClientTrading {
-    CryptomktRestClient client = new CryptomktRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    CryptomarketRestClient client = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
 
 
     @Test
@@ -44,7 +44,7 @@ public class TestRestClientTrading {
     @Test
     public void testCancelAllOrders() {
         try {
-            List<Order> orders = client.cancelAllOrders(null);
+            List<Order> orders = client.cancelAllOrders();
             orders.forEach(Checker.checkOrder);
         } catch (CryptomarketSDKException e) {
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class TestRestClientTrading {
     @Test
     public void testCancelOrdersOfSymbol() {
         try {
-            client.cancelAllOrders(null);
+            client.cancelAllOrders();
             client.createOrder(new OrderRequest.Builder()
                 .symbol("EOSBTC")
                 .side(Side.SELL)
@@ -72,10 +72,9 @@ public class TestRestClientTrading {
                 .price("1000")
                 .build()
             );
-            List<Order> orders = client.cancelAllOrders("EOSBTC");
+            List<Order> orders = client.cancelAllOrders();
             System.out.println(orders.size());
-            assertTrue(orders.size() == 1);
-            client.cancelAllOrders(null);
+            assertTrue(orders.size() == 2);
             
             orders.forEach(Checker.checkOrder);
         } catch (CryptomarketSDKException e) {

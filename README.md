@@ -26,7 +26,7 @@ add the Maven dependency
 // instance a client
 String api_key = "AB32B3201";
 String api_secret= "21b12401";
-CryptomktRestClient client = new CryptomktRestClientImpl(api_key, api_secret);
+CryptomarketRestClient client = new CryptomarketRestClientImpl(api_key, api_secret);
 
 // get all currencies
 List<Currency> currencies = client.getCurrencies(null);
@@ -208,7 +208,7 @@ try {
 ```java
 
 // rest exceptions
-CryptomktRestClient client = new CryptomktRestClientImpl(api_key, api_secret);
+CryptomarketRestClient client = new CryptomarketRestClientImpl(api_key, api_secret);
 
 // all rest client methods can throw a CryptomarketApiException
 try {

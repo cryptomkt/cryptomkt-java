@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 public class AppTest 
     extends TestCase
 {
-    CryptomktRestClient client = new CryptomktRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    CryptomarketRestClient client = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
     /**
      * Create the test case
      *

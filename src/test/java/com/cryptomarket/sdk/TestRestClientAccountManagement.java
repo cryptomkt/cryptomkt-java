@@ -13,7 +13,7 @@ import com.cryptomarket.sdk.models.Currency;
 import org.junit.Test;
 
 public class TestRestClientAccountManagement {
-    CryptomktRestClient client = new CryptomktRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    CryptomarketRestClient client = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
 
     @Test
     public void testGetAccountBalance() {

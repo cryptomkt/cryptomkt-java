@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class TestWSAccountClientSubs {
     CryptomarketWSAccountClient wsClient;
-    CryptomktRestClient restClient;
+    CryptomarketRestClient restClient;
     Boolean authenticated = false;
     Callback<Boolean> resultCallback = new Callback<Boolean>() {
         @Override
@@ -35,7 +35,7 @@ public class TestWSAccountClientSubs {
         try {
             wsClient = new CryptomarketWSAccountClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
             wsClient.connect();
-            restClient = new CryptomktRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+            restClient = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
             try {TimeUnit.SECONDS.sleep(3);} catch (InterruptedException e) {fail();}
         } catch (Exception e) {
             e.printStackTrace();
