@@ -1,6 +1,7 @@
 package com.cryptomarket.sdk.websocket;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.cryptomarket.sdk.Adapter;
@@ -16,6 +17,7 @@ public class ClientBase implements Handler {
     OrderbookCache OBCache = new OrderbookCache();
     public Adapter adapter = new Adapter();
     private WebSocketConnection websocket;
+    private Map<String,String> subscriptionKeys;
 
     static class Payload {
         String method;
@@ -33,7 +35,12 @@ public class ClientBase implements Handler {
     protected ClientBase(String url) {
         Moshi moshi = new Moshi.Builder().build();
         payloadAdapter = moshi.adapter(Payload.class);
+        this.subscriptionKeys = new HashMap<String, String>();
         websocket = new WebSocketConnection(this, url);
+    }
+
+    protected Map<String, String> getSubscritpionKeys() {
+        return this.subscriptionKeys;
     }
 
     protected void sendSubscription(String method, Map<String, Object> params, Interceptor feedInterceptor,
@@ -67,7 +74,7 @@ public class ClientBase implements Handler {
     }
 
     protected void handleNotification(WSJsonResponse response) {
-        String key = "subscription";
+        String key = buildKey(response.getMethod());
         Interceptor interceptor = interceptorCache.getSubscriptionInterceptor(key);
         if (interceptor != null) interceptor.makeCall(response);
     }
@@ -77,7 +84,14 @@ public class ClientBase implements Handler {
         if (interceptor != null) interceptor.makeCall(response);
     }
 
+
+    protected String buildKey(String method) {
+        if (subscriptionKeys.containsKey(method)) return this.subscriptionKeys.get(method);
+        return "subscription";
+    }
+
     protected String buildKey(String method, Map<String, Object> params) {
+        if (subscriptionKeys.containsKey(method)) return this.subscriptionKeys.get(method);
         return "subscription";
     }
 

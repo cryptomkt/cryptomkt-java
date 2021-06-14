@@ -20,35 +20,15 @@ public class CryptomarketWSAccountClientImpl extends AuthClient implements Crypt
 
     public CryptomarketWSAccountClientImpl(String apiKey, String apiSecret) throws IOException {
         super("wss://api.exchange.cryptomkt.com/api/2/ws/account", apiKey, apiSecret);
-    }
-
-    @Override
-    public void subscribeToTransactions(Callback<Transaction> callback, Callback<Boolean> resultCallback) {
-        Map<String, Object> params = new HashMap<>();
-        Interceptor interceptor = new Interceptor() {
-            @Override
-            public void makeCall(WSJsonResponse response) {
-                ErrorBody error = response.getError();
-                if (error != null) {
-                    callback.reject(new CryptomarketAPIException(error));
-                } else {
-                    Transaction transaction = adapter.objectFromValue(response.getParams(), Transaction.class);
-                    callback.resolve(transaction);
-                }
-            }
-        };
-        Interceptor resultInterceptor = (resultCallback == null) ? null
-                : InterceptorFactory.newOfWSResponseObject(resultCallback, Boolean.class);
-        sendSubscription("subscribeTransactions", params, interceptor, resultInterceptor);
-    }
-
-    @Override
-    public void unsubscribeToTransactions(Callback<Boolean> callback) {
-        Interceptor interceptor = 
-            (callback == null) ? 
-            null : 
-            InterceptorFactory.newOfWSResponseObject(callback, Boolean.class);
-        sendUnsubscription("unsubscribeTicker", null, interceptor);
+        Map<String, String> subsKeys = this.getSubscritpionKeys();
+        // transactions
+        subsKeys.put("unsubscribeTransactions","transactions");
+        subsKeys.put("subscribeTransactions","transactions");
+        subsKeys.put("updateTransaction","transactions");
+        //balance
+        subsKeys.put("unsubscribeBalance","balance");
+        subsKeys.put("subscribeBalance","balance");
+        subsKeys.put("balance","balance");
     }
 
     @Override
@@ -115,5 +95,63 @@ public class CryptomarketWSAccountClientImpl extends AuthClient implements Crypt
             showSenders,
             callback);
 
+    }
+
+    @Override
+    public void subscribeToTransactions(Callback<Transaction> callback, Callback<Boolean> resultCallback) {
+        Map<String, Object> params = new HashMap<>();
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public void makeCall(WSJsonResponse response) {
+                ErrorBody error = response.getError();
+                if (error != null) {
+                    callback.reject(new CryptomarketAPIException(error));
+                } else {
+                    Transaction transaction = adapter.objectFromValue(response.getParams(), Transaction.class);
+                    callback.resolve(transaction);
+                }
+            }
+        };
+        Interceptor resultInterceptor = (resultCallback == null) ? null
+                : InterceptorFactory.newOfWSResponseObject(resultCallback, Boolean.class);
+        sendSubscription("subscribeTransactions", params, interceptor, resultInterceptor);
+    }
+
+    @Override
+    public void unsubscribeToTransactions(Callback<Boolean> callback) {
+        Interceptor interceptor = 
+            (callback == null) ? 
+            null : 
+            InterceptorFactory.newOfWSResponseObject(callback, Boolean.class);
+        sendUnsubscription("unsubscribeTicker", null, interceptor);
+    }
+
+    @Override
+    public void subscribeToBalance(Callback<List<Balance>> callback, Callback<Boolean> resultCallback) {
+        Map<String, Object> params = new HashMap<>();
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public void makeCall(WSJsonResponse response) {
+                ErrorBody error = response.getError();
+                if (error != null) {
+                    callback.reject(new CryptomarketAPIException(error));
+                } else {
+                    List<Balance> balances = adapter.listFromValue(response.getParams(), Balance.class);
+                    callback.resolve(balances);
+                }
+            }
+        };
+        Interceptor resultInterceptor = (resultCallback == null) ? null
+                : InterceptorFactory.newOfWSResponseObject(resultCallback, Boolean.class);
+        sendSubscription("subscribeBalance", params, interceptor, resultInterceptor);
+    }
+
+    @Override
+    public void unsubscribeToBalance(Callback<Boolean> callback) {
+        Interceptor interceptor = 
+            (callback == null) ? 
+            null : 
+            InterceptorFactory.newOfWSResponseObject(callback, Boolean.class);
+        sendUnsubscription("unsubscribeBalance", null, interceptor);
     }
 }

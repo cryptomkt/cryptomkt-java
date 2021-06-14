@@ -23,6 +23,12 @@ public class CryptomarketWSTradingClientImpl extends AuthClient implements Crypt
     
     public CryptomarketWSTradingClientImpl(String apiKey, String apiSecret) throws IOException {
         super("wss://api.exchange.cryptomkt.com/api/2/ws/trading", apiKey, apiSecret);
+        Map<String, String> subsKeys = this.getSubscritpionKeys();
+        // reports
+        subsKeys.put("subscribeReports", "reports");
+        subsKeys.put("unsubscribeReports","reports");
+        subsKeys.put("activeOrders","reports");
+        subsKeys.put("report","reports");
     }
 
     @Override

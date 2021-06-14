@@ -137,4 +137,28 @@ public interface CryptomarketWSAccountClient extends CryptomarketWS {
      * @return The operation result. true if success
      */
     public void unsubscribeToTransactions(@Nullable Callback<Boolean> callback);
+
+
+    /**
+     * Subscribe to a feed of balance events of the account
+     * 
+     * https://api.exchange.cryptomkt.com/#subscribe-to-reports
+     * 
+     * @param callback Optional. A Callback to call with the result data. 
+     * 
+     * @return balances of the account as feed for the callback
+     */
+    public void subscribeToBalance(Callback<List<Balance>> callback, @Nullable Callback<Boolean> resultCallback);
+
+
+    /**
+     * unsubscribe to the balances feed.
+     * 
+     * https://api.exchange.cryptomkt.com/#subscription-to-the-transactions
+     * 
+     * @param callback Optional. A Callback to call with the result data. 
+     * 
+     * @return The operation result. true if success
+     */
+    public void unsubscribeToBalance(@Nullable Callback<Boolean> callback);
 }

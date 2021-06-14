@@ -43,6 +43,26 @@ public class CryptomarketWSPublicClientImpl extends ClientBase implements Crypto
 
     public CryptomarketWSPublicClientImpl() throws IOException {
         super("wss://api.exchange.cryptomkt.com/api/2/ws/public");
+        Map<String, String> subsKeys = this.getSubscritpionKeys();
+        // tickers
+        subsKeys.put("subscribeTicker","tickers");
+        subsKeys.put("unsubscribeTicker","tickers");
+        subsKeys.put("ticker","tickers");
+        //orderbooks
+        subsKeys.put("subscribeOrderbook","orderbooks");
+        subsKeys.put("unsubscribeOrderbook","orderbooks");
+        subsKeys.put("snapshotOrderbook","orderbooks");
+        subsKeys.put("updateOrderbook","orderbooks");
+        // trades
+        subsKeys.put("subscribeTrades","trades");
+        subsKeys.put("unsubscribeTrades","trades");
+        subsKeys.put("snapshotTrades","trades");
+        subsKeys.put("updateTrades","trades");
+        // candles
+        subsKeys.put("subscribeCandles","candles");
+        subsKeys.put("unsubscribeCandles","candles");
+        subsKeys.put("snapshotCandles","candles");
+        subsKeys.put("updateCandles","candles");   
     }
 
     @Override
@@ -56,7 +76,7 @@ public class CryptomarketWSPublicClientImpl extends ClientBase implements Crypto
         }
         String key = buildKey(method, sp.symbol, sp.period);
         Interceptor interceptor = interceptorCache.getSubscriptionInterceptor(key);
-        if (MethodMap.isOrderbookFeed(method)) {
+        if (this.isOrderbookFeed(method)) {
             OBCache.update(method, key, response);
             if (OBCache.orderbookBroken(key)) {
                 OBCache.waitOrderbook(key);
@@ -80,10 +100,14 @@ public class CryptomarketWSPublicClientImpl extends ClientBase implements Crypto
     }
 
     private String buildKey(String method, String symbol, String period) {
-        String methodKey = MethodMap.getMethodKey(method);
-        if (method.equals("report") || method.equals("activeOrders")) return methodKey + "::";
+        String methodKey = this.getSubscritpionKeys().get(method);
         String key = methodKey + ":" + symbol + ":" + period;
         return key.toUpperCase();
+    }
+
+    public boolean isOrderbookFeed(String method) {
+        if (getSubscritpionKeys().get(method).equals("orderbooks")) return true;
+        return false;
     }
 
     @Override
