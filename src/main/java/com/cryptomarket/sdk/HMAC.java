@@ -33,7 +33,7 @@ public class HMAC {
             String signature = HMAC.sign(this.apiSecret, message);
             String str = this.apiKey + ":" + timestamp + ":" + signature;
             byte[] strBytes = str.getBytes(charset);
-            String authStr = Base64.getEncoder().encodeToString(strBytes).strip();
+            String authStr = Base64.getEncoder().encodeToString(strBytes).trim();
             return "HS256 " + authStr;
         } catch (Exception e) {
             return null;
