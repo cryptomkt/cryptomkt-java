@@ -10,6 +10,8 @@ public class Trade {
 	private String side;
 	private String fee;
 	private String timestamp;
+	private boolean liquidation;
+	private boolean taker;
 
 	public long getId() {
 		return id;
@@ -17,6 +19,22 @@ public class Trade {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public boolean isTaker() {
+		return taker;
+	}
+
+	public void setTaker(boolean taker) {
+		this.taker = taker;
+	}
+
+	public boolean isLiquidation() {
+		return liquidation;
+	}
+
+	public void setLiquidation(boolean liquidation) {
+		this.liquidation = liquidation;
 	}
 
 	public String getClientOrderId() {
@@ -87,7 +105,7 @@ public class Trade {
 	public String toString() {
 		return "Trade [clientOrderId=" + clientOrderId + ", fee=" + fee + ", id=" + id + ", orderId=" + orderId
 				+ ", price=" + price + ", quantity=" + quantity + ", side=" + side + ", symbol=" + symbol
-				+ ", timestamp=" + timestamp + "]";
+				+ ", timestamp=" + timestamp + ", liquidation=" + liquidation + ", taker=" + taker +"]";
 	}
 
 }
