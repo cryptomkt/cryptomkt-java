@@ -33,8 +33,3 @@ local.properties
 ######################
 .idea/
 *.iml
-*.iws
-*.ipr
-*.ids
-*.orig
-classes/
