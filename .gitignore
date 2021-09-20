@@ -27,3 +27,9 @@ local.properties
 *.launch
 
 .vscode
+
+######################
+# Intellij
+######################
+.idea/
+*.iml

@@ -89,7 +89,7 @@ public class HttpClientImpl implements HttpClient {
         URI uri = null;
         try {
             URIBuilder uriBuilder = new URIBuilder(this.url + this.apiVersion + endpoint);
-            if (params != null) params.forEach((key, val) -> uriBuilder.addParameter(key, val));
+            if (params != null) params.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(e -> uriBuilder.addParameter(e.getKey(), e.getValue()));
             uri = uriBuilder.build();
         } catch (URISyntaxException e) {
             throw new CryptomarketSDKException("Failed to build the uri", e);
