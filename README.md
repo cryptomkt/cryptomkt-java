@@ -8,9 +8,9 @@
 add the Maven dependency
 ```xml
 <dependency>
-    <groupId>...</groupId>
-    <artifactId>...</artifactId>
-    <version>...</version>
+    <groupId>com.cryptomkt.api</groupId>
+    <artifactId>cryptomarket</artifactId>
+    <version>1.1.0</version>
 </dependency>
 ```
 # Documentation
