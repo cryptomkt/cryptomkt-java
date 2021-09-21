@@ -321,10 +321,10 @@ new Pagination.Builder()
 
 # Checkout our other SDKs
 <!-- agregar links -->
-node sdk
+[node sdk](https://github.com/cryptomkt/cryptomkt-node)
 
-python sdk
+[ruby sdk](https://github.com/cryptomkt/cryptomkt-ruby)
 
-go sdk
+[go sdk](https://github.com/cryptomkt/cryptomkt-go)
 
-ruby sdk
+[python sdk](https://github.com/cryptomkt/cryptomkt-python)
