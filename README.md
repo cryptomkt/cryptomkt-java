@@ -15,8 +15,7 @@ add the Maven dependency
 ```
 # Documentation
 
-[The api documentation](https://api.exchange.cryptomkt.com/)
-
+This sdk makes use of the [api version 2](https://api.exchange.cryptomkt.com/v2) of cryptomarket.
 
 # Quick Start
 
