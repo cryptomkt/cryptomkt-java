@@ -1,29 +1,41 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class Commission {
-    private String takeLiquidityRate;
-    private String provideLiquidityRate;
+  private String symbol;
+  @Json(name = "take_rate")
+  private String takeRate;
+  @Json(name = "make_rate")
+  private String makeRate;
 
-    public String getTakeLiquidityRate() {
-        return takeLiquidityRate;
-    }
+  public String getSymbol() {
+    return symbol;
+  }
 
-    public void setTakeLiquidityRate(String takeLiquidityRate) {
-        this.takeLiquidityRate = takeLiquidityRate;
-    }
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
-    public String getProvideLiquidityRate() {
-        return provideLiquidityRate;
-    }
+  public String getTakeRate() {
+    return takeRate;
+  }
 
-    public void setProvideLiquidityRate(String provideLiquidityRate) {
-        this.provideLiquidityRate = provideLiquidityRate;
-    }
+  public void setTakeRate(String takeRate) {
+    this.takeRate = takeRate;
+  }
 
-    @Override
-    public String toString() {
-        return "Commission [provideLiquidityRate=" + provideLiquidityRate + ", takeLiquidityRate=" + takeLiquidityRate
-                + "]";
-    }
-    
+  public String getMakeRate() {
+    return makeRate;
+  }
+
+  public void setMakeRate(String makeRate) {
+    this.makeRate = makeRate;
+  }
+
+  @Override
+  public String toString() {
+    return "Commission [makeRate=" + makeRate + ", symbol=" + symbol + ", takeRate=" + takeRate + "]";
+  }
+
 }

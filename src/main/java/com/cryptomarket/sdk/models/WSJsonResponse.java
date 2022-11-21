@@ -1,64 +1,106 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class WSJsonResponse {
-    private String jsonrpc;
-    private Integer id;
-    private String method;
-    private ErrorBody error;
-    private Object params;
-    private Object result;
+  private String jsonrpc;
+  private Integer id;
+  private String method;
+  @Json(name = "ch")
+  private String channel;
 
-    public String getJsonrpc() {
-        return jsonrpc;
-    }
+  private ErrorBody error;
+  private Object params;
+  private Object result;
+  private Object snapshot;
+  private Object update;
+  private Object data;
 
-    public void setJsonrpc(String jsonrpc) {
-        this.jsonrpc = jsonrpc;
-    }
+  public String getJsonrpc() {
+    return jsonrpc;
+  }
 
-    public Integer getId() {
-        return id;
-    }
+  public Object getData() {
+    return data;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setData(Object data) {
+    this.data = data;
+  }
 
-    public String getMethod() {
-        return method;
-    }
+  public Object getUpdate() {
+    return update;
+  }
 
-    public void setMethod(String method) {
-        this.method = method;
-    }
+  public void setUpdate(Object update) {
+    this.update = update;
+  }
 
-    public ErrorBody getError() {
-        return error;
-    }
+  public Object getSnapshot() {
+    return snapshot;
+  }
 
-    public void setError(ErrorBody error) {
-        this.error = error;
-    }
+  public void setSnapshot(Object snapshot) {
+    this.snapshot = snapshot;
+  }
 
-    public Object getParams() {
-        return params;
-    }
+  public void setJsonrpc(String jsonrpc) {
+    this.jsonrpc = jsonrpc;
+  }
 
-    public void setParams(Object params) {
-        this.params = params;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public Object getResult() {
-        return result;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setResult(Object result) {
-        this.result = result;
-    }
+  public String getMethod() {
+    return method;
+  }
 
-    @Override
-    public String toString() {
-        return "WSJsonResponse [error=" + error + ", id=" + id + ", jsonrpc=" + jsonrpc + ", method=" + method
-                + ", params=" + params + ", result=" + result + "]";
-    }
+  public void setMethod(String method) {
+    this.method = method;
+  }
+
+  public String getChannel() {
+    return channel;
+  }
+
+  public void setChannel(String channel) {
+    this.channel = channel;
+  }
+
+  public ErrorBody getError() {
+    return error;
+  }
+
+  public void setError(ErrorBody error) {
+    this.error = error;
+  }
+
+  public Object getParams() {
+    return params;
+  }
+
+  public void setParams(Object params) {
+    this.params = params;
+  }
+
+  public Object getResult() {
+    return result;
+  }
+
+  public void setResult(Object result) {
+    this.result = result;
+  }
+
+  @Override
+  public String toString() {
+    return "WSJsonResponse [channel=" + channel + ", data=" + data + ", error=" + error + ", id=" + id + ", jsonrpc="
+        + jsonrpc + ", method=" + method + ", params=" + params + ", result=" + result + ", snapshot=" + snapshot
+        + ", update=" + update + "]";
+  }
+
 }

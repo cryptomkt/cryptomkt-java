@@ -91,7 +91,7 @@ public class OrderbookCache {
 	}
 
 	private boolean zeroSize(OrderbookLevel entry) {
-        BigDecimal size = new BigDecimal(entry.getSize());
+        BigDecimal size = new BigDecimal(entry.getAmount());
         return size.compareTo(new BigDecimal("0.00")) == 0;
     }
 

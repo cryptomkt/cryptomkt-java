@@ -1,5 +1,7 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class Candle {
 	private String timestamp;
 	private String open;
@@ -7,6 +9,7 @@ public class Candle {
 	private String min;
 	private String max;
 	private String volume;
+  @Json(name="volume_quote")
 	private String volumeQuote;
 
 	public String getTimestamp() {

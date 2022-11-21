@@ -1,7 +1,10 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class PublicTrade {
 	private long id;
+	@Json(name = "qty")
 	private String quantity;
 	private String price;
 	private String side;
@@ -49,7 +52,7 @@ public class PublicTrade {
 
 	@Override
 	public String toString() {
-        return "Trade [id=" + id + ", price=" + price + ", quantity=" + quantity 
+        return "Trade [id=" + id + ", price=" + price + ", quantity=" + quantity
                 + ", side=" + side + ", timestamp=" + timestamp + "]";
 	}
 }

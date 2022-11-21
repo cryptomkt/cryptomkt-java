@@ -1,36 +1,50 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class Address {
-	private String address;
-	private String paymentId;
-	private String publicKey;
+  private String currency;
+  private String address;
+  @Json(name = "payment_id")
+  private String paymentID;
+  @Json(name = "public_key")
+  private String publicKey;
 
-	public String getAddress() {
-		return address;
-	}
+  public String getCurrency() {
+    return currency;
+  }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
 
-	public String getPaymentId() {
-		return paymentId;
-	}
+  public String getAddress() {
+    return address;
+  }
 
-	public void setPaymentId(String paymentId) {
-		this.paymentId = paymentId;
-	}
+  public void setAddress(String address) {
+    this.address = address;
+  }
 
-	public String getPublicKey() {
-		return publicKey;
-	}
+  public String getPaymentID() {
+    return paymentID;
+  }
 
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
-	}
+  public void setPaymentID(String paymentID) {
+    this.paymentID = paymentID;
+  }
 
-	@Override
-	public String toString() {
-		return "Address [address=" + address + ", paymentId=" + paymentId + ", publicKey=" + publicKey + "]";
-	}
+  public String getPublicKey() {
+    return publicKey;
+  }
+
+  public void setPublicKey(String publicKey) {
+    this.publicKey = publicKey;
+  }
+
+  @Override
+  public String toString() {
+    return "Address [address=" + address + ", currency=" + currency + ", paymentID=" + paymentID + ", publicKey="
+        + publicKey + "]";
+  }
 }

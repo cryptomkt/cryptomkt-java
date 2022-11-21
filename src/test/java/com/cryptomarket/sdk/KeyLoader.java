@@ -15,11 +15,11 @@ public class KeyLoader {
         Map<String, String> keys = new HashMap<String, String>();
         try {
             // create a JSON reader
-            JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(Paths.get("/home/ismael/cryptomarket/apis/keys.json").toFile())));
-        
+            JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(Paths.get("/home/ismael/cryptomarket/keys-v3.json").toFile())));
+
             // start top-level object
             reader.beginObject();
-        
+
             // read all tokens
             while (reader.hasNext()) {
                 String name = reader.nextName();
@@ -27,10 +27,10 @@ public class KeyLoader {
                 keys.put(name, value);
             }
             reader.endObject();
-        
+
             //close the writer
             reader.close();
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

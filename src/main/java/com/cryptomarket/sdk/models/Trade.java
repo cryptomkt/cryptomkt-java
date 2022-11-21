@@ -1,111 +1,106 @@
 package com.cryptomarket.sdk.models;
 
+import com.squareup.moshi.Json;
+
 public class Trade {
-	private long id;
-	private String clientOrderId;
-	private String orderId;
-	private String symbol;
-	private String quantity;
-	private String price;
-	private String side;
-	private String fee;
-	private String timestamp;
-	private boolean liquidation;
-	private boolean taker;
+  private long ID;
+  @Json(name = "client_order_id")
+  private String clientOrderId;
+  @Json(name = "order_id")
+  private String orderId;
+  private String symbol;
+  private String quantity;
+  private String price;
+  private String side;
+  private String fee;
+  private String timestamp;
+  private boolean taker;
 
-	public long getId() {
-		return id;
-	}
+  public long getId() {
+    return ID;
+  }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+  public void setId(long id) {
+    this.ID = id;
+  }
 
-	public boolean isTaker() {
-		return taker;
-	}
+  public boolean isTaker() {
+    return taker;
+  }
 
-	public void setTaker(boolean taker) {
-		this.taker = taker;
-	}
+  public void setTaker(boolean taker) {
+    this.taker = taker;
+  }
 
-	public boolean isLiquidation() {
-		return liquidation;
-	}
+  public String getClientOrderId() {
+    return clientOrderId;
+  }
 
-	public void setLiquidation(boolean liquidation) {
-		this.liquidation = liquidation;
-	}
+  public void setClientOrderId(String clientOrderId) {
+    this.clientOrderId = clientOrderId;
+  }
 
-	public String getClientOrderId() {
-		return clientOrderId;
-	}
+  public String getOrderId() {
+    return orderId;
+  }
 
-	public void setClientOrderId(String clientOrderId) {
-		this.clientOrderId = clientOrderId;
-	}
+  public void setOrderId(String orderId) {
+    this.orderId = orderId;
+  }
 
-	public String getOrderId() {
-		return orderId;
-	}
+  public String getSymbol() {
+    return symbol;
+  }
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
 
-	public String getSymbol() {
-		return symbol;
-	}
+  public String getQuantity() {
+    return quantity;
+  }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+  public void setQuantity(String quantity) {
+    this.quantity = quantity;
+  }
 
-	public String getQuantity() {
-		return quantity;
-	}
+  public String getPrice() {
+    return price;
+  }
 
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
+  public void setPrice(String price) {
+    this.price = price;
+  }
 
-	public String getPrice() {
-		return price;
-	}
+  public String getSide() {
+    return side;
+  }
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
+  public void setSide(String side) {
+    this.side = side;
+  }
 
-	public String getSide() {
-		return side;
-	}
+  public String getFee() {
+    return fee;
+  }
 
-	public void setSide(String side) {
-		this.side = side;
-	}
+  public void setFee(String fee) {
+    this.fee = fee;
+  }
 
-	public String getFee() {
-		return fee;
-	}
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-	public void setFee(String fee) {
-		this.fee = fee;
-	}
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	@Override
-	public String toString() {
-		return "Trade [clientOrderId=" + clientOrderId + ", fee=" + fee + ", id=" + id + ", orderId=" + orderId
-				+ ", price=" + price + ", quantity=" + quantity + ", side=" + side + ", symbol=" + symbol
-				+ ", timestamp=" + timestamp + ", liquidation=" + liquidation + ", taker=" + taker +"]";
-	}
+  @Override
+  public String toString() {
+    return "Trade [clientOrderId=" + clientOrderId + ", fee=" + fee + ", id=" + ID + ", orderId=" + orderId
+        + ", price=" + price + ", quantity=" + quantity + ", side=" + side + ", symbol=" + symbol
+        + ", timestamp=" + timestamp + ", taker=" + taker + "]";
+  }
 
 }
