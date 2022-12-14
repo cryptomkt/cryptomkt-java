@@ -183,6 +183,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * <ul>
    * <li>ContingencyType.ALL_OR_NONE (AON)
    * <li>ContingencyType.ONE_CANCEL_OTHER (OCO)
+     * <li>ContingencyType.ONE_TRIGGER_OTHER (OTO)
    * <li>ContingencyType.ONE_TRIGGER_ONE_CANCEL_OTHER (OTOCO)
    * </ul>
    * <p>
@@ -190,6 +191,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * <ul>
    * <li>An AON list must have 2 or 3 orders
    * <li>An OCO list must have 2 or 3 orders
+   * <li>An OTO list must have 2 or 3 orders
    * <li>An OTOCO must have 3 or 4 orders
    * </ul>
    * <p>
@@ -198,6 +200,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * <li>For an AON order list, the symbol code of orders must be unique for each
    * order in the list.
    * <li>For an OCO order list, there are no symbol code restrictions.
+   * <li>For an OTO order list, there are no symbol code restrictions.
    * <li>For an OTOCO order list, the symbol code of orders must be the same for
    * all orders in the list (placing orders in different order books is not
    * supported).
@@ -212,6 +215,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * OrderType.TAKE_PROFIT_MARKET.
    * <li>An OCO order list cannot include more than one limit order (the same
    * applies to secondary orders in an OTOCO order list).
+   * <li>For an OTO order list, there are no order type restrictions.
    * <li>For an OTOCO order list, the first order must be OrderType.LIMIT,
    * OrderType.MARKET, OrderType.STOP_LIMIT, OrderType.STOP_MARKET,
    * OrderType.TAKE_PROFIT_LIMIT or OrderType.TAKE_PROFIT_MARKET.
@@ -223,7 +227,8 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * https://api.exchange.cryptomkt.com/#create-new-spot-order-list-2
    *
    * @param contingencyType  order list type. ContingencyType.ALL_OR_NONE,
-   *                         ContingencyType.ONE_CANCEL_OTHER or
+   *                         ContingencyType.ONE_CANCEL_OTHER,
+   *                         ContingencyType.ONE_TRIGGER_OTHER or
    *                         ContingencyType.ONE_TRIGGER_ONE_CANCEL_OTHER
    * @param orders           the list of orders
    * @param orderListID      Optional. order list identifier. If ommited, it will
