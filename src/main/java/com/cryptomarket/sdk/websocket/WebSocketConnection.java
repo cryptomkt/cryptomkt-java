@@ -13,10 +13,10 @@ import okhttp3.WebSocketListener;
 
 public class WebSocketConnection extends WebSocketListener {
   WebSocket websocket;
-  Handler handler;
+  WSHandler handler;
   String url;
 
-  public WebSocketConnection(Handler handler, String url) {
+  public WebSocketConnection(WSHandler handler, String url) {
     this.handler = handler;
     this.url = url;
   }
@@ -30,12 +30,13 @@ public class WebSocketConnection extends WebSocketListener {
 
   @Override
   public void onOpen(WebSocket webSocket, Response response) {
-    handler.onOpen();
+    handler.getOnConnect().run();
+    ;
   }
 
   @Override
   public void onClosed(WebSocket webSocket, int code, String reason) {
-    handler.onClose(reason);
+    handler.getOnClose().accept(reason);
   }
 
   @Override
@@ -57,7 +58,7 @@ public class WebSocketConnection extends WebSocketListener {
 
   @Override
   public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-    handler.onFailure(t);
+    handler.getOnFailure().accept(t);
   }
 
   public void send(String json) {

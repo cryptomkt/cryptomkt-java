@@ -30,7 +30,7 @@ public class WSTicker {
   @Json(name = "P")
   String priceChangePercent;
   @Json(name = "L")
-  Long LastTradeID;
+  Long lastTradeId;
 
   public Long getTimestamp() {
     return timestamp;
@@ -112,12 +112,12 @@ public class WSTicker {
     this.priceChangePercent = priceChangePercent;
   }
 
-  public Long getLastTradeID() {
-    return LastTradeID;
+  public Long getLastTradeId() {
+    return lastTradeId;
   }
 
-  public void setLastTradeID(Long lastTradeID) {
-    LastTradeID = lastTradeID;
+  public void setLastTradeId(Long lastTradeId) {
+    this.lastTradeId = lastTradeId;
   }
 
   public String getVolumeBase() {
@@ -146,11 +146,11 @@ public class WSTicker {
 
   @Override
   public String toString() {
-    return "WSTicker [LastTradeID=" + LastTradeID + ", bestAsk=" + bestAsk + ", bestAskQuantity=" + bestAskQuantity
-        + ", bestBid=" + bestBid + ", bestBidQuantity=" + bestBidQuantity + ", close=" + close + ", high=" + high
-        + ", low=" + low + ", open=" + open + ", priceChange=" + priceChange + ", priceChangePercent="
-        + priceChangePercent + ", timestamp=" + timestamp + ", volumeBase=" + volumeBase + ", volumeQuote="
-        + volumeQuote + "]";
+    return "WSTicker [timestamp=" + timestamp + ", bestAsk=" + bestAsk + ", bestAskQuantity=" + bestAskQuantity
+        + ", bestBid=" + bestBid + ", bestBidQuantity=" + bestBidQuantity + ", open=" + open + ", close=" + close
+        + ", high=" + high + ", low=" + low + ", volumeBase=" + volumeBase + ", volumeQuote=" + volumeQuote
+        + ", priceChange=" + priceChange + ", priceChangePercent=" + priceChangePercent + ", lastTradeId=" + lastTradeId
+        + "]";
   }
 
 }

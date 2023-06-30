@@ -9,10 +9,12 @@ import com.cryptomarket.params.Depth;
 import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.params.OBSpeed;
 import com.cryptomarket.params.Period;
+import com.cryptomarket.params.PriceSpeed;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.WSCandle;
 import com.cryptomarket.sdk.models.WSOrderBook;
 import com.cryptomarket.sdk.models.WSOrderBookTop;
+import com.cryptomarket.sdk.models.WSPriceRate;
 import com.cryptomarket.sdk.models.WSPublicTrade;
 import com.cryptomarket.sdk.models.WSTicker;
 
@@ -42,7 +44,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * @param notificationBiConsumer recieves a feed of trades as a map of them,
    *                               indexed by symbol id, and the
    *                               type of notification, either SNAPSHOT or UPDATE
-   * @param symbols                A list of symbol ids
+   * @param symbols                A list of symbol ids to subscribe
    * @param limit                  Number of historical entries returned in the
    *                               first feed. Min is 0. Max is 1000. Default is 0
    * @param resultBiConsumer       Optional. recieves a list of successfully
@@ -75,7 +77,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one
    *                               hour), 'H4', 'D1' (one day), 'D7', '1M' (one
    *                               month). Default is 'M30'
-   * @param symbols                A list of symbol ids
+   * @param symbols                A list of symbol ids to subscribe
    * @param limit                  Optional. Number of historical entries returned
    *                               in the first feed. Min is 0. Max is 1000.
    *                               Default is 0
@@ -92,6 +94,64 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
       @Nullable BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer);
 
   /**
+   * subscribe to a feed of price rates
+   * <p>
+   * subscription is for all currencies or for the specified currencies
+   * <p>
+   * normal subscription have one update message per currency
+   * <p>
+   * https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
+   * 
+   * @param notificationBiConsumer recieves a feed of price rates as a map of
+   *                               them,
+   *                               indexed by currency id, and the
+   *                               type of notification, only DATA
+   * @param speed                  The speed of the feed. '1s' or '3s'
+   * @param targetCurrency         quote currency of the rate
+   * @param currencies             Optional. a list of base currencies to get
+   *                               rates. If omitted, subscribe to all currencies
+   * @param resultBiConsumer       Optional. recieves a list of successfully
+   *                               subscribed base currencies, and a
+   *                               CryptomarketSDKException if
+   *                               there was a problem (or null if there was none)
+   */
+  public void subscribeToPriceRates(
+      BiConsumer<Map<String, WSPriceRate>, NotificationType> notificationBiConsumer,
+      PriceSpeed speed,
+      String targetCurrency,
+      @Nullable List<String> currencies,
+      @Nullable BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer);
+
+  /**
+   * subscribe to a feed of price rates
+   * <p>
+   * subscription is for all currencies or for the specified currencies
+   * <p>
+   * batch subscriptions have a joined update for all symbols
+   * <p>
+   * https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
+   * 
+   * @param notificationBiConsumer recieves a feed of price rates as a map of
+   *                               them,
+   *                               indexed by currency id, and the
+   *                               type of notification, only DATA
+   * @param speed                  The speed of the feed. '1s' or '3s'
+   * @param targetCurrency         quote currency of the rate
+   * @param currencies             Optional. a list of base currencies to get
+   *                               rates. If omitted, subscribe to all currencies
+   * @param resultBiConsumer       Optional. recieves a list of successfully
+   *                               subscribed base currencies, and a
+   *                               CryptomarketSDKException if
+   *                               there was a problem (or null if there was none)
+   */
+  public void subscribeToPriceRatesInBatches(
+      BiConsumer<Map<String, WSPriceRate>, NotificationType> notificationBiConsumer,
+      PriceSpeed speed,
+      String targetCurrency,
+      @Nullable List<String> currencies,
+      @Nullable BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer);
+
+  /**
    * subscribe to a feed of mini tickers
    * <p>
    * subscription is for all symbols or for the specified symbols
@@ -104,7 +164,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               them, indexed by symbol id, and the
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '1s' or '3s'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. if omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if
@@ -129,7 +190,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               them, indexed by symbol id, and the
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '1s' or '3s'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if
@@ -157,7 +219,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               indexed by symbol id, and the
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '1s' or '3s'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if
@@ -184,7 +247,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               indexed by symbol id, and the
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '1s' or '3s'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if
@@ -235,10 +299,12 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * @param notificationBiConsumer recieves a feed of partial orderbooks as a map
    *                               of them, indexed by symbol id, and the
    *                               type of notification, only DATA
-   * @param depth                  The depth of the partial orderbook. 'D5', 'D10' or 'D20'
+   * @param depth                  The depth of the partial orderbook. 'D5', 'D10'
+   *                               or 'D20'
    * @param speed                  The speed of the feed. '100ms', '500ms' or
    *                               '1000ms'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols , and a
    *                               CryptomarketSDKException if there was a problem
@@ -263,10 +329,12 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * @param notificationBiConsumer recieves a feed of partial orderbooks as a map
    *                               of them, indexed by symbol id, and the
    *                               type of notification, only DATA
-   * @param depth                  The depth of the partial orderbook. 'D5', 'D10' or 'D20'
+   * @param depth                  The depth of the partial orderbook. 'D5', 'D10'
+   *                               or 'D20'
    * @param speed                  The speed of the feed. '100ms', '500ms' or
    *                               '1000ms'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if there was a problem
@@ -294,7 +362,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '100ms', '500ms' or
    *                               '1000ms'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if there was a problem
@@ -320,7 +389,8 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               type of notification, only DATA
    * @param speed                  The speed of the feed. '100ms', '500ms' or
    *                               '1000ms'
-   * @param symbols                Optional. A list of symbol ids
+   * @param symbols                Optional. A list of symbol ids. If omitted,
+   *                               subscribe to all symbols
    * @param resultBiConsumer       Optional. recieves a list of successfully
    *                               subscribed symbols, and a
    *                               CryptomarketSDKException if there was a problem

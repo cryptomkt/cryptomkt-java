@@ -32,6 +32,8 @@ import com.cryptomarket.sdk.models.Transaction;
 import com.cryptomarket.sdk.models.WSCandle;
 import com.cryptomarket.sdk.models.WSOrderBook;
 import com.cryptomarket.sdk.models.WSOrderBookTop;
+import com.cryptomarket.sdk.models.WSPriceRate;
+import com.cryptomarket.sdk.models.WSPublicTrade;
 import com.cryptomarket.sdk.models.WSTicker;
 
 public class Checker {
@@ -45,15 +47,13 @@ public class Checker {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getFullName(),
         obj.getPrecisionTransfer()));
+    obj.getNetworks().forEach(Checker.checkNetwork);
     fields.forEach(checkString);
   };
   static Consumer<Network> checkNetwork = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getNetwork(),
-        obj.getAddressRegex(),
-        obj.getPaymentIdRegex(),
-        obj.getPayoutFee(),
-        obj.getPrecisionPayout()));
+        obj.getCode(),
+        obj.getNetwork()));
     fields.forEach(checkString);
   };
 
@@ -148,6 +148,15 @@ public class Checker {
         obj.getTimestamp()));
     fields.forEach(checkString);
   };
+  static Consumer<WSPublicTrade> checkWSPublicTrade = obj -> {
+    List<String> fields = new ArrayList<>(Arrays.asList(
+        obj.getPrice(),
+        obj.getQuantity(),
+        obj.getSide(),
+        obj.getId().toString(),
+        obj.getTimestamp().toString()));
+    fields.forEach(checkString);
+  };
   static Consumer<OrderbookLevel> checkOBLevel = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getPrice(),
@@ -182,6 +191,12 @@ public class Checker {
         obj.getQuoteVolume()));
     fields.forEach(checkString);
   };
+  static Consumer<WSPriceRate> checkWSPriceRate = obj -> {
+    List<String> fields = new ArrayList<>(Arrays.asList(
+        String.valueOf(obj.getTimestamp()),
+        obj.getRate()));
+    fields.forEach(checkString);
+  };
   static Consumer<Balance> checkBalance = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         // obj.getCurrency(),
@@ -197,13 +212,13 @@ public class Checker {
   };
   static Consumer<Order> checkOrder = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getID(),
-        obj.getClientOrderID(),
+        obj.getId(),
+        obj.getClientOrderId(),
         obj.getSymbol(),
-        obj.getSide(),
+        obj.getSide().toString(),
         obj.getStatus().toString(),
         obj.getType().toString(),
-        obj.getTimeInForce(),
+        obj.getTimeInForce().toString(),
         obj.getQuantity(),
         obj.getPrice(),
         obj.getQuantityCumulative(),
@@ -216,7 +231,7 @@ public class Checker {
         obj.getOrderId(),
         obj.getClientOrderId(),
         obj.getSymbol(),
-        obj.getSide(),
+        obj.getSide().toString(),
         obj.getQuantity(),
         obj.getPrice(),
         obj.getFee(),
@@ -225,20 +240,20 @@ public class Checker {
   };
   static Consumer<Transaction> checkTransaction = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getStatus(),
-        obj.getType(),
-        obj.getSubtype(),
+        obj.getStatus().toString(),
+        obj.getType().toString(),
+        obj.getSubtype().toString(),
         obj.getCreatedAt()
     // obj.getUpdatedAt()
     ));
     fields.forEach(checkString);
-    if (obj.getID() == 0) {
-      fail("0 ID");
+    if (obj.getId() == 0) {
+      fail("0==id");
     }
   };
   static Consumer<NativeTransaction> checkNativeTransaction = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getID(),
+        obj.getId(),
         obj.getCurrency(),
         obj.getAmount()));
     fields.forEach(checkString);
@@ -252,8 +267,8 @@ public class Checker {
   };
   static Consumer<Report> checkReport = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getID(),
-        obj.getClientOrderID(),
+        obj.getId(),
+        obj.getClientOrderId(),
         obj.getSymbol(),
         obj.getSide().toString(),
         obj.getStatus().toString(),
@@ -263,14 +278,14 @@ public class Checker {
         obj.getQuantityCumulative(),
         obj.getPrice(),
         obj.getCreatedAt(),
-        obj.getUpdatedAt(),
-        obj.getReportType().toString()));
+        obj.getUpdatedAt()));
+    // obj.getReportType().toString()
     fields.forEach(checkString);
   };
 
   public static Consumer<SubAccount> checkSubAccount = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getSubAccountID(),
+        obj.getSubAccountId(),
         obj.getEmail(),
         obj.getStatus().toString()));
     fields.forEach(checkString);
@@ -278,8 +293,8 @@ public class Checker {
 
   public static Consumer<? super SubAccountSettings> checkSubAccountSettings = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
-        obj.getSubAccountID(),
-        obj.getDepositAddressGenerationEnabled().toString(),
+        obj.getSubAccountId(),
+        obj.isDepositAddressGenerationEnabled().toString(),
         obj.getDescription(),
         obj.getCreatedAt(),
         obj.getUpdatedAt()));

@@ -3,27 +3,26 @@ package com.cryptomarket.sdk.models;
 import com.squareup.moshi.Json;
 
 public class AmountLock {
-  @Json(name = "id")
-  private String ID;
+  private String id;
   private String currency;
   private String amount;
   @Json(name = "date_end")
   private String dateEnd;
   private String description;
-  private String cancelled;
-  @Json(name = "cancelled_at")
-  private String cancelledAt;
+  private String canceled;
+  @Json(name = "canceled_at")
+  private String canceledAt;
   @Json(name = "cancel_description")
   private String cancelDescription;
   @Json(name = "created_at")
   private String createdAt;
 
-  public String getID() {
-    return ID;
+  public String getId() {
+    return id;
   }
 
-  public void setID(String iD) {
-    ID = iD;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getCurrency() {
@@ -58,20 +57,20 @@ public class AmountLock {
     this.description = description;
   }
 
-  public String getCancelled() {
-    return cancelled;
+  public String getCanceled() {
+    return canceled;
   }
 
-  public void setCancelled(String cancelled) {
-    this.cancelled = cancelled;
+  public void setCanceled(String cancelled) {
+    this.canceled = cancelled;
   }
 
-  public String getCancelledAt() {
-    return cancelledAt;
+  public String getCanceledAt() {
+    return canceledAt;
   }
 
-  public void setCancelledAt(String cancelledAt) {
-    this.cancelledAt = cancelledAt;
+  public void setCanceledAt(String cancelledAt) {
+    this.canceledAt = cancelledAt;
   }
 
   public String getCancelDescription() {
@@ -92,8 +91,8 @@ public class AmountLock {
 
   @Override
   public String toString() {
-    return "AmountLock [ID=" + ID + ", amount=" + amount + ", cancelDescription=" + cancelDescription + ", cancelled="
-        + cancelled + ", cancelledAt=" + cancelledAt + ", createdAt=" + createdAt + ", currency=" + currency
+    return "AmountLock [id=" + id + ", amount=" + amount + ", cancelDescription=" + cancelDescription + ", cancelled="
+        + canceled + ", cancelledAt=" + canceledAt + ", createdAt=" + createdAt + ", currency=" + currency
         + ", dateEnd=" + dateEnd + ", description=" + description + "]";
   }
 }

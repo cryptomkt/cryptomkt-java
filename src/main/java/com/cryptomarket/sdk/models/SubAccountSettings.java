@@ -4,7 +4,7 @@ import com.squareup.moshi.Json;
 
 public class SubAccountSettings {
   @Json(name = "sub_account_id")
-  String subAccountID;
+  String subAccountId;
   @Json(name = "deposit_address_generation_enabled")
   Boolean depositAddressGenerationEnabled;
   @Json(name = "withdraw_enabled")
@@ -15,15 +15,15 @@ public class SubAccountSettings {
   @Json(name = "updated_at")
   String updatedAt;
 
-  public String getSubAccountID() {
-    return subAccountID;
+  public String getSubAccountId() {
+    return subAccountId;
   }
 
-  public void setSubAccountID(String subAccountID) {
-    this.subAccountID = subAccountID;
+  public void setSubAccountId(String subAccountId) {
+    this.subAccountId = subAccountId;
   }
 
-  public Boolean getDepositAddressGenerationEnabled() {
+  public Boolean isDepositAddressGenerationEnabled() {
     return depositAddressGenerationEnabled;
   }
 
@@ -31,7 +31,7 @@ public class SubAccountSettings {
     this.depositAddressGenerationEnabled = depositAddressGenerationEnabled;
   }
 
-  public Boolean getWithdrawEnabled() {
+  public Boolean isWithdrawEnabled() {
     return withdrawEnabled;
   }
 
@@ -66,7 +66,7 @@ public class SubAccountSettings {
   @Override
   public String toString() {
     return "ACLSetting [createdAt=" + createdAt + ", depositAddressGenerationEnabled=" + depositAddressGenerationEnabled
-        + ", description=" + description + ", subAccountID=" + subAccountID + ", updatedAt=" + updatedAt
+        + ", description=" + description + ", subAccountId=" + subAccountId + ", updatedAt=" + updatedAt
         + ", withdrawEnabled=" + withdrawEnabled + "]";
   }
 }

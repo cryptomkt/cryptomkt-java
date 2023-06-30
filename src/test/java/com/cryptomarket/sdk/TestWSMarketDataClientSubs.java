@@ -1,16 +1,18 @@
 package com.cryptomarket.sdk;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import com.cryptomarket.params.Depth;
 import com.cryptomarket.params.OBSpeed;
 import com.cryptomarket.params.Period;
+import com.cryptomarket.params.PriceSpeed;
 import com.cryptomarket.params.TickerSpeed;
+import com.cryptomarket.sdk.Helpers.FailChecker;
 import com.cryptomarket.sdk.websocket.CryptomarketWSMarketDataClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSMarketDataClientImpl;
 
@@ -34,18 +36,11 @@ public class TestWSMarketDataClientSubs {
   };
 
   @Before
-  public void before() {
-    try {
-      wsClient = new CryptomarketWSMarketDataClientImpl();
-      wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(3);
-      } catch (InterruptedException e) {
-        fail();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void before() throws IOException {
+    wsClient = new CryptomarketWSMarketDataClientImpl();
+    wsClient.connect();
+
+    Helpers.sleep(1);
   }
 
   @After
@@ -74,10 +69,10 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testTradesSubscription() {
     List<String> symbols = Arrays.asList("EOSETH");
+    FailChecker failChecker = new FailChecker();
+    
     wsClient.subscribeToTrades(
-        (trades, notificatonType) -> {
-          System.out.println(trades);
-        },
+        Helpers.mapListChecker(failChecker, Checker.checkWSPublicTrade),
         symbols,
         null,
         (result, exception) -> {
@@ -87,138 +82,115 @@ public class TestWSMarketDataClientSubs {
           }
         });
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
-    try {
-      TimeUnit.SECONDS.sleep(5);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testSubscribeToCandles() {
     List<String> symbols = Arrays.asList("EOSETH", "ETHBTC");
+    FailChecker failChecker = new FailChecker();
 
     wsClient.subscribeToCandles(
-        (data, notificationType) -> {
-          assertTrue(data.size() != 0);
-          data.forEach((k, v) -> v.forEach(Checker.checkWSCandle));
-        },
+        Helpers.mapListChecker(failChecker, Checker.checkWSCandle),
         Period._1_MINUTES,
         symbols,
         null,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
+  }
+
+  @Test
+  public void testSubscribeToPriceRates() {
+    List<String> currencies = Arrays.asList("BTC", "ETH");
+    FailChecker failChecker = new FailChecker();
+
+    wsClient.subscribeToPriceRates(
+        Helpers.mapChecker(failChecker, Checker.checkWSPriceRate),
+        PriceSpeed._1_SECONDS,
+        "USDT",
+        currencies,
+        null);
+
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testSubscribeToMiniTicker() {
     List<String> symbols = Arrays.asList("EOSETH");
+    FailChecker failChecker = new FailChecker();
 
     wsClient.subscribeToMiniTicker(
-        (data, notificationType) -> {
-          System.out.println(notificationType);
-          System.out.println(data);
-          data.forEach((k, v) -> Checker.checkWSCandle.accept(v));
-        },
+        Helpers.mapChecker(failChecker, Checker.checkWSCandle),
         TickerSpeed._1_SECONDS,
         symbols,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testSubscribeToTicker() {
     List<String> symbols = Arrays.asList("EOSETH");
+    FailChecker failChecker = new FailChecker();
+
     wsClient.subscribeToTicker(
-        (data, notificationType) -> {
-          System.out.println(data);
-          data.forEach((k, v) -> Checker.checkWSTicker.accept(v));
-        },
+        Helpers.mapChecker(failChecker, Checker.checkWSTicker),
         TickerSpeed._1_SECONDS,
         symbols,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testFullOrderbook() {
     List<String> symbols = Arrays.asList("EOSETH");
+    FailChecker failChecker = new FailChecker();
 
     wsClient.subscribeToFullOrderBook(
-        (data, notificationType) -> {
-          System.out.println(notificationType);
-          System.out.println(data);
-          data.forEach((k, v) -> Checker.checkWSOrderBook.accept(v));
-        },
+        Helpers.mapChecker(failChecker, Checker.checkWSOrderBook),
         symbols,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testPartialOrderbook() {
     List<String> symbols = Arrays.asList("EOSETH");
+    FailChecker failChecker = new FailChecker();
+    
     wsClient.subscribeToPartialOrderBook(
-        (data, notificationType) -> {
-          System.out.println(notificationType);
-          System.out.println(data);
-          data.forEach((k, v) -> Checker.checkWSOrderBook.accept(v));
-        },
+        Helpers.mapChecker(failChecker, Checker.checkWSOrderBook),
         Depth._5,
         OBSpeed._500_MILISECONDS,
         symbols,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testOrderbookTop() {
     List<String> symbols = Arrays.asList("EOSETH");
-
+    FailChecker failChecker = new FailChecker();
+    
     wsClient.subscribeToTopOfOrderBook(
-        (data, notification) -> {
-          System.out.println(notification);
-          data.forEach((k, v) -> Checker.checkWSOrderBookTop.accept(v));
-        },
+        Helpers.mapChecker(failChecker, Checker.checkWSOrderBookTop),
         OBSpeed._500_MILISECONDS,
         symbols,
         null);
 
-    try {
-      TimeUnit.SECONDS.sleep(30);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
   }
 
 }

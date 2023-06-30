@@ -5,16 +5,16 @@ import com.squareup.moshi.Json;
 
 public class SubAccount {
   @Json(name = "sub_account_id")
-  String subAccountID;
+  String subAccountId;
   String email;
   SubAccountStatus status;
 
-  public String getSubAccountID() {
-    return subAccountID;
+  public String getSubAccountId() {
+    return subAccountId;
   }
 
-  public void setSubAccountID(String subAccountID) {
-    this.subAccountID = subAccountID;
+  public void setSubAccountId(String subAccountId) {
+    this.subAccountId = subAccountId;
   }
 
   public String getEmail() {
@@ -35,6 +35,6 @@ public class SubAccount {
 
   @Override
   public String toString() {
-    return "SubAccount [email=" + email + ", status=" + status + ", subAccountID=" + subAccountID + "]";
+    return "SubAccount [email=" + email + ", status=" + status + ", subAccountId=" + subAccountId + "]";
   }
 }

@@ -1,6 +1,7 @@
 package com.cryptomarket.sdk.websocket;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public interface CryptomarketWS {
     /**
@@ -9,23 +10,28 @@ public interface CryptomarketWS {
     public void connect() throws IOException;
 
     /**
-     * method called when the client connects with the exchange.
-     * if is not a public client, the also authenticates before the call.
+     * sets a runnable to be called on websocket connection with the exchange
+     * 
+     * @param onConnect the runnable
      */
-    public void onConnect();
+    public void onConnect(Runnable onConnect);
 
     /**
-     * called when the websocket connection is closed. Override this method if needed
-     * @param reason the reason for the closing
+     * sets a consumer to be called when the websocket connection is closed. called
+     * with a string with the reason of the closing
+     * 
+     * @param onClose a string consumer called with the reason for the closing
      */
-    public void onClose(String reason);
+    public void onClose(Consumer<String> onClose);
 
     /**
-     * called when the websocket has an error. Override this method if needed
-     * also called when the authorization fails.
-     * @param t
+     * sets a consumer to be called when the websocket connection (or
+     * authentication) fails. Called with a throwable
+     * 
+     * @param onFailure the consumer called with the throwable responsible of the
+     *                  failure
      */
-    public void onFailure(Throwable t);
+    public void onFailure(Consumer<Throwable> onFailure);
 
     /**
      * closes the websocket connection

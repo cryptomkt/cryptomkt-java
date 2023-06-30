@@ -5,28 +5,31 @@ import java.util.List;
 import com.squareup.moshi.Json;
 
 public class NativeTransaction {
-  @Json(name="id")
-  private String ID;
+  @Json(name = "tx_id")
+  private String id;
   private Long index;
   private String currency;
   private String amount;
   private String fee;
   private String address;
   @Json(name = "payment_id")
-  private String paymentID;
+  private String paymentId;
   private String hash;
+  @Json(name = "offchain_id")
+  private String offchainId;
+  private String confirmations;
   @Json(name = "public_comment")
   private String publicComment;
   @Json(name = "error_code")
   private String errorCode;
   private List<String> sender;
 
-  public String getID() {
-    return ID;
+  public String getId() {
+    return id;
   }
 
-  public void setID(String iD) {
-    ID = iD;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public Long getIndex() {
@@ -69,12 +72,12 @@ public class NativeTransaction {
     this.address = address;
   }
 
-  public String getPaymentID() {
-    return paymentID;
+  public String getPaymentId() {
+    return paymentId;
   }
 
-  public void setPaymentID(String paymentID) {
-    this.paymentID = paymentID;
+  public void setPaymentId(String paymentId) {
+    this.paymentId = paymentId;
   }
 
   public String getHash() {
@@ -83,6 +86,22 @@ public class NativeTransaction {
 
   public void setHash(String hash) {
     this.hash = hash;
+  }
+
+  public String getOffchainId() {
+    return offchainId;
+  }
+
+  public void setOffchainId(String offchainId) {
+    this.offchainId = offchainId;
+  }
+
+  public String getConfirmations() {
+    return confirmations;
+  }
+
+  public void setConfirmations(String confirmations) {
+    this.confirmations = confirmations;
   }
 
   public String getPublicComment() {
@@ -111,9 +130,10 @@ public class NativeTransaction {
 
   @Override
   public String toString() {
-    return "NativeTransaction [ID=" + ID + ", address=" + address + ", amount=" + amount + ", currency=" + currency
-        + ", errorCode=" + errorCode + ", fee=" + fee + ", hash=" + hash + ", index=" + index + ", paymentID="
-        + paymentID + ", publicComment=" + publicComment + ", sender=" + sender + "]";
+    return "NativeTransaction [id=" + id + ", index=" + index + ", currency=" + currency + ", amount=" + amount
+        + ", fee=" + fee + ", address=" + address + ", paymentId=" + paymentId + ", hash=" + hash + ", offchainId="
+        + offchainId + ", confirmations=" + confirmations + ", publicComment=" + publicComment + ", errorCode="
+        + errorCode + ", sender=" + sender + "]";
   }
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cryptomarket.sdk.Adapter;
+import com.cryptomarket.sdk.exceptions.ParseException;
 import com.cryptomarket.sdk.models.OrderBook;
 import com.cryptomarket.sdk.models.OrderbookLevel;
 import com.cryptomarket.sdk.models.WSJsonResponse;
@@ -18,17 +19,27 @@ public class OrderbookCache {
     private Integer ASCENDING = 0;
     private Integer DESCENDING = 1;
 
-
-	public void update(String method, String key, WSJsonResponse response) {
+    public void update(String method, String key, WSJsonResponse response) {
         switch (method) {
             case "snapshotOrderbook":
-                orderbookStates.put(key, OrderBookState.UPDATING);
-                OrderBook orderbook = adapter.objectFromValue(response.getParams(), OrderBook.class);
-                orderbooks.put(key, orderbook);
+                try {
+                    OrderBook orderbook = adapter.objectFromValue(response.getParams(), OrderBook.class);
+                    orderbookStates.put(key, OrderBookState.UPDATING);
+                    orderbooks.put(key, orderbook);
+                } catch (ParseException e) {
+                    orderbookStates.put(key, OrderBookState.BROKEN_PARSE_ERROR);
+                }
                 break;
             case "updateOrderbook":
-                if (!orderbookStates.get(key).equals(OrderBookState.UPDATING)) return;
-                OrderBook orderbookUpdate = adapter.objectFromValue(response.getParams(), OrderBook.class);
+                if (!orderbookStates.get(key).equals(OrderBookState.UPDATING))
+                    return;
+                OrderBook orderbookUpdate;
+                try {
+                    orderbookUpdate = adapter.objectFromValue(response.getParams(), OrderBook.class);
+                } catch (ParseException e) {
+                    orderbookStates.put(key, OrderBookState.BROKEN_PARSE_ERROR);
+                    return;
+                }
                 OrderBook oldOrderbook = orderbooks.get(key);
                 if (orderbookUpdate.getSequence() - oldOrderbook.getSequence() != 1) {
                     orderbookStates.put(key, OrderBookState.BROKEN);
@@ -48,7 +59,8 @@ public class OrderbookCache {
         }
     }
 
-	private List<OrderbookLevel> updateBookSide(List<OrderbookLevel> oldList, List<OrderbookLevel> updateList, Integer sortDirection) {
+    private List<OrderbookLevel> updateBookSide(List<OrderbookLevel> oldList, List<OrderbookLevel> updateList,
+            Integer sortDirection) {
         List<OrderbookLevel> newList = new ArrayList<OrderbookLevel>();
         OrderbookLevel oldEntry;
         int oldIdx = 0;
@@ -87,10 +99,10 @@ public class OrderbookCache {
                 }
             }
         }
-		return newList;
-	}
+        return newList;
+    }
 
-	private boolean zeroSize(OrderbookLevel entry) {
+    private boolean zeroSize(OrderbookLevel entry) {
         BigDecimal size = new BigDecimal(entry.getAmount());
         return size.compareTo(new BigDecimal("0.00")) == 0;
     }
@@ -99,25 +111,28 @@ public class OrderbookCache {
         BigDecimal oldPrice = new BigDecimal(oldEntry.getPrice());
         BigDecimal updatePrice = new BigDecimal(updateEntry.getPrice());
         int direction = oldPrice.compareTo(updatePrice);
-        if (sortDirection.equals(ASCENDING)) return -direction;
+        if (sortDirection.equals(ASCENDING))
+            return -direction;
         return direction;
     }
 
     public OrderBook getOrderbook(String key) {
-        if (!orderbooks.containsKey(key)) return null;
+        if (!orderbooks.containsKey(key))
+            return null;
         return orderbooks.get(key);
     }
 
     public boolean orderbookBroken(String key) {
-        return orderbookStates.get(key).equals(OrderBookState.BROKEN);
+        OrderBookState currencState = orderbookStates.get(key);
+        return currencState.equals(OrderBookState.BROKEN) || currencState.equals(OrderBookState.BROKEN_PARSE_ERROR);
     }
 
     public void waitOrderbook(String key) {
         orderbookStates.put(key, OrderBookState.WAITING);
     }
 
-	public boolean orderbookWaiting(String key) {
-		return orderbookStates.get(key).equals(OrderBookState.WAITING);
-	}
+    public boolean orderbookWaiting(String key) {
+        return orderbookStates.get(key).equals(OrderBookState.WAITING);
+    }
 
 }

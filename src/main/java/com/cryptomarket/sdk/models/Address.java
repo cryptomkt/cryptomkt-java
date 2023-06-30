@@ -6,9 +6,11 @@ public class Address {
   private String currency;
   private String address;
   @Json(name = "payment_id")
-  private String paymentID;
+  private String paymentId;
   @Json(name = "public_key")
   private String publicKey;
+  @Json(name = "network_code")
+  private String networkCode;
 
   public String getCurrency() {
     return currency;
@@ -26,12 +28,12 @@ public class Address {
     this.address = address;
   }
 
-  public String getPaymentID() {
-    return paymentID;
+  public String getPaymentId() {
+    return paymentId;
   }
 
-  public void setPaymentID(String paymentID) {
-    this.paymentID = paymentID;
+  public void setPaymentId(String paymentId) {
+    this.paymentId = paymentId;
   }
 
   public String getPublicKey() {
@@ -42,9 +44,17 @@ public class Address {
     this.publicKey = publicKey;
   }
 
+  public String getNetworkCode() {
+    return networkCode;
+  }
+
+  public void setNetworkCode(String networkCode) {
+    this.networkCode = networkCode;
+  }
+
   @Override
   public String toString() {
-    return "Address [address=" + address + ", currency=" + currency + ", paymentID=" + paymentID + ", publicKey="
-        + publicKey + "]";
+    return "Address [currency=" + currency + ", address=" + address + ", paymentId=" + paymentId + ", publicKey="
+        + publicKey + ", networkCode=" + networkCode + "]";
   }
 }

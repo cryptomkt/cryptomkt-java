@@ -1,9 +1,10 @@
 package com.cryptomarket.sdk.models;
 
+import com.cryptomarket.params.Side;
 import com.squareup.moshi.Json;
 
 public class Trade {
-  private long ID;
+  private long id;
   @Json(name = "client_order_id")
   private String clientOrderId;
   @Json(name = "order_id")
@@ -11,25 +12,17 @@ public class Trade {
   private String symbol;
   private String quantity;
   private String price;
-  private String side;
+  private Side side;
   private String fee;
   private String timestamp;
-  private boolean taker;
+  private Boolean taker;
 
   public long getId() {
-    return ID;
+    return id;
   }
 
   public void setId(long id) {
-    this.ID = id;
-  }
-
-  public boolean isTaker() {
-    return taker;
-  }
-
-  public void setTaker(boolean taker) {
-    this.taker = taker;
+    this.id = id;
   }
 
   public String getClientOrderId() {
@@ -72,11 +65,11 @@ public class Trade {
     this.price = price;
   }
 
-  public String getSide() {
+  public Side getSide() {
     return side;
   }
 
-  public void setSide(String side) {
+  public void setSide(Side side) {
     this.side = side;
   }
 
@@ -96,11 +89,18 @@ public class Trade {
     this.timestamp = timestamp;
   }
 
-  @Override
-  public String toString() {
-    return "Trade [clientOrderId=" + clientOrderId + ", fee=" + fee + ", id=" + ID + ", orderId=" + orderId
-        + ", price=" + price + ", quantity=" + quantity + ", side=" + side + ", symbol=" + symbol
-        + ", timestamp=" + timestamp + ", taker=" + taker + "]";
+  public Boolean isTaker() {
+    return taker;
   }
 
+  public void setTaker(Boolean taker) {
+    this.taker = taker;
+  }
+
+  @Override
+  public String toString() {
+    return "Trade [id=" + id + ", clientOrderId=" + clientOrderId + ", orderId=" + orderId + ", symbol=" + symbol
+        + ", quantity=" + quantity + ", price=" + price + ", side=" + side + ", fee=" + fee + ", timestamp=" + timestamp
+        + ", taker=" + taker + "]";
+  }
 }

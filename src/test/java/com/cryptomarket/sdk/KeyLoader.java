@@ -15,7 +15,7 @@ public class KeyLoader {
         Map<String, String> keys = new HashMap<String, String>();
         try {
             // create a JSON reader
-            JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(Paths.get("/home/ismael/cryptomarket/keys-v3.json").toFile())));
+            JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(Paths.get("/home/ismael/cryptomarket/keys.json").toFile())));
 
             // start top-level object
             reader.beginObject();

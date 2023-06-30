@@ -3,7 +3,8 @@ package com.cryptomarket.params;
 public enum NotificationType {
   SNAPSHOT("snapshot"),
   UPDATE("update"),
-  DATA("data");
+  DATA("data"),
+  PARSE_ERROR("error");
 
   private final String label;
 
@@ -25,6 +26,10 @@ public enum NotificationType {
 
   public boolean isData() {
     return this == NotificationType.DATA;
+  }
+
+  public boolean isError() {
+    return this == NotificationType.PARSE_ERROR;
   }
 
 }

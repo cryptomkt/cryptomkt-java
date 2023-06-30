@@ -1,80 +1,92 @@
 package com.cryptomarket.sdk.models;
 
+import com.cryptomarket.params.TransactionStatus;
+import com.cryptomarket.params.TransactionSubtype;
+import com.cryptomarket.params.TransactionType;
 import com.squareup.moshi.Json;
 
 public class Transaction {
-  @Json(name="id")
-  private Long ID;
-  private String status;
-  private String type;
-  private String subtype;
+  private Long id;
+  private TransactionStatus status;
+  private TransactionType type;
+  private TransactionSubtype subtype;
   @Json(name = "created_at")
   private String createdAt;
   @Json(name = "updated_at")
   private String updatedAt;
-  @Json(name="native")
+  @Json(name = "native")
   private NativeTransaction nativeTransaction;
-  private MetaTransaction metaTransaction;
-  private String primetrust;
-  public Long getID() {
-    return ID;
+  @Json(name = "network_code")
+  private String networkCode;
+
+  public Long getId() {
+    return id;
   }
-  public void setID(Long iD) {
-    ID = iD;
+
+  public void setId(Long id) {
+    this.id = id;
   }
-  public String getStatus() {
+
+  public TransactionStatus getStatus() {
     return status;
   }
-  public void setStatus(String status) {
+
+  public void setStatus(TransactionStatus status) {
     this.status = status;
   }
-  public String getType() {
+
+  public TransactionType getType() {
     return type;
   }
-  public void setType(String type) {
+
+  public void setType(TransactionType type) {
     this.type = type;
   }
-  public String getSubtype() {
+
+  public TransactionSubtype getSubtype() {
     return subtype;
   }
-  public void setSubtype(String subtype) {
+
+  public void setSubtype(TransactionSubtype subtype) {
     this.subtype = subtype;
   }
+
   public String getCreatedAt() {
     return createdAt;
   }
+
   public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
   }
+
   public String getUpdatedAt() {
     return updatedAt;
   }
+
   public void setUpdatedAt(String updatedAt) {
     this.updatedAt = updatedAt;
   }
+
   public NativeTransaction getNativeTransaction() {
     return nativeTransaction;
   }
+
   public void setNativeTransaction(NativeTransaction nativeTransaction) {
     this.nativeTransaction = nativeTransaction;
   }
-  public MetaTransaction getMetaTransaction() {
-    return metaTransaction;
-  }
-  public void setMetaTransaction(MetaTransaction metaTransaction) {
-    this.metaTransaction = metaTransaction;
-  }
-  public String getPrimetrust() {
-    return primetrust;
-  }
-  public void setPrimetrust(String primetrust) {
-    this.primetrust = primetrust;
-  }
-  @Override
-  public String toString() {
-    return "Transaction [ID=" + ID + ", createdAt=" + createdAt + ", metaTransaction=" + metaTransaction
-        + ", nativeTransaction=" + nativeTransaction + ", primetrust=" + primetrust + ", status=" + status
-        + ", subtype=" + subtype + ", type=" + type + ", updatedAt=" + updatedAt + "]";
+
+  public String getNetworkCode() {
+    return networkCode;
   }
 
+  public void setNetworkCode(String networkCode) {
+    this.networkCode = networkCode;
+  }
+
+  @Override
+  public String toString() {
+    return "Transaction [id=" + id + ", status=" + status + ", type=" + type + ", subtype=" + subtype + ", createdAt="
+        + createdAt + ", updatedAt=" + updatedAt + ", nativeTransaction=" + nativeTransaction + ", networkCode="
+        + networkCode + "]";
+  }
 }

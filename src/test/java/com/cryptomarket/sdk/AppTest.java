@@ -1,5 +1,8 @@
 package com.cryptomarket.sdk;
 
+import com.cryptomarket.sdk.rest.CryptomarketRestClient;
+import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -3,6 +3,7 @@ package com.cryptomarket.sdk.websocket;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.cryptomarket.sdk.Adapter;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
@@ -13,12 +14,18 @@ import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-public class ClientBase implements Handler {
+public class ClientBase implements WSHandler {
   InterceptorCache interceptorCache = new InterceptorCache();
   OrderbookCache OBCache = new OrderbookCache();
   public Adapter adapter = new Adapter();
   protected WebSocketConnection websocket;
   private Map<String, String> subscriptionKeys;
+  protected Runnable onConnectR = () -> {
+  };
+  private Consumer<String> onCloseC = (reason) -> {
+  };
+  private Consumer<Throwable> onFailureC = (exception) -> {
+  };
 
   static class Payload {
     String method;
@@ -78,10 +85,11 @@ public class ClientBase implements Handler {
   @Override
   public void handle(String json) throws CryptomarketSDKException {
     WSJsonResponse response = adapter.objectFromJson(json, WSJsonResponse.class);
-    if (response.getMethod() != null) {
-      handleNotification(response);
-    } else if (response.getId() != null)
+    if (response.getId() != null) {
       handleResponse(response);
+    } else if (response.getMethod() != null) {
+      handleNotification(response);
+    }
   }
 
   protected void handleNotification(WSJsonResponse response) {
@@ -98,24 +106,14 @@ public class ClientBase implements Handler {
   }
 
   protected String buildKey(String method) {
-    if (subscriptionKeys.containsKey(method))
+    if (subscriptionKeys.containsKey(method)) {
       return this.subscriptionKeys.get(method);
-    return "subscription";
+    }
+    return "suscription";
   }
 
   protected String buildKey(String method, Map<String, Object> params) {
-    if (subscriptionKeys.containsKey(method))
-      return this.subscriptionKeys.get(method);
-    return "subscription";
-  }
-
-  @Override
-  public void onClose(String reason) {
-  }
-
-  @Override
-  public void onFailure(Throwable t) {
-    t.printStackTrace();
+    return buildKey(method);
   }
 
   @Override
@@ -124,16 +122,38 @@ public class ClientBase implements Handler {
   }
 
   @Override
-  public void onOpen() {
-    this.onConnect();
-  }
-
-  @Override
-  public void onConnect() {
-  }
-
-  @Override
   public void connect() throws IOException {
     websocket.run();
   }
+
+  @Override
+  public void onConnect(Runnable onConnect) {
+    this.onConnectR = onConnect;
+  }
+
+  @Override
+  public Runnable getOnConnect() {
+    return onConnectR;
+  }
+
+  @Override
+  public void onClose(Consumer<String> onClose) {
+    this.onCloseC = onClose;
+  }
+
+  @Override
+  public Consumer<String> getOnClose() {
+    return onCloseC;
+  }
+
+  @Override
+  public void onFailure(Consumer<Throwable> onFailure) {
+    this.onFailureC = onFailure;
+  }
+
+  @Override
+  public Consumer<Throwable> getOnFailure() {
+    return onFailureC;
+  }
+
 }

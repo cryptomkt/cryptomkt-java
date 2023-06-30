@@ -1,22 +1,18 @@
-package com.cryptomarket.sdk;
+package com.cryptomarket.sdk.rest;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.cryptomarket.sdk.exceptions.CryptomarketAPIException;
-import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
-import com.cryptomarket.sdk.models.ErrorBody;
-import com.cryptomarket.sdk.models.ErrorResponse;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-
 import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -26,19 +22,36 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class HttpClientImpl implements HttpClient {
-  private final String url = "https://api.exchange.cryptomkt.com";
-  private final String apiVersion = "/api/3/";
+import com.cryptomarket.sdk.HMAC;
+import com.cryptomarket.sdk.exceptions.CryptomarketAPIException;
+import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.models.ErrorBody;
+import com.cryptomarket.sdk.models.ErrorResponse;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+
+public class HttpClientImpl implements CloseableHttpClient {
+  private static final String APPLICATION_JSON = "application/json";
+  private static final String USER_AGENT = "cryptomarket/java";
+  private static final String APPLICATOIN_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
+  private final String url;
+  private final String apiVersion;
   private final Moshi moshi = new Moshi.Builder().build();
   private final JsonAdapter<ErrorResponse> errorJsonAdapter = moshi.adapter(ErrorResponse.class);
-  CloseableHttpClient client = HttpClients.createDefault();
+  private final ParameterizedType mapStringString = Types.newParameterizedType(Map.class, String.class, String.class);
+  private final JsonAdapter<Map<String, String>> mapStrStrJsonAdapter = moshi.adapter(mapStringString);
+  org.apache.http.impl.client.CloseableHttpClient client = HttpClients.createDefault();
   private HMAC hmac;
+
 
   class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     public static final String METHOD_NAME = "DELETE";
@@ -62,12 +75,14 @@ public class HttpClientImpl implements HttpClient {
     }
   }
 
-  public HttpClientImpl(String apiKey, String apiSecret) {
-    hmac = new HMAC(apiKey, apiSecret, 0);
+  public HttpClientImpl(String url, String apiVersion, String apiKey, String apiSecret) {
+    this(url, apiVersion, apiKey, apiSecret, 0);
   }
 
-  public HttpClientImpl(String apiKey, String apiSecret, Integer window) {
-    hmac = new HMAC(apiKey, apiSecret, window);
+  public HttpClientImpl(String url, String apiVersion, String apiKey, String apiSecret, Integer window) {
+    this.hmac = new HMAC(apiKey, apiSecret, window);
+    this.url = url;
+    this.apiVersion = apiVersion;
   }
 
   public void close() throws IOException {
@@ -78,7 +93,7 @@ public class HttpClientImpl implements HttpClient {
   public String publicGet(String endpoint, @Nullable Map<String, String> params) throws CryptomarketSDKException {
     URI uri = null;
     try {
-      URIBuilder uriBuilder = new URIBuilder(this.url + this.apiVersion + endpoint);
+      URIBuilder uriBuilder = new URIBuilder(url + apiVersion + endpoint);
       if (params != null)
         params.forEach((key, val) -> uriBuilder.addParameter(key, val));
       uri = uriBuilder.build();
@@ -91,70 +106,88 @@ public class HttpClientImpl implements HttpClient {
 
   @Override
   public String get(String endpoint, @Nullable Map<String, String> params) throws CryptomarketSDKException {
-    URI uri = null;
-    try {
-      URIBuilder uriBuilder = new URIBuilder(this.url + this.apiVersion + endpoint);
-      if (params != null)
-        params.entrySet().stream().sorted(Map.Entry.comparingByKey())
-            .forEach(e -> uriBuilder.addParameter(e.getKey(), e.getValue()));
-      uri = uriBuilder.build();
-    } catch (URISyntaxException e) {
-      throw new CryptomarketSDKException("Failed to build the uri", e);
-    }
+    URI uri = buildUri(endpoint, params);
     HttpGet httpGet = new HttpGet(uri);
-    String credential = hmac.getCredential("GET", uri.getQuery(), uri.getPath());
+    new HttpPost(uri);
+    String credential = hmac.getCredential(HttpMethod.GET.toString(), uri.getQuery(), uri.getPath());
     httpGet.setHeader(HttpHeaders.AUTHORIZATION, credential);
     return makeRequest(httpGet);
   }
 
-  @Override
-  public String post(String endpoint, Map<String, String> params) throws CryptomarketSDKException {
-    HttpPost httpPost = new HttpPost(url + apiVersion + endpoint);
-    UrlEncodedFormEntity entity = null;
-    if (params != null) {
-      List<NameValuePair> form = new ArrayList<>();
-      params.forEach((key, value) -> form.add(new BasicNameValuePair(key, value)));
-      entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
-      httpPost.setEntity(entity);
-    }
+  private URI buildUri(String endpoint, Map<String, String> params) throws CryptomarketSDKException {
     try {
-      String body = "";
-      if (entity != null)
-        body = EntityUtils.toString(entity);
-      String credential = hmac.getCredential("POST", body, this.apiVersion + endpoint);
-      httpPost.setHeader(HttpHeaders.AUTHORIZATION, credential);
-    } catch (Exception e) {
-      throw new CryptomarketSDKException("failed hmac authentication", e);
+      URIBuilder uriBuilder = new URIBuilder(url + apiVersion + endpoint);
+      if (params != null)
+        params.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(e -> uriBuilder.addParameter(e.getKey(), e.getValue()));
+      return uriBuilder.build();
+    } catch (URISyntaxException e) {
+      throw new CryptomarketSDKException("Failed to build the uri", e);
     }
-    httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
-    httpPost.setHeader("User-Agent", "cryptomarket/java");
+  }
+
+  public String post(String endpoint, Map<String, String> payload) throws CryptomarketSDKException {
+    String strPayload = "";
+    if (payload != null)
+      strPayload = mapStrStrJsonAdapter.toJson(payload);
+
+    return post(endpoint, strPayload);
+  }
+
+  @Override
+  public String post(String endpoint, String payload) throws CryptomarketSDKException {
+    HttpPost httpPost = new HttpPost(url + apiVersion + endpoint);
+    if (!payload.equals("")) {
+      httpPost.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
+      httpPost.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+    }
+    String credential = hmac.getCredential(HttpMethod.POST.toString(), payload, apiVersion + endpoint);
+    httpPost.setHeader(HttpHeaders.AUTHORIZATION, credential);
     return makeRequest(httpPost);
   }
 
   @Override
-  public String put(String endpoint, Map<String, String> params) throws CryptomarketSDKException {
+  public String put(String endpoint, @Nullable Map<String, String> params) throws CryptomarketSDKException {
     HttpPut httpPut = new HttpPut(url + apiVersion + endpoint);
     UrlEncodedFormEntity entity = null;
     if (params != null) {
-      List<NameValuePair> form = new ArrayList<>();
-      params.forEach((key, value) -> form.add(new BasicNameValuePair(key, value)));
-      entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
+      entity = paramsToUrlEncodedEntity(params);
       httpPut.setEntity(entity);
     }
+    addAuthorizationHeader(httpPut, HttpMethod.PUT, endpoint, entity);
+
+    httpPut.setHeader(HttpHeaders.ACCEPT, APPLICATION_JSON);
+    httpPut.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATOIN_X_WWW_FORM_URLENCODED);
+    return makeRequest(httpPut);
+  }
+
+  private HttpUriRequest addAuthorizationHeader(HttpUriRequest request, HttpMethod method, String endpoint,
+      @Nullable HttpEntity entity) throws CryptomarketSDKException {
+    String strEntity = entityAsStr(entity);
+    String credential = hmac.getCredential(
+        method.toString(),
+        strEntity,
+        apiVersion + endpoint);
+    request.setHeader(HttpHeaders.AUTHORIZATION, credential);
+    return request;
+  }
+
+  private String entityAsStr(@Nullable HttpEntity entity) throws CryptomarketSDKException {
+    if (entity == null) {
+      return "";
+    }
     try {
-      String body = "";
-      if (entity != null)
-        body = EntityUtils.toString(entity);
-      String credential = hmac.getCredential("PUT", body, this.apiVersion + endpoint);
-      httpPut.setHeader(HttpHeaders.AUTHORIZATION, credential);
-    } catch (Exception e) {
+      return EntityUtils.toString(entity);
+    } catch (ParseException | IOException e) {
       throw new CryptomarketSDKException("failed hmac authentication", e);
     }
+  }
 
-    httpPut.setHeader("Accept", "application/json");
-    httpPut.setHeader("Content-type", "application/x-www-form-urlencoded");
-
-    return makeRequest(httpPut);
+  private UrlEncodedFormEntity paramsToUrlEncodedEntity(Map<String, String> params) {
+    List<NameValuePair> form = new ArrayList<>();
+    params.forEach((key, value) -> form.add(new BasicNameValuePair(key, value)));
+    return new UrlEncodedFormEntity(form, Consts.UTF_8);
   }
 
   @Override
@@ -162,23 +195,21 @@ public class HttpClientImpl implements HttpClient {
     HttpPatch httpPatch = new HttpPatch(url + apiVersion + endpoint);
     UrlEncodedFormEntity entity = null;
     if (params != null) {
-      List<NameValuePair> form = new ArrayList<>();
-      params.forEach((key, value) -> form.add(new BasicNameValuePair(key, value)));
-      entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
+      entity = paramsToUrlEncodedEntity(params);
       httpPatch.setEntity(entity);
     }
     try {
       String body = "";
       if (entity != null)
         body = EntityUtils.toString(entity);
-      String credential = hmac.getCredential("PATCH", body, this.apiVersion + endpoint);
+      String credential = hmac.getCredential("PATCH", body, apiVersion + endpoint);
       httpPatch.setHeader(HttpHeaders.AUTHORIZATION, credential);
     } catch (Exception e) {
       throw new CryptomarketSDKException("failed hmac authentication", e);
     }
 
-    httpPatch.setHeader("Accept", "application/json");
-    httpPatch.setHeader("Content-type", "application/x-www-form-urlencoded");
+    httpPatch.setHeader(HttpHeaders.ACCEPT, APPLICATION_JSON);
+    httpPatch.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATOIN_X_WWW_FORM_URLENCODED);
 
     return makeRequest(httpPatch);
   }
@@ -188,9 +219,7 @@ public class HttpClientImpl implements HttpClient {
     HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(url + apiVersion + endpoint);
     UrlEncodedFormEntity entity = null;
     if (params != null) {
-      List<NameValuePair> form = new ArrayList<>();
-      params.forEach((key, value) -> form.add(new BasicNameValuePair(key, value)));
-      entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
+      entity = paramsToUrlEncodedEntity(params);
       httpDelete.setEntity(entity);
 
     }
@@ -204,12 +233,14 @@ public class HttpClientImpl implements HttpClient {
       throw new CryptomarketSDKException("failed hmac authentication", e);
     }
 
-    httpDelete.setHeader("Accept", "application/json");
-    httpDelete.setHeader("Content-type", "application/x-www-form-urlencoded");
+    httpDelete.setHeader(HttpHeaders.ACCEPT, APPLICATION_JSON);
+    httpDelete.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATOIN_X_WWW_FORM_URLENCODED);
     return makeRequest(httpDelete);
   }
 
   private String makeRequest(HttpUriRequest request) throws CryptomarketSDKException {
+    request.setHeader(HttpHeaders.CONNECTION, "Keep-Alive");
+    request.setHeader(HttpHeaders.USER_AGENT, USER_AGENT);
     CloseableHttpResponse response;
     String responseBody;
     Boolean isSuccessful;

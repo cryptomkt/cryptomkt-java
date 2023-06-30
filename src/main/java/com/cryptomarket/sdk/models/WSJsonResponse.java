@@ -8,6 +8,8 @@ public class WSJsonResponse {
   private String method;
   @Json(name = "ch")
   private String channel;
+  @Json(name = "target_currency")
+  private String targetCurrency;
 
   private ErrorBody error;
   private Object params;
@@ -96,11 +98,19 @@ public class WSJsonResponse {
     this.result = result;
   }
 
+  public String getTargetCurrency() {
+    return targetCurrency;
+  }
+
+  public void setTargetCurrency(String targetCurrency) {
+    this.targetCurrency = targetCurrency;
+  }
+
   @Override
   public String toString() {
-    return "WSJsonResponse [channel=" + channel + ", data=" + data + ", error=" + error + ", id=" + id + ", jsonrpc="
-        + jsonrpc + ", method=" + method + ", params=" + params + ", result=" + result + ", snapshot=" + snapshot
-        + ", update=" + update + "]";
+    return "WSJsonResponse [jsonrpc=" + jsonrpc + ", id=" + id + ", method=" + method + ", channel=" + channel
+        + ", targetCurrency=" + targetCurrency + ", error=" + error + ", params=" + params + ", result=" + result
+        + ", snapshot=" + snapshot + ", update=" + update + ", data=" + data + "]";
   }
 
 }

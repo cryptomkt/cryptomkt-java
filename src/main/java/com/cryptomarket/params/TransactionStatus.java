@@ -4,8 +4,8 @@ public enum TransactionStatus {
   CREATED("CREATED"),
   PENDING("PENDING"),
   FAILED("FAILED"),
-  SUCCESS("SUCCESS"),
-  ROLLED_BACK("ROLLED_BACK");
+  ROLLED_BACK("ROLLED_BACK"),
+  SUCCESS("SUCCESS");
 
   private final String label;
 

@@ -3,5 +3,6 @@ package com.cryptomarket.sdk.websocket;
 public enum OrderBookState {
     UPDATING,
     BROKEN,
-    WAITING
+    BROKEN_PARSE_ERROR,
+    WAITING;
 }

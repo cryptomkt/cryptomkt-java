@@ -1,7 +1,6 @@
 package com.cryptomarket.sdk;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +17,8 @@ import com.cryptomarket.sdk.models.PublicTrade;
 import com.cryptomarket.sdk.models.Symbol;
 import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
+import com.cryptomarket.sdk.rest.CryptomarketRestClient;
+import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
 import com.cryptomarket.params.SortBy;
 import com.cryptomarket.params.Period;
 import com.cryptomarket.params.Sort;
@@ -28,255 +29,170 @@ public class TestRestClientPublic {
   CryptomarketRestClient client = new CryptomarketRestClientImpl();
 
   @Test
-  public void testGetAllCurrencies() {
-    try {
-      Map<String, Currency> currencies = client.getCurrencies(null);
-      assertTrue(currencies.size() > 0);
-      currencies.values().forEach(Checker.checkCurrency);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetAllCurrencies() throws CryptomarketSDKException {
+    Map<String, Currency> currencies = client.getCurrencies(null, null);
+    assertTrue(currencies.size() > 0);
+    currencies.values().forEach(Checker.checkCurrency);
   }
 
   @Test
-  public void testGet2Currencies() {
-    try {
-      List<String> currencyIds = new ArrayList<String>(Arrays.asList("EOS", "eth"));
-      Map<String, Currency> currencies = client.getCurrencies(currencyIds);
-      assertTrue(currencies.size() == 2);
-      currencies.values().forEach(Checker.checkCurrency);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGet2Currencies() throws CryptomarketSDKException {
+    List<String> currencyIds = new ArrayList<String>(Arrays.asList("EOS", "eth"));
+    Map<String, Currency> currencies = client.getCurrencies(currencyIds, null);
+    assertTrue(currencies.size() == 2);
+    currencies.values().forEach(Checker.checkCurrency);
+
   }
 
   @Test
-  public void testGetCurrency() {
-    try {
-      Currency curr = client.getCurrency("EOS");
-      Checker.checkCurrency.accept(curr);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetCurrency() throws CryptomarketSDKException {
+    Currency curr = client.getCurrency("EOS");
+    Checker.checkCurrency.accept(curr);
   }
 
   @Test
-  public void testGetAllSymbols() {
-    try {
-      Map<String, Symbol> symbols = client.getSymbols(null);
-      assertTrue(symbols.size() > 0);
-      symbols.values().forEach(Checker.checkSymbol);
-    } catch (CryptomarketSDKException e) {
-      fail();
-    }
+  public void testGetAllSymbols() throws CryptomarketSDKException {
+    Map<String, Symbol> symbols = client.getSymbols(null);
+    assertTrue(symbols.size() > 0);
+    symbols.values().forEach(Checker.checkSymbol);
   }
 
   @Test
-  public void testGetASymbol() {
-    try {
-      List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH"));
-      Map<String, Symbol> symbols = client.getSymbols(symbolIds);
-      assertTrue(symbols.size() == 1);
-      symbols.values().forEach(Checker.checkSymbol);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetASymbol() throws CryptomarketSDKException {
+    List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH"));
+    Map<String, Symbol> symbols = client.getSymbols(symbolIds);
+    assertTrue(symbols.size() == 1);
+    symbols.values().forEach(Checker.checkSymbol);
   }
 
   @Test
-  public void testGet2Symbols() {
-    try {
-      List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
-      Map<String, Symbol> symbols = client.getSymbols(symbolIds);
-      assertTrue(symbols.size() == 2);
-      symbols.values().forEach(Checker.checkSymbol);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGet2Symbols() throws CryptomarketSDKException {
+    List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
+    Map<String, Symbol> symbols = client.getSymbols(symbolIds);
+    assertTrue(symbols.size() == 2);
+    symbols.values().forEach(Checker.checkSymbol);
   }
 
   @Test
-  public void testGetSymbol() {
-    try {
-      Symbol symbol = client.getSymbol("EOSETH");
-      Checker.checkSymbol.accept(symbol);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetSymbol() throws CryptomarketSDKException {
+    Symbol symbol = client.getSymbol("EOSETH");
+    Checker.checkSymbol.accept(symbol);
   }
 
   @Test
-  public void testGetAllTickers() {
-    try {
-      Map<String, Ticker> tickers = client.getTickers(null);
-      assertTrue(tickers.size() > 0);
-      tickers.values().forEach(Checker.checkTicker);
-
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetAllTickers() throws CryptomarketSDKException {
+    Map<String, Ticker> tickers = client.getTickers(null);
+    assertTrue(tickers.size() > 0);
+    tickers.values().forEach(Checker.checkTicker);
   }
 
   @Test
-  public void testGet2Tickers() {
-    try {
-      List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
-      Map<String, Ticker> tickers = client.getTickers(symbolIds);
-      assertTrue(tickers.size() == 2);
-      tickers.values().forEach(Checker.checkTicker);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGet2Tickers() throws CryptomarketSDKException {
+    List<String> symbolIds = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
+    Map<String, Ticker> tickers = client.getTickers(symbolIds);
+    assertTrue(tickers.size() == 2);
+    tickers.values().forEach(Checker.checkTicker);
   }
 
   @Test
-  public void testGetAllPrices() {
-    try {
-      Map<String, Price> prices = client.getPrices("ETH", null);
-      assertTrue(prices.size() > 2);
-      prices.values().forEach(Checker.checkPrice);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetAllPrices() throws CryptomarketSDKException {
+    Map<String, Price> prices = client.getPrices("ETH", null);
+    assertTrue(prices.size() > 2);
+    prices.values().forEach(Checker.checkPrice);
   }
 
   @Test
-  public void testGetPrice() {
-    try {
-      Map<String, Price> prices = client.getPrices("ETH", "XLM");
-      assertTrue(prices.size() == 1);
-      prices.values().forEach(Checker.checkPrice);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetPrice() throws CryptomarketSDKException {
+    Map<String, Price> prices = client.getPrices("ETH", "XLM");
+    assertTrue(prices.size() == 1);
+    prices.values().forEach(Checker.checkPrice);
   }
 
   @Test
-  public void testGetAllPricesHistory() {
-    try {
-      Map<String, PriceHistory> prices = client.getPricesHistory("ETH", null, null, null, null, null, null);
-      assertTrue(prices.size() > 2);
-      prices.values().forEach(Checker.checkPriceHistory);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetAllPricesHistory() throws CryptomarketSDKException {
+    Map<String, PriceHistory> prices = client.getPricesHistory("ETH", null, null, null, null, null, null);
+    assertTrue(prices.size() > 2);
+    prices.values().forEach(Checker.checkPriceHistory);
   }
 
   @Test
-  public void testGetSomePricesHistory() {
-    try {
-      Map<String, PriceHistory> prices = client.getPricesHistory("ETH", "XLM", null, null, 3, null, null);
-      assertTrue(prices.size() == 1);
-      prices.values().forEach(Checker.checkPriceHistory);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetSomePricesHistory() throws CryptomarketSDKException {
+    Map<String, PriceHistory> prices = client.getPricesHistory("ETH", "XLM", null, null, 3, null, null);
+    assertTrue(prices.size() == 1);
+    prices.values().forEach(Checker.checkPriceHistory);
   }
 
   @Test
-  public void testGetTickerPrice() {
-    try {
-      List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
-      Map<String, TickerPrice> prices = client.getTickerPrices(symbols);
-      assertTrue(prices.size() > 1);
-      prices.values().forEach(Checker.checkTickerPrice);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetTickerPrice() throws CryptomarketSDKException {
+    List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
+    Map<String, TickerPrice> prices = client.getTickerLastPrices(symbols);
+    assertTrue(prices.size() > 1);
+    prices.values().forEach(Checker.checkTickerPrice);
   }
 
   @Test
-  public void testGetTickerPriceOfSymbol() {
-    try {
-      TickerPrice price = client.getTickerPriceOfSymbol("EOSETH");
-      Checker.checkTickerPrice.accept(price);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetTickerPriceOfSymbol() throws CryptomarketSDKException {
+    TickerPrice price = client.getTickerLastPriceBySymbol("EOSETH");
+    Checker.checkTickerPrice.accept(price);
   }
 
   @Test
-  public void getTrades() {
-    try {
-      List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
-      Map<String, List<PublicTrade>> trades = client.getTrades(symbols, null, null, null, null, "2");
-      assertTrue(trades.keySet().size() == 2);
-      trades.forEach((key, list) -> {
-        assertTrue(list.size() == 2);
-      });
-      trades.forEach((key, tradeList) -> {
-        tradeList.forEach(Checker.checkPublicTrade);
-      });
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getTrades() throws CryptomarketSDKException {
+    List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
+    Map<String, List<PublicTrade>> trades = client.getTrades(symbols, null, null, null, null, "2");
+    assertTrue(trades.keySet().size() == 2);
+    trades.forEach((key, list) -> {
+      assertTrue(list.size() == 2);
+    });
+    trades.forEach((key, tradeList) -> {
+      tradeList.forEach(Checker.checkPublicTrade);
+    });
   }
 
   @Test
-  public void getTradesSortByIDWithLimit() {
-    try {
-      Map<String, List<PublicTrade>> trades = client.getTrades(
-          Arrays.asList("EOSETH"),
-          null,
-          SortBy.ID,
-          null,
-          "1632334875",
-          "2");
-      trades.forEach((key, list) -> {
-        assertTrue(list.size() == 2);
-      });
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getTradesSortByIdWithLimit() throws CryptomarketSDKException {
+    Map<String, List<PublicTrade>> trades = client.getTrades(
+        Arrays.asList("EOSETH"),
+        null,
+        SortBy.ID,
+        null,
+        "1632334875",
+        "2");
+    trades.forEach((key, list) -> {
+      assertTrue(list.size() == 2);
+    });
   }
 
   @Test
-  public void getOrderbooks() {
-    try {
-      List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
-      Map<String, OrderBook> orderbooks = client.getOrderBooks(symbols, 5);
-      assertTrue(orderbooks.keySet().size() == 2);
-      orderbooks.forEach((key, ob) -> {
-        Checker.checkOB.accept(ob);
-      });
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getOrderbooks() throws CryptomarketSDKException {
+    List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
+    Map<String, OrderBook> orderbooks = client.getOrderBooks(symbols, 5);
+    assertTrue(orderbooks.keySet().size() == 2);
+    orderbooks.forEach((key, ob) -> {
+      Checker.checkOB.accept(ob);
+    });
   }
 
   @Test
-  public void getOneOrderbook() {
-    try {
-      List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH"));
-      OrderBook orderbook = client.getOrderBooks(symbols, 5).get("EOSETH");
-      Checker.checkOB.accept(orderbook);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getOneOrderbook() throws CryptomarketSDKException {
+    List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH"));
+    OrderBook orderbook = client.getOrderBooks(symbols, 5).get("EOSETH");
+    Checker.checkOB.accept(orderbook);
   }
 
   @Test
-  public void getOrderbook() {
-    try {
-      OrderBook orderbook = client.getOrderBookOfSymbol("EOSETH", 5);
-      Checker.checkOB.accept(orderbook);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getOrderbook() throws CryptomarketSDKException {
+    OrderBook orderbook = client.getOrderBookBySymbol("EOSETH", 3);
+    Checker.checkOB.accept(orderbook);
   }
 
   @Test
-  public void getCandles() {
-    try {
-      List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH"));
-      Map<String, List<Candle>> candles = client.getCandles(symbols, Period._4_HOURS, Sort.ASC, null, null, null,
-          null);
-      assertTrue(candles.keySet().size() == 1);
-      candles.forEach((key, candleList) -> {
-        candleList.forEach(Checker.checkCandle);
-      });
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void getCandles() throws CryptomarketSDKException {
+    List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH"));
+    Map<String, List<Candle>> candles = client.getCandles(symbols, Period._4_HOURS, Sort.ASC, null, null, null);
+    assertTrue(candles.keySet().size() == 1);
+    candles.forEach((key, candleList) -> {
+      candleList.forEach(Checker.checkCandle);
+    });
   }
 }

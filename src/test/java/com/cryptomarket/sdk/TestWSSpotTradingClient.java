@@ -1,25 +1,27 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.cryptomarket.params.ContingencyType;
 import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.OrderStatus;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Side;
+import com.cryptomarket.params.TimeInForce;
+import com.cryptomarket.sdk.Helpers.FailChecker;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Report;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClientImpl;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestWSSpotTradingClient {
 
@@ -29,13 +31,10 @@ public class TestWSSpotTradingClient {
   @Before
   public void before() {
     try {
-      wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 10);
+      wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 10_000);
       wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(3);
-      } catch (InterruptedException e) {
-        fail();
-      }
+
+      Helpers.sleep(3);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -55,11 +54,8 @@ public class TestWSSpotTradingClient {
       System.out.println(result);
       result.forEach(Checker.checkBalance);
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
   }
 
   @Test
@@ -71,17 +67,14 @@ public class TestWSSpotTradingClient {
       }
       Checker.checkBalance.accept(result);
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
   }
 
   @Test
   public void testOrderFlow() {
-    String oldClientOrderID = String.format("%d", System.currentTimeMillis()) + "11";
-    String newClientOrderID = String.format("%d", System.currentTimeMillis()) + "22";
+    String oldClientOrderId = String.format("%d", System.currentTimeMillis()) + "11";
+    String newClientOrderId = String.format("%d", System.currentTimeMillis()) + "22";
 
     // create
     wsClient.createSpotOrder(
@@ -90,15 +83,12 @@ public class TestWSSpotTradingClient {
             .symbol("EOSETH")
             .price("10000")
             .quantity("0.01")
-            .clientOrderID(oldClientOrderID),
+            .clientOrderId(oldClientOrderId),
         (report, exception) -> {
           Checker.checkReport.accept(report);
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
     // check
     wsClient.getAllActiveOrders(
         (reportList, exception) -> {
@@ -107,22 +97,19 @@ public class TestWSSpotTradingClient {
           }
           Boolean present = false;
           for (Report order : reportList) {
-            if (order.getClientOrderID().equals(oldClientOrderID))
+            if (order.getClientOrderId().equals(oldClientOrderId))
               present = true;
           }
           if (!present)
             fail("could not find");
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
 
     // replace
     wsClient.replaceSpotOrder(
-        oldClientOrderID,
-        newClientOrderID,
+        oldClientOrderId,
+        newClientOrderId,
         "0.02",
         "2000",
         null,
@@ -130,34 +117,27 @@ public class TestWSSpotTradingClient {
           if (exception != null) {
             fail();
           }
-          if (!report.getOriginalClientOrderID().equals(oldClientOrderID)) {
+          if (!report.getOriginalClientOrderId().equals(oldClientOrderId)) {
             fail();
           }
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
 
     // cancel
     wsClient.cancelSpotOrder(
-        newClientOrderID,
+        newClientOrderId,
         (report, exception) -> {
           if (exception != null) {
             fail();
           }
           if (!report.getStatus().equals(OrderStatus.CANCELED))
             fail();
-          if (report.getClientOrderID().equals(oldClientOrderID))
+          if (report.getClientOrderId().equals(oldClientOrderId))
             fail();
         });
 
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
   }
 
   @Test
@@ -181,23 +161,14 @@ public class TestWSSpotTradingClient {
       }
       reportList.forEach(Checker.checkReport);
     };
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
     wsClient.getAllActiveOrders(resultBiConsumer);
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
     wsClient.cancelAllSpotOrders(resultBiConsumer);
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
   }
 
   @Test
@@ -205,11 +176,7 @@ public class TestWSSpotTradingClient {
     wsClient.getSpotCommissions((result, exception) -> {
       result.forEach(Checker.checkCommission);
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
   }
 
   @Test
@@ -217,48 +184,42 @@ public class TestWSSpotTradingClient {
     wsClient.getSpotCommissionOfSymbol("EOSETH", (result, exception) -> {
       Checker.checkCommission.accept(result);
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
   }
 
   @Test
   public void testCreateOrderList() {
-    String orderListID = String.format("%d", System.currentTimeMillis());
-    String secondClientOrderID = String.format("%d", System.currentTimeMillis()) + "2";
-    String symbol = "EOSETH";
+    String orderListId = String.format("%d", System.currentTimeMillis());
+    String secondClientOrderId = String.format("%d", System.currentTimeMillis()) + "2";
     Side side = Side.SELL;
     String quantity = "0.01";
     String price = "10000";
+    FailChecker failChecker = new FailChecker();
     wsClient.createSpotOrderList(
         ContingencyType.ALL_OR_NONE,
         Arrays.asList(
             new OrderBuilder()
-                .clientOrderID(orderListID)
-                .symbol(symbol)
+                .clientOrderId(orderListId)
+                .symbol("EOSETH")
                 .side(side)
+                .timeInForce(TimeInForce.FOK)
                 .quantity(quantity)
                 .price(price),
             new OrderBuilder()
-                .clientOrderID(secondClientOrderID)
-                .symbol(symbol)
+                .clientOrderId(secondClientOrderId)
+                .symbol("EOSBTC")
                 .side(side)
+                .timeInForce(TimeInForce.FOK)
                 .quantity(quantity)
                 .price(price)),
-        orderListID,
+        orderListId,
         (result, exception) -> {
           if (exception != null) {
-            System.out.println(exception);
+            failChecker.fail();
           }
-          System.out.println(result);
-          result.forEach(Checker.checkReport);
         });
-    try {
-      TimeUnit.SECONDS.sleep(5);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(12);
+    assertFalse(failChecker.failed());
   }
 }

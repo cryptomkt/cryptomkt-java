@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.sdk.exceptions.CryptomarketAPIException;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.exceptions.ParseException;
 import com.cryptomarket.sdk.models.ErrorBody;
 import com.cryptomarket.sdk.models.WSJsonResponse;
 
@@ -19,12 +20,19 @@ public class InterceptorFactory {
         ErrorBody error = response.getError();
         if (error != null) {
           resultBiConsumer.accept(null, new CryptomarketAPIException(error));
-        } else {
-          T result = adapter.objectFromValue(response.getResult(), cls);
-          resultBiConsumer.accept(result, null);
+          return;
         }
+        T result;
+        try {
+          result = adapter.objectFromValue(response.getResult(), cls);
+        } catch (ParseException e) {
+          resultBiConsumer.accept(null, e);
+          return;
+        }
+        resultBiConsumer.accept(result, null);
       }
     };
+
   }
 
   public static <T> Interceptor newMapStringListOfChanneledWSResponseObject(
@@ -44,7 +52,8 @@ public class InterceptorFactory {
             Map<String, List<T>> data = adapter.listMapFromObject(response.getData(), cls);
             notificationBiConsumer.accept(data, NotificationType.DATA);
           }
-        } catch (Exception e) {
+        } catch (ParseException e) {
+          notificationBiConsumer.accept(null, NotificationType.PARSE_ERROR);
         }
       }
     };
@@ -68,8 +77,8 @@ public class InterceptorFactory {
             Map<String, T> data = adapter.mapFromValue(response.getData(), cls);
             notificationBiConsumer.accept(data, NotificationType.DATA);
           }
-        } catch (Exception e) {
-          ;
+        } catch (ParseException e) {
+          notificationBiConsumer.accept(null, NotificationType.PARSE_ERROR);
         }
       }
 
@@ -84,15 +93,21 @@ public class InterceptorFactory {
         ErrorBody error = response.getError();
         if (error != null) {
           resultBiConsumer.accept(null, new CryptomarketAPIException(error));
-        } else {
-          List<T> result = adapter.listFromValue(response.getResult(), cls);
-          resultBiConsumer.accept(result, null);
+          return;
         }
+        List<T> result;
+        try {
+          result = adapter.listFromValue(response.getResult(), cls);
+        } catch (ParseException e) {
+          resultBiConsumer.accept(null, e);
+          return;
+        }
+        resultBiConsumer.accept(result, null);
       }
     };
   }
 
-  public static Interceptor ofSubscriptionResponse(
+  public static Interceptor newOfSubscriptionResponse(
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
     return new Interceptor() {
       @Override
@@ -100,10 +115,16 @@ public class InterceptorFactory {
         ErrorBody error = response.getError();
         if (error != null) {
           resultBiConsumer.accept(null, new CryptomarketAPIException(error));
-        } else {
-          List<String> result = adapter.stringlistFromStringMap(response.getResult(), "subscriptions");
-          resultBiConsumer.accept(result, null);
+          return;
         }
+        List<String> result;
+        try {
+          result = adapter.stringlistFromStringMap(response.getResult(), "subscriptions");
+        } catch (ParseException e) {
+          resultBiConsumer.accept(null, e);
+          return;
+        }
+        resultBiConsumer.accept(result, null);
       }
     };
   }

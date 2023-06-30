@@ -3,23 +3,25 @@ package com.cryptomarket.sdk.models;
 import com.squareup.moshi.Json;
 
 public class Network {
+	private String code;
 	private String network;
+	@Json(name = "is_ens_available")
+	private Boolean ensAvailable;
 	private String protocol;
-
 	@Json(name = "default")
-	private boolean default_network;
+	private Boolean defaultNetwork;
 	@Json(name = "payin_enabled")
-	private boolean payinEnabled;
+	private Boolean payinEnabled;
 	@Json(name = "payout_enabled")
-	private boolean payoutEnabled;
+	private Boolean payoutEnabled;
 	@Json(name = "parecision_payout")
 	private String precisionPayout;
 	@Json(name = "payout_fee")
 	private String payoutFee;
 	@Json(name = "payout_is_payment_id")
-	private boolean payoutIsPaymentId;
+	private Boolean payoutIsPaymentId;
 	@Json(name = "payin_payment_id")
-	private boolean payinPaymentId;
+	private Boolean payinPaymentId;
 	@Json(name = "payin_confirmations")
 	private int payinConfirmations;
 	@Json(name = "address_regex")
@@ -32,104 +34,172 @@ public class Network {
 	private String highProcessingTime;
 	@Json(name = "avg_processing_time")
 	private String avgProcessingTime;
+	@Json(name = "crypto_payment_id_name")
+	private String cryptoPaymentIdName;
+	@Json(name = "crypto_explorer")
+	private String cryptoExplorer;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public String getNetwork() {
 		return network;
 	}
+
 	public void setNetwork(String network) {
 		this.network = network;
 	}
+
+	public Boolean isEnsAvailable() {
+		return ensAvailable;
+	}
+
+	public void setEnsAvailable(Boolean isEnsAvailable) {
+		this.ensAvailable = isEnsAvailable;
+	}
+
 	public String getProtocol() {
 		return protocol;
 	}
+
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
-	public boolean isDefault_network() {
-		return default_network;
+
+	public Boolean isDefaultNetwork() {
+		return defaultNetwork;
 	}
-	public void setDefault_network(boolean default_network) {
-		this.default_network = default_network;
+
+	public void setDefaultNetwork(Boolean isDefaultNetwork) {
+		this.defaultNetwork = isDefaultNetwork;
 	}
-	public boolean isPayinEnabled() {
+
+	public Boolean isPayinEnabled() {
 		return payinEnabled;
 	}
-	public void setPayinEnabled(boolean payinEnabled) {
+
+	public void setPayinEnabled(Boolean payinEnabled) {
 		this.payinEnabled = payinEnabled;
 	}
-	public boolean isPayoutEnabled() {
+
+	public Boolean isPayoutEnabled() {
 		return payoutEnabled;
 	}
-	public void setPayoutEnabled(boolean payoutEnabled) {
+
+	public void setPayoutEnabled(Boolean payoutEnabled) {
 		this.payoutEnabled = payoutEnabled;
 	}
+
 	public String getPrecisionPayout() {
 		return precisionPayout;
 	}
+
 	public void setPrecisionPayout(String precisionPayout) {
 		this.precisionPayout = precisionPayout;
 	}
+
 	public String getPayoutFee() {
 		return payoutFee;
 	}
+
 	public void setPayoutFee(String payoutFee) {
 		this.payoutFee = payoutFee;
 	}
-	public boolean isPayoutIsPaymentId() {
+
+	public Boolean isPayoutIsPaymentId() {
 		return payoutIsPaymentId;
 	}
-	public void setPayoutIsPaymentId(boolean payoutIsPaymentId) {
+
+	public void setPayoutIsPaymentId(Boolean payoutIsPaymentId) {
 		this.payoutIsPaymentId = payoutIsPaymentId;
 	}
-	public boolean isPayinPaymentId() {
+
+	public Boolean isPayinPaymentId() {
 		return payinPaymentId;
 	}
-	public void setPayinPaymentId(boolean payinPaymentId) {
+
+	public void setPayinPaymentId(Boolean payinPaymentId) {
 		this.payinPaymentId = payinPaymentId;
 	}
+
 	public int getPayinConfirmations() {
 		return payinConfirmations;
 	}
+
 	public void setPayinConfirmations(int payinConfirmations) {
 		this.payinConfirmations = payinConfirmations;
 	}
+
 	public String getAddressRegex() {
 		return addressRegex;
 	}
+
 	public void setAddressRegex(String addressRegex) {
 		this.addressRegex = addressRegex;
 	}
+
 	public String getPaymentIdRegex() {
 		return paymentIdRegex;
 	}
+
 	public void setPaymentIdRegex(String paymentIdRegex) {
 		this.paymentIdRegex = paymentIdRegex;
 	}
+
 	public String getLowProcessingTime() {
 		return lowProcessingTime;
 	}
+
 	public void setLowProcessingTime(String lowProcessingTime) {
 		this.lowProcessingTime = lowProcessingTime;
 	}
+
 	public String getHighProcessingTime() {
 		return highProcessingTime;
 	}
+
 	public void setHighProcessingTime(String highProcessingTime) {
 		this.highProcessingTime = highProcessingTime;
 	}
+
 	public String getAvgProcessingTime() {
 		return avgProcessingTime;
 	}
+
 	public void setAvgProcessingTime(String avgProcessingTime) {
 		this.avgProcessingTime = avgProcessingTime;
 	}
+
+	public String getCryptoPaymentIdName() {
+		return cryptoPaymentIdName;
+	}
+
+	public void setCryptoPaymentIdName(String cryptoPaymentIdName) {
+		this.cryptoPaymentIdName = cryptoPaymentIdName;
+	}
+
+	public String getCryptoExplorer() {
+		return cryptoExplorer;
+	}
+
+	public void setCryptoExplorer(String cryptoExplorer) {
+		this.cryptoExplorer = cryptoExplorer;
+	}
+
 	@Override
 	public String toString() {
-		return "Network [addressRegex=" + addressRegex + ", avgProcessingTime=" + avgProcessingTime
-				+ ", default_network=" + default_network + ", highProcessingTime=" + highProcessingTime
-				+ ", lowProcessingTime=" + lowProcessingTime + ", network=" + network + ", payinConfirmations="
-				+ payinConfirmations + ", payinEnabled=" + payinEnabled + ", payinPaymentId=" + payinPaymentId
-				+ ", paymentIdRegex=" + paymentIdRegex + ", payoutEnabled=" + payoutEnabled + ", payoutFee=" + payoutFee
-				+ ", payoutIsPaymentId=" + payoutIsPaymentId + ", precisionPayout=" + precisionPayout + ", protocol="
-				+ protocol + "]";
+		return "Network [code=" + code + ", network=" + network + ", ensAvailable=" + ensAvailable + ", protocol="
+				+ protocol + ", defaultNetwork=" + defaultNetwork + ", payinEnabled=" + payinEnabled + ", payoutEnabled="
+				+ payoutEnabled + ", precisionPayout=" + precisionPayout + ", payoutFee=" + payoutFee + ", payoutIsPaymentId="
+				+ payoutIsPaymentId + ", payinPaymentId=" + payinPaymentId + ", payinConfirmations=" + payinConfirmations
+				+ ", addressRegex=" + addressRegex + ", paymentIdRegex=" + paymentIdRegex + ", lowProcessingTime="
+				+ lowProcessingTime + ", highProcessingTime=" + highProcessingTime + ", avgProcessingTime=" + avgProcessingTime
+				+ ", cryptoPaymentIdName=" + cryptoPaymentIdName + ", cryptoExplorer=" + cryptoExplorer + "]";
 	}
+
 }

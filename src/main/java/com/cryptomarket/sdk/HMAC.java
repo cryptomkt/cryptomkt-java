@@ -16,7 +16,7 @@ public class HMAC {
   private String apiKey;
   private Integer window;
 
-  HMAC(String apiKey, String apiSecret, Integer window) {
+  public HMAC(String apiKey, String apiSecret, Integer window) {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     this.window = window;

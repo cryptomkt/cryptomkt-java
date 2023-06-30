@@ -7,10 +7,9 @@ import com.cryptomarket.params.Side;
 import com.squareup.moshi.Json;
 
 public class Report {
-  @Json(name = "id")
-  private String ID;
+  private String id;
   @Json(name = "client_order_id")
-  private String clientOrderID;
+  private String clientOrderId;
   private String symbol;
   private Side side;
   private OrderStatus status;
@@ -22,7 +21,7 @@ public class Report {
   @Json(name = "quantity_cumulative")
   private String quantityCumulative;
   @Json(name = "post_only")
-  private boolean postOnly;
+  private Boolean postOnly;
   @Json(name = "created_at")
   private String createdAt;
   @Json(name = "updated_at")
@@ -34,7 +33,7 @@ public class Report {
   @Json(name = "report_type")
   private ReportType reportType;
   @Json(name = "trade_id")
-  private String tradeID;
+  private String tradeId;
   @Json(name = "trade_quantity")
   private String tradeQuantity;
   @Json(name = "trade_price")
@@ -42,22 +41,22 @@ public class Report {
   @Json(name = "trade_taker")
   private String tradeFee;
   @Json(name = "original_client_order_id")
-  private String originalClientOrderID;
+  private String originalClientOrderId;
 
-  public String getID() {
-    return ID;
+  public String getId() {
+    return id;
   }
 
-  public void setID(String iD) {
-    ID = iD;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public String getClientOrderID() {
-    return clientOrderID;
+  public String getClientOrderId() {
+    return clientOrderId;
   }
 
-  public void setClientOrderID(String clientOrderID) {
-    this.clientOrderID = clientOrderID;
+  public void setClientOrderId(String clientOrderId) {
+    this.clientOrderId = clientOrderId;
   }
 
   public String getSymbol() {
@@ -124,11 +123,11 @@ public class Report {
     this.quantityCumulative = quantityCumulative;
   }
 
-  public boolean isPostOnly() {
+  public Boolean isPostOnly() {
     return postOnly;
   }
 
-  public void setPostOnly(boolean postOnly) {
+  public void setPostOnly(Boolean postOnly) {
     this.postOnly = postOnly;
   }
 
@@ -172,12 +171,12 @@ public class Report {
     this.reportType = reportType;
   }
 
-  public String getTradeID() {
-    return tradeID;
+  public String getTradeId() {
+    return tradeId;
   }
 
-  public void setTradeID(String tradeID) {
-    this.tradeID = tradeID;
+  public void setTradeId(String tradeId) {
+    this.tradeId = tradeId;
   }
 
   public String getTradeQuantity() {
@@ -204,21 +203,21 @@ public class Report {
     this.tradeFee = tradeFee;
   }
 
-  public String getOriginalClientOrderID() {
-    return originalClientOrderID;
+  public String getOriginalClientOrderId() {
+    return originalClientOrderId;
   }
 
-  public void setOriginalClientOrderID(String originalClientOrderID) {
-    this.originalClientOrderID = originalClientOrderID;
+  public void setOriginalClientOrderId(String originalClientOrderId) {
+    this.originalClientOrderId = originalClientOrderId;
   }
 
   @Override
   public String toString() {
-    return "Report [ID=" + ID + ", clientOrderID=" + clientOrderID + ", createdAt=" + createdAt + ", expireTime="
-        + expireTime + ", originalClientOrderID=" + originalClientOrderID + ", postOnly=" + postOnly + ", price="
+    return "Report [id=" + id + ", clientOrderId=" + clientOrderId + ", createdAt=" + createdAt + ", expireTime="
+        + expireTime + ", originalClientOrderId=" + originalClientOrderId + ", postOnly=" + postOnly + ", price="
         + price + ", quantity=" + quantity + ", quantityCumulative=" + quantityCumulative + ", reportType=" + reportType
         + ", side=" + side + ", status=" + status + ", stopPrice=" + stopPrice + ", symbol=" + symbol + ", timeInForce="
-        + timeInForce + ", tradeFee=" + tradeFee + ", tradeID=" + tradeID + ", tradePrice=" + tradePrice
+        + timeInForce + ", tradeFee=" + tradeFee + ", tradeId=" + tradeId + ", tradePrice=" + tradePrice
         + ", tradeQuantity=" + tradeQuantity + ", type=" + type + ", updatedAt=" + updatedAt + "]";
   }
 }

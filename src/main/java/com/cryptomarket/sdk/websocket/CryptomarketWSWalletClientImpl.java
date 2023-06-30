@@ -14,6 +14,7 @@ import com.cryptomarket.params.TransactionStatus;
 import com.cryptomarket.params.TransactionSubtype;
 import com.cryptomarket.params.TransactionType;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.exceptions.ParseException;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Transaction;
 import com.cryptomarket.sdk.models.WSJsonResponse;
@@ -63,8 +64,12 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
     Interceptor interceptor = new Interceptor() {
       @Override
       public void makeCall(WSJsonResponse response) {
-        Transaction transaction = adapter.objectFromValue(response.getParams(), Transaction.class);
-        notificationBiConsumer.accept(transaction, NotificationType.UPDATE);
+        try {
+          Transaction transaction = adapter.objectFromValue(response.getParams(), Transaction.class);
+          notificationBiConsumer.accept(transaction, NotificationType.UPDATE);
+        } catch (ParseException e) {
+          notificationBiConsumer.accept(null, NotificationType.PARSE_ERROR);
+        }
       }
     };
     Interceptor resultInterceptor = (resultBiConsumer == null) ? null
@@ -85,12 +90,16 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
     Interceptor interceptor = new Interceptor() {
       @Override
       public void makeCall(WSJsonResponse response) {
-        if (response.getMethod().equals("wallet_balances")) {
-          List<Balance> balances = adapter.listFromValue(response.getParams(), Balance.class);
-          notificationBiConsumer.accept(balances, NotificationType.SNAPSHOT);
-        } else if (response.getMethod().equals("wallet_balance_update")) {
-          Balance balance = adapter.objectFromValue(response.getParams(), Balance.class);
-          notificationBiConsumer.accept(Arrays.asList(balance), NotificationType.UPDATE);
+        try {
+          if (response.getMethod().equals("wallet_balances")) {
+            List<Balance> balances = adapter.listFromValue(response.getParams(), Balance.class);
+            notificationBiConsumer.accept(balances, NotificationType.SNAPSHOT);
+          } else if (response.getMethod().equals("wallet_balance_update")) {
+            Balance balance = adapter.objectFromValue(response.getParams(), Balance.class);
+            notificationBiConsumer.accept(Arrays.asList(balance), NotificationType.UPDATE);
+          }
+        } catch (ParseException e) {
+          notificationBiConsumer.accept(null, NotificationType.PARSE_ERROR);
         }
       }
     };
@@ -116,7 +125,7 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
   }
 
   @Override
-  public void getWalletBalanceOfCurrency(String currency,
+  public void getWalletBalanceByCurrency(String currency,
       BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder paramsBuilder = new ParamsBuilder().currency(currency);
     Interceptor interceptor = (resultBiConsumer == null) ? null
@@ -131,13 +140,13 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
       List<TransactionSubtype> subtypes,
       List<TransactionStatus> statuses,
       List<String> currencies,
-      List<String> transactionIDs,
+      List<String> transactionIds,
       Sort sort,
       SortBy by,
       String from,
       String till,
-      Integer IDFrom,
-      Integer IDTill,
+      Integer idFrom,
+      Integer idTill,
       Integer limit,
       Integer offset) {
     getTransactions(
@@ -147,13 +156,13 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
             .subtypes(subtypes)
             .statuses(statuses)
             .currencies(currencies)
-            .transactionIDs(transactionIDs)
+            .transactionIds(transactionIds)
             .sort(sort)
             .by(by)
             .from(from)
             .till(till)
-            .IDFrom(IDFrom)
-            .IDTill(IDTill)
+            .idFrom(idFrom)
+            .idTill(idTill)
             .limit(limit)
             .offset(offset));
   }

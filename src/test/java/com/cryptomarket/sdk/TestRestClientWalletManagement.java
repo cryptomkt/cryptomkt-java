@@ -4,243 +4,168 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Transaction;
-
-import org.junit.Test;
+import com.cryptomarket.sdk.rest.CryptomarketRestClient;
+import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
 
 public class TestRestClientWalletManagement {
   CryptomarketRestClient client = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
 
   @Test
-  public void testGetWalletBalances() {
-    try {
-      List<Balance> balances = client.getWalletBalances();
-      if (balances.size() == 0)
+  public void testGetWalletBalances() throws CryptomarketSDKException {
+    List<Balance> balances = client.getWalletBalances();
+    if (balances.size() == 0)
+      fail();
+    balances.forEach(balance -> {
+      if (balance.getCurrency() == null || balance.getCurrency().equals(""))
         fail();
-      balances.forEach(balance -> {
-        if (balance.getCurrency() == null || balance.getCurrency().equals(""))
-          fail();
+    });
+  }
 
-      });
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  @Test
+  public void testGetWalletBalanceOfCurrency() throws CryptomarketSDKException {
+    Balance balance = client.getWalletBalanceByCurrency("ADA");
+    Checker.checkBalance.accept(balance);
+  }
+
+  @Test
+  public void testGetDepositCriptoAddresses() throws CryptomarketSDKException {
+    List<Address> addresses = client.getDepositCryptoAddresses(null, null);
+    addresses.forEach(Checker.checkAddress);
+  }
+
+  @Test
+  public void testGetDepositCriptoAddressOfCurrency() throws CryptomarketSDKException {
+    List<Address> addresses = client.getDepositCryptoAddresses("NEXO", null);
+    addresses.forEach(Checker.checkAddress);
+  }
+
+  @Test
+  public void testCreateDepositCryptoAddress() throws CryptomarketSDKException {
+    Address addresses = client.createDepositCryptoAddress("BTC", null);
+    Checker.checkAddress.accept(addresses);
+  }
+
+  @Test
+  public void testLast10DepositCryptoAddresses() throws CryptomarketSDKException {
+    List<Address> addresses = client.getLast10DepositCryptoAddresses("EOS", null);
+    addresses.forEach(Checker.checkAddress);
+  }
+
+  @Test
+  public void testLast10WithdrawalCryptoAddresses() throws CryptomarketSDKException {
+    List<Address> addresses = client.getLast10WithdrawalCryptoAddresses("EOS", null);
+    addresses.forEach(Checker.checkAddress);
+  }
+
+  @Test
+  public void testWithdrawCrypto() throws CryptomarketSDKException {
+    List<Address> adaAddresses = client.getDepositCryptoAddresses("ADA", null);
+    String transaction_id = client.withdrawCrypto(new ParamsBuilder()
+        .currency("ADA")
+        .amount("0.1")
+        .address(adaAddresses.get(0).getAddress()));
+    if (transaction_id.equals("")) {
+      fail();
     }
   }
 
   @Test
-  public void testGetWalletBalanceOfCurrency() {
-    try {
-      Balance balance = client.getWalletBalanceOfCurrency("ADA");
-      Checker.checkBalance.accept(balance);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  public void testWithdrawCryptoCommit() throws CryptomarketSDKException {
+    List<Address> adaAddresses = client.getDepositCryptoAddresses("ADA", null);
+    String transactionId = client.withdrawCrypto(new ParamsBuilder()
+        .currency("ADA")
+        .amount("0.1")
+        .address(adaAddresses.get(0).getAddress())
+        .autoCommit(false));
+    if (transactionId.equals("")) {
+      fail();
+    }
+    boolean result = client.withdrawCryptoCommit(transactionId);
+    if (!result) {
+      fail();
     }
   }
 
   @Test
-  public void testGetDepositCriptoAddresses() {
-    try {
-      List<Address> addresses = client.getDepositCryptoAddresses();
-      addresses.forEach(Checker.checkAddress);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  public void testWithdrawCryptoRollback() throws CryptomarketSDKException {
+    List<Address> adaAddresses = client.getDepositCryptoAddresses("ADA", null);
+    String transactionId = client.withdrawCrypto(new ParamsBuilder()
+        .currency("ADA")
+        .amount("0.1")
+        .address(adaAddresses.get(0).getAddress())
+        .autoCommit(false));
+    if (transactionId.equals("")) {
+      fail();
+    }
+    boolean result = client.withdrawCryptoRollback(transactionId);
+    if (!result) {
+      fail();
     }
   }
 
   @Test
-  public void testGetDepositCriptoAddressOfCurrency() {
-    try {
-      Address addresses = client.getDepositCryptoAddressOfCurrency("EOS");
-      Checker.checkAddress.accept(addresses);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  public void testGetEstimateWithdrawFee() throws CryptomarketSDKException {
+    String estimate = client.getEstimateWithdrawalFee("EOS", "100", null);
+    if (estimate.equals("")) {
+      fail();
     }
   }
 
   @Test
-  public void testCreateDepositCryptoAddress() {
-    try {
-      Address addresses = client.createDepositCryptoAddress("EOS");
-      Checker.checkAddress.accept(addresses);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  public void testCryptoAddressBelongsToCurrentAccount() throws CryptomarketSDKException {
+    List<Address> addresses = client.getDepositCryptoAddresses("ADA", null);
+    boolean isMine = client.checkCryptoAddressBelongsToCurrentAccount(addresses.get(0).getAddress());
+    if (!isMine) {
+      fail();
     }
   }
 
   @Test
-  public void testLast10DepositCryptoAddresses() {
-    try {
-      List<Address> addresses = client.getLast10DepositCryptoAddresses("EOS");
-      addresses.forEach(Checker.checkAddress);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+  public void testTransferBetweenWalletAndExchage() throws CryptomarketSDKException {
+    String transactionId = client.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("ADA")
+        .amount("0.1")
+        .source(AccountType.WALLET)
+        .destination(AccountType.SPOT));
+    if (transactionId.equals("")) {
+      fail();
     }
-  }
-
-  @Test
-  public void testLast10WithdrawalCryptoAddresses() {
-    try {
-      List<Address> addresses = client.getLast10WithdrawalCryptoAddresses("EOS");
-      addresses.forEach(Checker.checkAddress);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
+    transactionId = client.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("ADA")
+        .amount("0.1")
+        .source(AccountType.SPOT)
+        .destination(AccountType.WALLET));
+    if (transactionId.equals("")) {
+      fail();
     }
+
   }
 
   @Test
-  public void testWithdrawCrypto() {
-    try {
-      Address adaAddress = client.getDepositCryptoAddressOfCurrency("ADA");
-      String transaction_id = client.withdrawCrypto(new ParamsBuilder()
-          .currency("ADA")
-          .amount("0.1")
-          .address(adaAddress.getAddress()));
-      if (transaction_id.equals("")) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetTransactionHistory() throws CryptomarketSDKException {
+    List<Transaction> transactions = client.getTransactionHistory(new ParamsBuilder());
+    transactions.forEach(Checker.checkTransaction);
   }
 
   @Test
-  public void testWithdrawCryptoCommit() {
-    try {
-      Address adaAddress = client.getDepositCryptoAddressOfCurrency("ADA");
-      String transactionID = client.withdrawCrypto(new ParamsBuilder()
-          .currency("ADA")
-          .amount("0.1")
-          .address(adaAddress.getAddress())
-          .autoCommit(false));
-      if (transactionID.equals("")) {
-        fail();
-      }
-      boolean result = client.withdrawCryptoCommit(transactionID);
-      if (!result) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
+  public void testGetTransaction() throws CryptomarketSDKException {
+    List<Transaction> transactions = client.getTransactionHistory(new ParamsBuilder().limit(1));
+    Transaction transaction = client.getTransaction(transactions.get(0).getNativeTransaction().getId());
+    Checker.checkTransaction.accept(transaction);
   }
 
   @Test
-  public void testWithdrawCryptoRollback() {
-    try {
-      Address adaAddress = client.getDepositCryptoAddressOfCurrency("ADA");
-      String transactionID = client.withdrawCrypto(new ParamsBuilder()
-          .currency("ADA")
-          .amount("0.1")
-          .address(adaAddress.getAddress())
-          .autoCommit(false));
-      if (transactionID.equals("")) {
-        fail();
-      }
-      boolean result = client.withdrawCryptoRollback(transactionID);
-      if (!result) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testGetEstimateWithdrawFee() {
-    try {
-      String estimate = client.getEstimateWithdrawalFee("EOS", "100");
-      if (estimate.equals("")) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testCryptoAddressBelongsToCurrentAccount() {
-    try {
-      Address address = client.getDepositCryptoAddressOfCurrency("ADA");
-      boolean isMine = client.cryptoAddressBelongsToCurrentAccount(address.getAddress());
-      if (!isMine) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testTransferBetweenWalletAndExchage() {
-    try {
-      String transactionID = client.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("CRO")
-          .amount("0.1")
-          .source(AccountType.SPOT)
-          .destination(AccountType.WALLET));
-      if (transactionID.equals("")) {
-        fail();
-      }
-      transactionID = client.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("CRO")
-          .amount("0.1")
-          .source(AccountType.WALLET)
-          .destination(AccountType.SPOT));
-      if (transactionID.equals("")) {
-        fail();
-      }
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testTransferMoneyToAnoterUser() {
-    // try {
-    // client.transferMoneyToAnotherUser("CRO", "01", IdentifyBy.EMAIL, "the
-    // email");
-    // } catch (CryptomarketSDKException e) {
-    // e.printStackTrace();
-    // fail();
-    // }
-  }
-
-  @Test
-  public void testGetTransactionHistory() {
-    try {
-      List<Transaction> transactions = client.getTransactionHistory(new ParamsBuilder());
-      transactions.forEach(Checker.checkTransaction);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testGetTransaction() {
-    // see ruby sdk for further information
-  }
-
-  @Test
-  public void testOffchainAvailable() {
-    try {
-      Address eosAddrses = client.getDepositCryptoAddressOfCurrency("EOS");
-      client.checkIfOffchainIsAvailable("EOS", eosAddrses.getAddress(), null);
-    } catch (CryptomarketSDKException e) {
-      fail(e.toString());
-    }
-  }
-
-  @Test
-  public void testGetAirdrops() {
-  }
-
-  @Test
-  public void testClaimAirdrops() {
+  public void testOffchainAvailable() throws CryptomarketSDKException {
+    List<Address> eosAddresses = client.getDepositCryptoAddresses("EOS", null);
+    client.checkIfOffchainIsAvailable("EOS", eosAddresses.get(0).getAddress(), null);
   }
 
   @Test

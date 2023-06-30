@@ -1,11 +1,13 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-
-import java.util.concurrent.TimeUnit;
 
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ParamsBuilder;
+import com.cryptomarket.sdk.Helpers.FailChecker;
+import com.cryptomarket.sdk.rest.CryptomarketRestClient;
+import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
 
@@ -35,11 +37,7 @@ public class TestWSWalletClientSubs {
       wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
       wsClient.connect();
       restClient = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-      try {
-        TimeUnit.SECONDS.sleep(3);
-      } catch (InterruptedException e) {
-        fail();
-      }
+      Helpers.sleep(3);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -52,10 +50,10 @@ public class TestWSWalletClientSubs {
 
   @Test
   public void testSubscribeToTransactions() {
+    FailChecker failChecker = new FailChecker();
     wsClient.subscribeToTransactions(
-        (data, nType) -> {
-          Checker.checkTransaction.accept(data);
-        }, (result, exception) -> {
+        Helpers.checker(failChecker, Checker.checkTransaction),
+        (result, exception) -> {
           if (exception != null) {
             fail();
           }
@@ -63,11 +61,7 @@ public class TestWSWalletClientSubs {
             fail();
           }
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
     try {
       restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
           .currency("EOS")
@@ -78,11 +72,7 @@ public class TestWSWalletClientSubs {
       e.printStackTrace();
       fail();
     }
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
     try {
       restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
           .currency("EOS")
@@ -93,37 +83,27 @@ public class TestWSWalletClientSubs {
       e.printStackTrace();
       fail();
     }
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
     wsClient.unsubscribeToTransactions((result, exception) -> {
       if (!result) {
         fail();
       }
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testSubscribeToWalletBalances() {
-    wsClient.subscribeToWalletBalances((data, nType) -> {
-      data.forEach(Checker.checkBalance);
-    }, (result, exception) -> {
-      if (!result) {
-        fail();
-      }
-    });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    FailChecker failChecker = new FailChecker();
+    wsClient.subscribeToWalletBalances(
+        Helpers.listChecker(failChecker, Checker.checkBalance),
+        (result, exception) -> {
+          if (!result) {
+            fail();
+          }
+        });
+    Helpers.sleep(3);
     try {
       restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
           .currency("EOS")
@@ -134,11 +114,7 @@ public class TestWSWalletClientSubs {
       e.printStackTrace();
       fail();
     }
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
     try {
       restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
           .currency("EOS")
@@ -149,11 +125,7 @@ public class TestWSWalletClientSubs {
       e.printStackTrace();
       fail();
     }
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
     wsClient.unsubscribeToWalletBalances((result, exception) -> {
       if (exception != null) {
         fail();
@@ -162,13 +134,7 @@ public class TestWSWalletClientSubs {
         fail();
       }
     });
-
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (
-
-    InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
+    assertFalse(failChecker.failed());
   }
 }

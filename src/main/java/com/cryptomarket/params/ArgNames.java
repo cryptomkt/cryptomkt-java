@@ -51,7 +51,7 @@ public class ArgNames {
   public static final String VOLUME = "volume";
   public static final String FROM_CURRENCY = "from_currency";
   public static final String TO_CURRENCY = "to_currency";
-  public static final String TRANSFER_BY = "by";
+  public static final String IDENTIFY_BY = "by";
   public static final String IDENTIFIER = "identifier";
   public static final String ORDER_ID = "order_id";
   public static final String ORDER_LIST_ID = "order_list_id";
@@ -65,4 +65,12 @@ public class ArgNames {
   public static final String DESCRIPTION = "description";
   public static final String SUB_ACCOUNT_ID = "sub_account_id";
   public static final String TRANSFER_TYPE = "type";
+  public static final String SUBSCRIPTION_MODE = "mode";
+  public static final String NETWORK_CODE = "network_code";
+  public static final String TARGET_CURRENCY = "target_currency";
+  public static final String PREFERRED_NETWORK = "preferred_network";
+  public static final String DEPTH = "depth";
+  public static final String NETWORKS = "networks";
+  public static final String EMAIL = "email";
+  public static final String STATUS = "status";
 }

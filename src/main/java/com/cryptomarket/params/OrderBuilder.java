@@ -1,87 +1,99 @@
 package com.cryptomarket.params;
 
-import java.util.List;
-import java.util.Map;
-
-import com.cryptomarket.sdk.exceptions.CryptomarketArgumentException;
+import com.squareup.moshi.Json;
 
 public class OrderBuilder {
-  ParamsBuilder paramsBuilder = new ParamsBuilder();
+  @Json(name = "client_order_id")
+  private String clientOrderId;
+  private String symbol;
+  private Side side;
+  private OrderType type;
 
-  public OrderBuilder checkRequired(List<String> requiredParams) throws CryptomarketArgumentException {
-    paramsBuilder.checkRequired(requiredParams);
-    return this;
-  }
-  public OrderBuilder clientOrderID(String clientOrderID) {
-    paramsBuilder.clientOrderID(clientOrderID);
+  @Json(name = "time_in_force")
+  private TimeInForce timeInForce;
+  private String quantity;
+  private String price;
+
+  @Json(name = "stop_price")
+  private String stopPrice;
+
+  @Json(name = "expire_time")
+  private String expireTime;
+
+  @Json(name = "strict_validate")
+  private Boolean strictValidate;
+
+  @Json(name = "post_only")
+  private Boolean postOnly;
+
+  @Json(name = "take_rate")
+  private String takeRate;
+
+  @Json(name = "make_rate")
+  private String makeRate;
+
+  public OrderBuilder clientOrderId(String clientOrderId) {
+    this.clientOrderId = clientOrderId;
     return this;
   }
 
   public OrderBuilder symbol(String symbol) {
-    paramsBuilder.symbol(symbol);
+    this.symbol = symbol;
     return this;
   }
 
   public OrderBuilder side(Side side) {
-    paramsBuilder.side(side);
+    this.side = side;
     return this;
   }
 
-  public OrderBuilder orderType(OrderType orderType) {
-    paramsBuilder.orderType(orderType);
+  public OrderBuilder orderType(OrderType type) {
+    this.type = type;
     return this;
   }
 
   public OrderBuilder timeInForce(TimeInForce timeInForce) {
-    paramsBuilder.timeInForce(timeInForce);
+    this.timeInForce = timeInForce;
     return this;
   }
 
-  public OrderBuilder quantity(String quantity) {
-    paramsBuilder.quantity(quantity);
+  public OrderBuilder quantity(String quanity) {
+    this.quantity = quanity;
     return this;
   }
 
   public OrderBuilder price(String price) {
-    paramsBuilder.price(price);
+    this.price = price;
     return this;
   }
 
-  public OrderBuilder stopPrice(String stpoPrice) {
-    paramsBuilder.stopPrice(stpoPrice);
+  public OrderBuilder stopPrice(String stopPrice) {
+    this.stopPrice = stopPrice;
     return this;
   }
 
   public OrderBuilder expireTime(String expireTime) {
-    paramsBuilder.expireTime(expireTime);
+    this.expireTime = expireTime;
     return this;
   }
 
   public OrderBuilder strictValidate(Boolean strictValidate) {
-    paramsBuilder.strictValidate(strictValidate);
+    this.strictValidate = strictValidate;
     return this;
   }
 
   public OrderBuilder postOnly(Boolean postOnly) {
-    paramsBuilder.postOnly(postOnly);
+    this.postOnly = postOnly;
     return this;
   }
 
   public OrderBuilder takeRate(String takeRate) {
-    paramsBuilder.takeRate(takeRate);
+    this.takeRate = takeRate;
     return this;
   }
 
   public OrderBuilder makeRate(String makeRate) {
-    paramsBuilder.makeRate(makeRate);
+    this.makeRate = makeRate;
     return this;
-  }
-
-  public Map<String, Object> buildObjectMap() {
-    return paramsBuilder.buildObjectMap();
-  }
-
-  public Map<String, String> build() {
-    return paramsBuilder.build();
   }
 }

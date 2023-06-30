@@ -12,15 +12,16 @@ import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.OrderType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Side;
+import com.cryptomarket.params.SubscriptionMode;
 import com.cryptomarket.params.TimeInForce;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.exceptions.ParseException;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Commission;
 import com.cryptomarket.sdk.models.Report;
 import com.cryptomarket.sdk.models.WSJsonResponse;
 import com.cryptomarket.sdk.websocket.interceptor.Interceptor;
 import com.cryptomarket.sdk.websocket.interceptor.InterceptorFactory;
-import com.squareup.moshi.JsonDataException;
 
 public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements CryptomarketWSSpotTradingClient {
 
@@ -41,6 +42,9 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
     subsKeys.put("spot_unsubscribe", "reports");
     subsKeys.put("spot_orders", "reports");
     subsKeys.put("spot_order", "reports");
+    subsKeys.put("spot_balance_subscribe", "balances");
+    subsKeys.put("spot_balance_unsubscribe", "balances");
+    subsKeys.put("spot_balance", "balances");
   }
 
   /**
@@ -67,7 +71,7 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
             if (reports != null) {
               notificationBiConsumer.accept(reports, NotificationType.SNAPSHOT);
             }
-          } catch (JsonDataException e) {
+          } catch (ParseException e) {
           }
         } else if (response.getMethod().equals("spot_order")) {
           try {
@@ -75,7 +79,7 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
             List<Report> reports = new ArrayList<Report>();
             reports.add(report);
             notificationBiConsumer.accept(reports, NotificationType.UPDATE);
-          } catch (JsonDataException e) {
+          } catch (ParseException e) {
           }
         }
       }
@@ -95,6 +99,43 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
   }
 
   @Override
+  public void subscribeToSpotBalances(SubscriptionMode mode,
+      BiConsumer<List<Balance>, NotificationType> notificationBiConsumer,
+      BiConsumer<Boolean, CryptomarketSDKException> resultBiConsumer) {
+    Interceptor interceptor = new Interceptor() {
+      @Override
+      public void makeCall(WSJsonResponse response) {
+        try {
+          List<Balance> balances = adapter.listFromValue(response.getParams(), Balance.class);
+          notificationBiConsumer.accept(balances, NotificationType.DATA);
+        } catch (ParseException e) {
+          notificationBiConsumer.accept(null, NotificationType.PARSE_ERROR);
+
+        }
+      }
+    };
+
+    Interceptor resultInterceptor = (resultBiConsumer == null) ? null
+        : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Boolean.class);
+
+    ParamsBuilder params = new ParamsBuilder().subcriptionMode(mode);
+
+    sendSubscription("spot_balance_subscribe", params.buildObjectMap(), interceptor, resultInterceptor);
+  }
+
+  @Override
+  public void unsubscribeToSpotBalances(BiConsumer<Boolean, CryptomarketSDKException> resultBiConsumer) {
+    Interceptor interceptor = (resultBiConsumer == null)
+        ? null
+        : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Boolean.class);
+
+    // harcoded params needed for a valid unsubscription, independent of real
+    // subscription type.
+    ParamsBuilder params = new ParamsBuilder().subcriptionMode(SubscriptionMode.UPDATES);
+    sendUnsubscription("spot_balance_unsubscribe", params.buildObjectMap(), interceptor);
+  }
+
+  @Override
   public void getAllActiveOrders(BiConsumer<List<Report>, CryptomarketSDKException> resultBiConsumer) {
     Interceptor interceptor = InterceptorFactory.newOfWSResponseList(resultBiConsumer, Report.class);
     sendById("spot_get_orders", null, interceptor);
@@ -106,7 +147,7 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
       String symbol,
       Side side,
       String quantity,
-      String clientOrderID,
+      String clientOrderId,
       OrderType orderType,
       String price,
       String stopPrice,
@@ -121,7 +162,7 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
         .symbol(symbol)
         .side(side)
         .quantity(quantity)
-        .clientOrderID(clientOrderID)
+        .clientOrderId(clientOrderId)
         .orderType(orderType)
         .price(price)
         .stopPrice(stopPrice)
@@ -148,24 +189,21 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
   public void createSpotOrderList(
       ContingencyType contingencyType,
       List<OrderBuilder> orders,
-      String orderListID,
-      BiConsumer<List<Report>, CryptomarketSDKException> resultBiConsumer) {
-    List<Map<String, Object>> orderListData = new ArrayList<>();
-    orders.forEach(orderBuilder -> orderListData.add(orderBuilder.buildObjectMap()));
+      String orderListId,
+      BiConsumer<Report, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder params = new ParamsBuilder()
-        .orderListID(orderListID)
+        .orderListId(orderListId)
         .contingencyType(contingencyType)
-        .orders(orderListData);
+        .orderList(orders);
     Interceptor interceptor = (resultBiConsumer == null)
         ? null
-        : InterceptorFactory.newOfWSResponseList(resultBiConsumer, Report.class);
+        : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Report.class);
     sendById("spot_new_order_list", params.buildObjectMap(), interceptor);
-
   }
 
   @Override
-  public void cancelSpotOrder(String clientOrderID, BiConsumer<Report, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().clientOrderID(clientOrderID);
+  public void cancelSpotOrder(String clientOrderId, BiConsumer<Report, CryptomarketSDKException> resultBiConsumer) {
+    ParamsBuilder params = new ParamsBuilder().clientOrderId(clientOrderId);
     Interceptor interceptor = (resultBiConsumer == null)
         ? null
         : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Report.class);
@@ -173,11 +211,11 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
   }
 
   @Override
-  public void replaceSpotOrder(String clientOrderID, String newClientOrderID, String quantity, String price,
+  public void replaceSpotOrder(String clientOrderId, String newClientOrderId, String quantity, String price,
       Boolean strictValidate, BiConsumer<Report, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder paramsBuilder = new ParamsBuilder()
-        .clientOrderID(clientOrderID)
-        .newClientOrderID(newClientOrderID)
+        .clientOrderId(clientOrderId)
+        .newClientOrderId(newClientOrderId)
         .quantity(quantity)
         .price(price)
         .strictValidate(strictValidate);

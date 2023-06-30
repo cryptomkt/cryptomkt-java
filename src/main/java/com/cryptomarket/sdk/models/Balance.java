@@ -1,13 +1,9 @@
 package com.cryptomarket.sdk.models;
 
-import com.squareup.moshi.Json;
-
 public class Balance {
   private String currency;
   private String available;
   private String reserved;
-  @Json(name = "reserved_margin")
-  private String reservedMargin;
 
   public String getCurrency() {
     return currency;
@@ -33,17 +29,8 @@ public class Balance {
     this.reserved = reserved;
   }
 
-  public String getReservedMargin() {
-    return reservedMargin;
-  }
-
-  public void setReservedMargin(String reservedMargin) {
-    this.reservedMargin = reservedMargin;
-  }
-
   @Override
   public String toString() {
-    return "Balance [available=" + available + ", currency=" + currency + ", reserved=" + reserved + ", reservedMargin="
-        + reservedMargin + "]";
+    return "Balance [currency=" + currency + ", available=" + available + ", reserved=" + reserved + "]";
   }
 }

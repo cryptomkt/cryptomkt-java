@@ -6,17 +6,20 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import com.cryptomarket.params.TickerSpeed;
+import com.cryptomarket.params.ArgNames;
 import com.cryptomarket.params.Depth;
 import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.params.OBSpeed;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
+import com.cryptomarket.params.PriceSpeed;
 import com.cryptomarket.sdk.Adapter;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.WSCandle;
 import com.cryptomarket.sdk.models.WSJsonResponse;
 import com.cryptomarket.sdk.models.WSOrderBook;
 import com.cryptomarket.sdk.models.WSOrderBookTop;
+import com.cryptomarket.sdk.models.WSPriceRate;
 import com.cryptomarket.sdk.models.WSPublicTrade;
 import com.cryptomarket.sdk.models.WSTicker;
 import com.cryptomarket.sdk.websocket.interceptor.Interceptor;
@@ -45,8 +48,7 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
 
   @Override
   protected void handleNotification(WSJsonResponse response) {
-    String channel = response.getChannel();
-    String key = buildKey(channel);
+    String key = buildKey(response);
     Interceptor interceptor = interceptorCache.getSubscriptionInterceptor(key);
     if (interceptor != null) {
       interceptor.makeCall(response);
@@ -56,7 +58,7 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
 
   private void subscriptionByChannel(String channel, Map<String, Object> params, Interceptor feedInterceptor,
       Interceptor resultInterceptor) {
-    String key = buildKey(channel);
+    String key = buildKey(channel, params);
     interceptorCache.storeSubscriptionInterceptor(key, feedInterceptor);
     Payload payload = new Payload("subscribe", channel, params);
     if (resultInterceptor != null) {
@@ -69,7 +71,46 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
 
   @Override
   protected String buildKey(String channel, Map<String, Object> params) {
-    return this.getSubscritpionKeys().get(channel);
+    String key = params.containsKey(ArgNames.TARGET_CURRENCY)
+        ? channel + (String) params.get(ArgNames.TARGET_CURRENCY)
+        : channel;
+    return key;
+  }
+
+  private String buildKey(WSJsonResponse response) {
+    String channel = response.getChannel();
+    String targetCurrency = response.getTargetCurrency();
+    return targetCurrency != null
+        ? channel + targetCurrency
+        : channel;
+  }
+
+  private <T> void makeSubscriptionWithInterceptors(
+      String channel,
+      ParamsBuilder params,
+      Class<T> cls,
+      BiConsumer<Map<String, T>, NotificationType> notificationBiConsumer,
+      BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
+    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationBiConsumer, cls);
+    Interceptor resultInterceptor = (resultBiConsumer == null)
+        ? null
+        : InterceptorFactory.newOfSubscriptionResponse(resultBiConsumer);
+    subscriptionByChannel(channel, params.buildObjectMap(), interceptor, resultInterceptor);
+  }
+
+  private <T> void makeSubscriptionWithListInterceptors(
+      String channel,
+      ParamsBuilder params,
+      Class<T> cls,
+      BiConsumer<Map<String, List<T>>, NotificationType> notificationBiConsumer,
+      BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
+    Interceptor interceptor = InterceptorFactory.newMapStringListOfChanneledWSResponseObject(
+        notificationBiConsumer,
+        cls);
+    Interceptor resultInterceptor = (resultBiConsumer == null)
+        ? null
+        : InterceptorFactory.newOfSubscriptionResponse(resultBiConsumer);
+    subscriptionByChannel(channel, params.buildObjectMap(), interceptor, resultInterceptor);
   }
 
   // PUBLIC METHODS
@@ -80,12 +121,13 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       Integer limit,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder params = new ParamsBuilder().symbolList(symbols).limit(limit);
-    Interceptor interceptor = InterceptorFactory.newMapStringListOfChanneledWSResponseObject(notificationBiConsumer,
-        WSPublicTrade.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel("trades", params.buildObjectMap(), interceptor, resultInterceptor);
+    String channel = "trades";
+    makeSubscriptionWithListInterceptors(
+        channel,
+        params,
+        WSPublicTrade.class,
+        notificationBiConsumer,
+        resultBiConsumer);
   }
 
   @Override
@@ -95,13 +137,38 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       List<String> symbols,
       Integer limit,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newMapStringListOfChanneledWSResponseObject(notificationBiConsumer,
-        WSCandle.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("candles/%s", period), params.buildObjectMap(), interceptor, resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolList(symbols).limit(limit);
+    String channel = String.format("candles/%s", period);
+    makeSubscriptionWithListInterceptors(
+        channel,
+        params,
+        WSCandle.class,
+        notificationBiConsumer,
+        resultBiConsumer);
+  }
+
+  @Override
+  public void subscribeToPriceRates(
+      BiConsumer<Map<String, WSPriceRate>, NotificationType> notificationBiConsumer,
+      PriceSpeed speed,
+      String targetCurrency,
+      List<String> currencies,
+      BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
+    ParamsBuilder params = new ParamsBuilder().currencyListOrAsteric(currencies).targetCurrency(targetCurrency);
+    String channel = String.format("price/rate/%s", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSPriceRate.class, notificationBiConsumer, resultBiConsumer);
+  }
+
+  @Override
+  public void subscribeToPriceRatesInBatches(
+      BiConsumer<Map<String, WSPriceRate>, NotificationType> notificationBiConsumer,
+      PriceSpeed speed,
+      String targetCurrency,
+      List<String> currencies,
+      BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
+    ParamsBuilder params = new ParamsBuilder().currencyListOrAsteric(currencies).targetCurrency(targetCurrency);
+    String channel = String.format("price/rate/%s/batches", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSPriceRate.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
@@ -110,13 +177,9 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       TickerSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationBiConsumer, WSCandle.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("ticker/price/%s", speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("ticker/price/%s", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSCandle.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
@@ -125,13 +188,9 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       TickerSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationBiConsumer, WSCandle.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("ticker/price/%s/batch", speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("ticker/price/%s/batch", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSCandle.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
@@ -140,13 +199,9 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       TickerSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationBiConsumer, WSTicker.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("ticker/%s", speed), params.buildObjectMap(), interceptor, resultInterceptor);
-
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("ticker/%s", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSTicker.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
@@ -155,88 +210,64 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       TickerSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationBiConsumer, WSTicker.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("ticker/%s/batch", speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("ticker/%s/batch", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSTicker.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
   public void subscribeToFullOrderBook(
-      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationConsumer,
+      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationBiConsumer,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationConsumer, WSOrderBook.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel("orderbook/full", params.buildObjectMap(), interceptor, resultInterceptor);
-
+    String channel = "orderbook/full";
+    makeSubscriptionWithInterceptors(channel, params, WSOrderBook.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
   public void subscribeToPartialOrderBook(
-      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationConsumer,
+      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationBiConsumer,
       Depth depth,
       OBSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationConsumer, WSOrderBook.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("orderbook/%s/%s", depth, speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("orderbook/%s/%s", depth, speed);
+    makeSubscriptionWithInterceptors(channel, params, WSOrderBook.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
   public void subscribeToPartialOrderBookInBatches(
-      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationConsumer,
+      BiConsumer<Map<String, WSOrderBook>, NotificationType> notificationBiConsumer,
       Depth depth,
       OBSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationConsumer, WSOrderBook.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("orderbook/%s/%s/batch", depth, speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("orderbook/%s/%s/batch", depth, speed);
+    makeSubscriptionWithInterceptors(channel, params, WSOrderBook.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
   public void subscribeToTopOfOrderBook(
-      BiConsumer<Map<String, WSOrderBookTop>, NotificationType> notificationConsumer,
+      BiConsumer<Map<String, WSOrderBookTop>, NotificationType> notificationBiConsumer,
       OBSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationConsumer, WSOrderBookTop.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("orderbook/top/%s", speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("orderbook/top/%s", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSOrderBookTop.class, notificationBiConsumer, resultBiConsumer);
   }
 
   @Override
   public void subscribeToTopOfOrderBookInBatches(
-      BiConsumer<Map<String, WSOrderBookTop>, NotificationType> notificationConsumer,
+      BiConsumer<Map<String, WSOrderBookTop>, NotificationType> notificationBiConsumer,
       OBSpeed speed,
       List<String> symbols,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().symbolList(symbols);
-    Interceptor interceptor = InterceptorFactory.newOfChanneledWSResponse(notificationConsumer, WSOrderBookTop.class);
-    Interceptor resultInterceptor = (resultBiConsumer == null)
-        ? null
-        : InterceptorFactory.ofSubscriptionResponse(resultBiConsumer);
-    subscriptionByChannel(String.format("orderbook/top/%s/batch", speed), params.buildObjectMap(), interceptor,
-        resultInterceptor);
+    ParamsBuilder params = new ParamsBuilder().symbolListOrAsteric(symbols);
+    String channel = String.format("orderbook/top/%s/batch", speed);
+    makeSubscriptionWithInterceptors(channel, params, WSOrderBookTop.class, notificationBiConsumer, resultBiConsumer);
   }
 }

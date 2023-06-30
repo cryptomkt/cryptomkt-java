@@ -1,13 +1,13 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
@@ -18,166 +18,88 @@ import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClientImpl;
 
 import org.junit.Test;
 
+class Failed {
+  public static Boolean failed = false;
+}
+
 public class TestWSClientLifeTime {
   BiConsumer<List<String>, CryptomarketSDKException> checkException = (result, exception) -> {
     if (exception != null) {
-      System.out.println("Exception");
       fail();
     }
   };
 
   @Test
-  public void testPublicClientLifetime() {
-    try {
-      CryptomarketWSMarketDataClient wsClient;
-      wsClient = new CryptomarketWSMarketDataClientImpl() {
-        @Override
-        public void onClose(String reason) {
-          System.out.println("closing");
-        }
-
-        @Override
-        public void onConnect() {
-          System.out.println("connected");
-          this.subscribeToFullOrderBook(
-              (data, notificationType) -> {
-                if (notificationType == NotificationType.UPDATE) {
-                  System.out.println("update");
-                }
-                if (notificationType.isSnapshot()) {
-                  System.out.println("snapshot");
-                }
-                data.forEach((k, v) -> {
-                  System.out.println("key:" + k.toString());
-                  System.out.println("val:" + v.toString());
-                });
-
-              },
-              Arrays.asList("EOSETH"),
-              checkException);
-          try {
-            TimeUnit.SECONDS.sleep(3);
-          } catch (InterruptedException e) {
-            fail();
-          }
-          this.close();
-        }
-
-        @Override
-        public void onFailure(Throwable t) {
-          System.out.print("failed connection");
-          t.printStackTrace();
-        }
-      };
-      wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(8);
-      } catch (
-
-      InterruptedException e) {
-        fail();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void testPublicClientLifetime() throws IOException {
+    CryptomarketWSMarketDataClient wsClient;
+    wsClient = new CryptomarketWSMarketDataClientImpl();
+    wsClient.onConnect(() -> {
+      System.out.println("connected");
+      new Thread(() -> {
+        wsClient.subscribeToFullOrderBook(
+            (data, notificationType) -> System.out.println(notificationType),
+            Arrays.asList("EOSETH"),
+            checkException);
+        Helpers.sleep(3);
+        wsClient.close();
+      }).run();
+    });
+    wsClient.onClose(reason -> System.out.println("closing"));
+    wsClient.onFailure(t -> t.printStackTrace());
+    wsClient.connect();
+    Helpers.sleep(6);
   }
 
   @Test
-  public void testTradingClientLifetime() {
-    try {
-      CryptomarketWSSpotTradingClient wsClient;
-      wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret()) {
-        @Override
-        public void onClose(String reason) {
-          System.out.println("closing");
-
-        }
-
-        @Override
-        public void onConnect() {
-          System.out.println("connected");
-          try {
-            TimeUnit.SECONDS.sleep(3);
-          } catch (InterruptedException e) {
-            fail();
-          }
-          this.close();
-        }
-
-        @Override
-        public void onFailure(Throwable t) {
-          t.printStackTrace();
-        }
-      };
-      wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(8);
-      } catch (
-
-      InterruptedException e) {
-        fail();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void testTradingClientLifetime() throws IOException {
+    CryptomarketWSSpotTradingClient wsClient;
+    wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    wsClient.onConnect(() -> {
+      System.out.println("connected");
+      Helpers.sleep(3);
+      wsClient.close();
+    });
+    wsClient.onClose(reason -> System.out.println("closing"));
+    wsClient.onFailure(t -> t.printStackTrace());
+    wsClient.connect();
+    Helpers.sleep(3);
   }
 
   @Test
-  public void testAccountClientLifetime() {
-    try {
-      CryptomarketWSWalletClient wsClient;
-      wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret()) {
-        @Override
-        public void onClose(String reason) {
-          System.out.println("closing");
-
+  public void testAccountClientLifetime() throws IOException {
+    CryptomarketWSWalletClient wsClient;
+    wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    wsClient.onClose(reason -> {
+      System.out.println("closing");
+    });
+    wsClient.onConnect(() -> {
+      System.out.println("connected");
+      wsClient.getWalletBalances((balanceList, exception) -> {
+        System.out.println(balanceList);
+        if (exception != null) {
+          exception.printStackTrace();
+          fail();
         }
-
-        @Override
-        public void onConnect() {
-          System.out.println("connected");
-          this.getWalletBalances((balanceList, exception) -> {
-            if (exception != null) {
-              System.out.println(exception.toString());
-              fail();
-            }
-          });
-          try {
-            TimeUnit.SECONDS.sleep(3);
-          } catch (InterruptedException e) {
-            fail();
-          }
-          this.close();
-        }
-
-        @Override
-        public void onFailure(Throwable t) {
-          t.printStackTrace();
-        }
-      };
-      wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(8);
-      } catch (InterruptedException e) {
-        fail();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+      });
+      Helpers.sleep(3);
+      wsClient.close();
+    });
+    wsClient.onFailure(t -> {
+      t.printStackTrace();
+    });
+    wsClient.connect();
+    Helpers.sleep(6);
   }
 
   @Test
-  public void testFailedAuth() {
-    try {
-      CryptomarketWSWalletClient wsClient = new CryptomarketWSWalletClientImpl("uno", "dois");
-      wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(8);
-      } catch (InterruptedException e) {
-        fail();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void testFailedAuth() throws IOException {
+    Failed.failed = false;
+    CryptomarketWSWalletClient wsClient = new CryptomarketWSWalletClientImpl("uno", "dois");
+    wsClient.onFailure((t) -> {
+      Failed.failed = true;
+    });
+    wsClient.connect();
+    Helpers.sleep(3);
+    assertTrue(Failed.failed);
   }
 }

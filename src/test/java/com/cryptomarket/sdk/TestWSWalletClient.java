@@ -1,9 +1,5 @@
 package com.cryptomarket.sdk;
 
-import static org.junit.Assert.fail;
-
-import java.util.concurrent.TimeUnit;
-
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
 
@@ -21,11 +17,7 @@ public class TestWSWalletClient {
     try {
       wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
       wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(3);
-      } catch (InterruptedException e) {
-        fail();
-      }
+      Helpers.sleep(3);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -41,39 +33,26 @@ public class TestWSWalletClient {
     wsClient.getWalletBalances((result, exception) -> {
       result.forEach(Checker.checkBalance);
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
   }
 
   @Test
   public void testGetWalletBalance() {
-    wsClient.getWalletBalanceOfCurrency(
+    wsClient.getWalletBalanceByCurrency(
         "EOS",
         (result, exception) -> {
           Checker.checkBalance.accept(result);
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
   }
 
   @Test
   public void testGetTransactions() {
     wsClient.getTransactions(
-        (result, exception) -> {
-          result.forEach(Checker.checkTransaction);
-        },
+        (result, exception) -> result.forEach(Checker.checkTransaction),
         null);
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
   }
 
 }

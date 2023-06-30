@@ -1,11 +1,12 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-
-import java.util.concurrent.TimeUnit;
 
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Side;
+import com.cryptomarket.params.SubscriptionMode;
+import com.cryptomarket.sdk.Helpers.FailChecker;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClientImpl;
 
@@ -33,11 +34,8 @@ public class TestWSSpotTradingClientSubs {
     try {
       wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
       wsClient.connect();
-      try {
-        TimeUnit.SECONDS.sleep(3);
-      } catch (InterruptedException e) {
-        fail();
-      }
+
+      Helpers.sleep(3);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -77,41 +75,65 @@ public class TestWSSpotTradingClientSubs {
             fail();
           }
         });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    Helpers.sleep(3);
 
-    String clientOrderID = String.format("%d", System.currentTimeMillis());
-    wsClient.createSpotOrder(
-        new ParamsBuilder()
-            .clientOrderID(clientOrderID)
-            .symbol("EOSETH")
-            .side(Side.SELL)
-            .price("1000")
-            .quantity("0.01"),
-        null);
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
-    wsClient.cancelSpotOrder(clientOrderID, null);
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+    String clientOrderId = String.format("%d", System.currentTimeMillis());
+    makeSampleOrder(clientOrderId);
+    cancelOrder(clientOrderId);
     wsClient.unsubscribeToReports((result, exception) -> {
       if (!result) {
         fail();
       }
     });
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      fail();
-    }
+
+    Helpers.sleep(3);
+  }
+
+  private void cancelOrder(String clientOrderId) {
+    wsClient.cancelSpotOrder(clientOrderId, null);
+
+    Helpers.sleep(3);
+  }
+
+  private void makeSampleOrder(String clientOrderId) {
+    wsClient.createSpotOrder(
+        new ParamsBuilder()
+            .clientOrderId(clientOrderId)
+            .symbol("EOSETH")
+            .side(Side.SELL)
+            .price("1000")
+            .quantity("0.01"),
+        null);
+    Helpers.sleep(3);
+  }
+
+  @Test
+  public void testSpotBalanceSubscriptions() {
+    FailChecker failChecker = new FailChecker();
+    wsClient.subscribeToSpotBalances(
+        SubscriptionMode.UPDATES,
+        Helpers.listChecker(failChecker, Checker.checkBalance),
+        null);
+
+    Helpers.sleep(4);
+    String clientOrderId = String.format("%d", System.currentTimeMillis());
+    makeSampleOrder(clientOrderId);
+
+    Helpers.sleep(4);
+    cancelOrder(clientOrderId);
+
+    // three updates, the first, one creation and one cancel.
+
+    wsClient.unsubscribeToSpotBalances((result, exception) -> {
+      if (exception != null) {
+        fail(exception.toString());
+      }
+      if (!result) {
+        fail();
+      }
+    });
+    Helpers.sleep(4);
+    assertFalse(failChecker.failed());
+
   }
 }

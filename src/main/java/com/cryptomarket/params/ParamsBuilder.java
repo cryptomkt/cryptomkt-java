@@ -1,6 +1,7 @@
 package com.cryptomarket.params;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +59,25 @@ public class ParamsBuilder {
     return this.params;
   }
 
-  private ParamsBuilder addList(String key, @Nullable List<String> list) {
+  private ParamsBuilder addCommaSeparatedList(String key, @Nullable List<String> list) {
     if (list != null && list.size() > 0)
       params.put(key, String.join(",", list));
+    return this;
+  }
+
+  private ParamsBuilder addListOrAsterisc(String key, @Nullable List<String> list) {
+    if (list == null || list.size() == 0) {
+      params.put(key, Collections.singletonList("*"));
+    } else {
+      params.put(key, list);
+    }
+    return this;
+  }
+
+  private ParamsBuilder addList(String key, @Nullable List<String> list) {
+    if (list != null && list.size() != 0) {
+      params.put(key, list);
+    }
     return this;
   }
 
@@ -69,7 +86,7 @@ public class ParamsBuilder {
     if (list != null && list.size() > 0) {
       list.forEach(elem -> strList.add(elem.name()));
     }
-    return this.addList(key, strList);
+    return this.addCommaSeparatedList(key, strList);
   }
 
   private ParamsBuilder addArg(String key, @Nullable Boolean arg) {
@@ -96,266 +113,308 @@ public class ParamsBuilder {
     return this;
   }
 
-  public ParamsBuilder currencies(@Nullable List<String> arg) {
-    return addList(ArgNames.CURRENCIES, arg);
+  public ParamsBuilder currencies(@Nullable List<String> currencies) {
+    return addCommaSeparatedList(ArgNames.CURRENCIES, currencies);
   }
 
-  public ParamsBuilder symbols(@Nullable List<String> arg) {
-    return addList(ArgNames.SYMBOLS, arg);
+  public ParamsBuilder symbols(@Nullable List<String> symbols) {
+    return addCommaSeparatedList(ArgNames.SYMBOLS, symbols);
   }
 
-  public ParamsBuilder from(@Nullable String arg) {
-    return addArg(ArgNames.FROM, arg);
+  public ParamsBuilder from(@Nullable String from) {
+    return addArg(ArgNames.FROM, from);
   }
 
-  public ParamsBuilder till(@Nullable String arg) {
-    return addArg(ArgNames.TILL, arg);
+  public ParamsBuilder till(@Nullable String till) {
+    return addArg(ArgNames.TILL, till);
   }
 
-  public ParamsBuilder limit(@Nullable Integer arg) {
-    return addArg(ArgNames.LIMIT, arg);
+  public ParamsBuilder limit(@Nullable Integer limit) {
+    return addArg(ArgNames.LIMIT, limit);
   }
 
-  public ParamsBuilder limit(@Nullable String arg) {
-    return addArg(ArgNames.LIMIT, arg);
+  public ParamsBuilder limit(@Nullable String limit) {
+    return addArg(ArgNames.LIMIT, limit);
   }
 
-  public ParamsBuilder offset(@Nullable Integer arg) {
-    return addArg(ArgNames.OFFSET, arg);
+  public ParamsBuilder offset(@Nullable Integer offset) {
+    return addArg(ArgNames.OFFSET, offset);
   }
 
-  public ParamsBuilder sort(@Nullable Sort arg) {
-    return addArg(ArgNames.SORT, arg);
+  public ParamsBuilder sort(@Nullable Sort sort) {
+    return addArg(ArgNames.SORT, sort);
   }
 
-  public ParamsBuilder by(@Nullable SortBy arg) {
-    return addArg(ArgNames.BY, arg);
+  public ParamsBuilder by(@Nullable SortBy by) {
+    return addArg(ArgNames.BY, by);
   }
 
-  public ParamsBuilder to(@Nullable String arg) {
-    return addArg(ArgNames.TO, arg);
+  public ParamsBuilder to(@Nullable String to) {
+    return addArg(ArgNames.TO, to);
   }
 
-  public ParamsBuilder since(@Nullable String arg) {
-    return addArg(ArgNames.SINCE, arg);
+  public ParamsBuilder since(@Nullable String since) {
+    return addArg(ArgNames.SINCE, since);
   }
 
-  public ParamsBuilder until(@Nullable String arg) {
-    return addArg(ArgNames.UNTIL, arg);
+  public ParamsBuilder until(@Nullable String until) {
+    return addArg(ArgNames.UNTIL, until);
   }
 
-  public ParamsBuilder period(@Nullable Period arg) {
-    return addArg(ArgNames.PERIOD, arg);
+  public ParamsBuilder period(@Nullable Period period) {
+    return addArg(ArgNames.PERIOD, period);
   }
 
-  public ParamsBuilder symbol(String arg) {
-    return addArg(ArgNames.SYMBOL, arg);
+  public ParamsBuilder symbol(@Nullable String symbol) {
+    return addArg(ArgNames.SYMBOL, symbol);
   }
 
-  public ParamsBuilder side(Side arg) {
-    return addArg(ArgNames.SIDE, arg);
+  public ParamsBuilder side(@Nullable Side side) {
+    return addArg(ArgNames.SIDE, side);
   }
 
-  public ParamsBuilder quantity(String arg) {
-    return addArg(ArgNames.QUANTITY, arg);
+  public ParamsBuilder quantity(@Nullable String quantity) {
+    return addArg(ArgNames.QUANTITY, quantity);
   }
 
-  public ParamsBuilder clientOrderID(String arg) {
-    return addArg(ArgNames.CLIENT_ORDER_ID, arg);
+  public ParamsBuilder clientOrderId(@Nullable String clientOrderId) {
+    return addArg(ArgNames.CLIENT_ORDER_ID, clientOrderId);
   }
 
-  public ParamsBuilder orderType(OrderType arg) {
-    return addArg(ArgNames.ORDER_TYPE, arg);
+  public ParamsBuilder orderType(@Nullable OrderType orderType) {
+    return addArg(ArgNames.ORDER_TYPE, orderType);
   }
 
-  public ParamsBuilder price(String arg) {
-    return addArg(ArgNames.PRICE, arg);
+  public ParamsBuilder price(@Nullable String price) {
+    return addArg(ArgNames.PRICE, price);
   }
 
-  public ParamsBuilder stopPrice(String arg) {
-    return addArg(ArgNames.STOP_PRICE, arg);
+  public ParamsBuilder stopPrice(@Nullable String stopPrice) {
+    return addArg(ArgNames.STOP_PRICE, stopPrice);
   }
 
-  public ParamsBuilder timeInForce(TimeInForce arg) {
-    return addArg(ArgNames.TIME_IN_FORCE, arg);
+  public ParamsBuilder timeInForce(@Nullable TimeInForce timeInForce) {
+    return addArg(ArgNames.TIME_IN_FORCE, timeInForce);
   }
 
-  public ParamsBuilder expireTime(String arg) {
-    return addArg(ArgNames.EXPIRE_TIME, arg);
+  public ParamsBuilder expireTime(@Nullable String expireTime) {
+    return addArg(ArgNames.EXPIRE_TIME, expireTime);
   }
 
-  public ParamsBuilder strictValidate(Boolean arg) {
-    return addArg(ArgNames.STRICT_VALIDATE, arg);
+  public ParamsBuilder strictValidate(@Nullable Boolean strictValidate) {
+    return addArg(ArgNames.STRICT_VALIDATE, strictValidate);
   }
 
-  public ParamsBuilder postOnly(Boolean arg) {
-    return addArg(ArgNames.POST_ONLY, arg);
+  public ParamsBuilder postOnly(@Nullable Boolean postOnly) {
+    return addArg(ArgNames.POST_ONLY, postOnly);
   }
 
-  public ParamsBuilder takeRate(String arg) {
-    return addArg(ArgNames.TAKE_RATE, arg);
+  public ParamsBuilder takeRate(@Nullable String takeRate) {
+    return addArg(ArgNames.TAKE_RATE, takeRate);
   }
 
-  public ParamsBuilder makeRate(String arg) {
-    return addArg(ArgNames.MAKE_RATE, arg);
+  public ParamsBuilder makeRate(@Nullable String makeRate) {
+    return addArg(ArgNames.MAKE_RATE, makeRate);
   }
 
-  public ParamsBuilder newClientOrderID(String arg) {
-    return addArg(ArgNames.NEW_CLIENT_ORDER_ID, arg);
+  public ParamsBuilder newClientOrderId(@Nullable String newClientOrderId) {
+    return addArg(ArgNames.NEW_CLIENT_ORDER_ID, newClientOrderId);
   }
 
-  public ParamsBuilder currency(String arg) {
-    return addArg(ArgNames.CURRENCY, arg);
+  public ParamsBuilder currency(@Nullable String currency) {
+    return addArg(ArgNames.CURRENCY, currency);
   }
 
-  public ParamsBuilder address(String arg) {
-    return addArg(ArgNames.ADDRESS, arg);
+  public ParamsBuilder address(@Nullable String address) {
+    return addArg(ArgNames.ADDRESS, address);
   }
 
-  public ParamsBuilder amount(String arg) {
-    return addArg(ArgNames.AMOUNT, arg);
+  public ParamsBuilder amount(@Nullable String amount) {
+    return addArg(ArgNames.AMOUNT, amount);
   }
 
-  public ParamsBuilder paymentID(String arg) {
-    return addArg(ArgNames.PAYMENT_ID, arg);
+  public ParamsBuilder paymentId(@Nullable String paymentId) {
+    return addArg(ArgNames.PAYMENT_ID, paymentId);
   }
 
-  public ParamsBuilder includeFee(Boolean arg) {
-    return addArg(ArgNames.INCLUDE_FEE, arg);
+  public ParamsBuilder includeFee(@Nullable Boolean includeFee) {
+    return addArg(ArgNames.INCLUDE_FEE, includeFee);
   }
 
-  public ParamsBuilder autoCommit(Boolean arg) {
-    return addArg(ArgNames.AUTO_COMMIT, arg);
+  public ParamsBuilder autoCommit(@Nullable Boolean autoCommit) {
+    return addArg(ArgNames.AUTO_COMMIT, autoCommit);
   }
 
-  public ParamsBuilder useOffchain(UseOffchain arg) {
-    return addArg(ArgNames.USE_OFFCHAIN, arg);
+  public ParamsBuilder useOffchain(@Nullable UseOffchain useOffchain) {
+    return addArg(ArgNames.USE_OFFCHAIN, useOffchain);
   }
 
-  public ParamsBuilder publicComment(String arg) {
-    return addArg(ArgNames.PUBLIC_COMMENT, arg);
+  public ParamsBuilder publicComment(@Nullable String publicComment) {
+    return addArg(ArgNames.PUBLIC_COMMENT, publicComment);
   }
 
-  public ParamsBuilder source(AccountType arg) {
-    return addArg(ArgNames.SOURCE, arg);
+  public ParamsBuilder source(@Nullable AccountType accountType) {
+    return addArg(ArgNames.SOURCE, accountType);
   }
 
-  public ParamsBuilder destination(AccountType arg) {
-    return addArg(ArgNames.DESTINATION, arg);
+  public ParamsBuilder destination(@Nullable AccountType accountType) {
+    return addArg(ArgNames.DESTINATION, accountType);
   }
 
-  public ParamsBuilder types(List<TransactionType> arg) {
-    return addEnumList(ArgNames.TYPES, arg);
+  public ParamsBuilder types(@Nullable List<TransactionType> transactionTypes) {
+    return addEnumList(ArgNames.TYPES, transactionTypes);
   }
 
-  public ParamsBuilder subtypes(List<TransactionSubtype> arg) {
-    return addEnumList(ArgNames.SUBTYPES, arg);
+  public ParamsBuilder subtypes(@Nullable List<TransactionSubtype> subtypes) {
+    return addEnumList(ArgNames.SUBTYPES, subtypes);
   }
 
-  public ParamsBuilder statuses(List<? extends Enum<?>> arg) {
-    return addEnumList(ArgNames.STATUSES, arg);
+  public ParamsBuilder statuses(@Nullable List<? extends Enum<?>> statuses) {
+    return addEnumList(ArgNames.STATUSES, statuses);
   }
 
-  public ParamsBuilder transactionIDs(List<String> arg) {
-    return addList(ArgNames.TRANSACTION_IDS, arg);
+  public ParamsBuilder transactionIds(@Nullable List<String> transactionIds) {
+    return addCommaSeparatedList(ArgNames.TRANSACTION_IDS, transactionIds);
   }
 
-  public ParamsBuilder IDFrom(Integer arg) {
-    return addArg(ArgNames.ID_FROM, arg);
+  public ParamsBuilder idFrom(@Nullable Integer idFrom) {
+    return addArg(ArgNames.ID_FROM, idFrom);
   }
 
-  public ParamsBuilder IDTill(Integer arg) {
-    return addArg(ArgNames.ID_TILL, arg);
+  public ParamsBuilder idTill(@Nullable Integer idTill) {
+    return addArg(ArgNames.ID_TILL, idTill);
   }
 
-  public ParamsBuilder showSenders(Boolean arg) {
-    return addArg(ArgNames.SHOW_SENDERS, arg);
+  public ParamsBuilder showSenders(@Nullable Boolean showSenders) {
+    return addArg(ArgNames.SHOW_SENDERS, showSenders);
   }
 
-  public ParamsBuilder baseCurrency(String arg) {
-    return addArg(ArgNames.BASE_CURRENCY, arg);
+  public ParamsBuilder baseCurrency(@Nullable String baseCurrency) {
+    return addArg(ArgNames.BASE_CURRENCY, baseCurrency);
   }
 
-  public ParamsBuilder activeAt(String arg) {
-    return addArg(ArgNames.ACTIVE_AT, arg);
+  public ParamsBuilder activeAt(@Nullable String activeAt) {
+    return addArg(ArgNames.ACTIVE_AT, activeAt);
   }
 
-  public ParamsBuilder transactionID(String arg) {
-    return addArg(ArgNames.TRANSACTION_ID, arg);
+  public ParamsBuilder transactionId(@Nullable String transactionId) {
+    return addArg(ArgNames.TRANSACTION_ID, transactionId);
   }
 
-  public ParamsBuilder active(Boolean arg) {
-    return addArg(ArgNames.ACTIVE, arg);
+  public ParamsBuilder active(@Nullable Boolean active) {
+    return addArg(ArgNames.ACTIVE, active);
   }
 
-  public ParamsBuilder volume(Integer arg) {
-    return addArg(ArgNames.VOLUME, arg);
+  public ParamsBuilder volume(@Nullable Integer volume) {
+    return addArg(ArgNames.VOLUME, volume);
   }
 
-  public ParamsBuilder fromCurrency(String arg) {
-    return addArg(ArgNames.FROM_CURRENCY, arg);
+  public ParamsBuilder fromCurrency(@Nullable String fromCurrency) {
+    return addArg(ArgNames.FROM_CURRENCY, fromCurrency);
   }
 
-  public ParamsBuilder toCurrency(String arg) {
-    return addArg(ArgNames.TO_CURRENCY, arg);
+  public ParamsBuilder toCurrency(@Nullable String toCurrency) {
+    return addArg(ArgNames.TO_CURRENCY, toCurrency);
   }
 
-  public ParamsBuilder transferBy(IdentifyBy arg) {
-    return addArg(ArgNames.TRANSFER_BY, arg);
+  public ParamsBuilder identifyBy(@Nullable IdentifyBy identifyBy) {
+    return addArg(ArgNames.IDENTIFY_BY, identifyBy);
   }
 
-  public ParamsBuilder identifier(String arg) {
-    return addArg(ArgNames.IDENTIFIER, arg);
+  public ParamsBuilder identifier(@Nullable String identifier) {
+    return addArg(ArgNames.IDENTIFIER, identifier);
   }
 
-  public ParamsBuilder orderListID(String orderListID) {
-    return addArg(ArgNames.ORDER_LIST_ID, orderListID);
+  public ParamsBuilder orderListId(@Nullable String orderListId) {
+    return addArg(ArgNames.ORDER_LIST_ID, orderListId);
   }
 
-  public ParamsBuilder contingencyType(ContingencyType contingencyType) {
+  public ParamsBuilder contingencyType(@Nullable ContingencyType contingencyType) {
     return addArg(ArgNames.CONTINGENCY_TYPE, contingencyType);
   }
 
-  public ParamsBuilder symbolList(List<String> symbols) {
-    this.params.put(ArgNames.SYMBOLS, symbols);
-    return this;
+  public ParamsBuilder symbolListOrAsteric(@Nullable List<String> symbols) {
+    return addListOrAsterisc(ArgNames.SYMBOLS, symbols);
   }
 
-  public ParamsBuilder orders(List<Map<String, Object>> orderListData) {
+  public ParamsBuilder orderList(@Nullable List<OrderBuilder> orderListData) {
     this.params.put(ArgNames.ORDERS, orderListData);
     return this;
   }
 
-  public ParamsBuilder subAccountIDs(List<String> subAccountIDs) {
-    return addList(ArgNames.SUB_ACCOUNT_IDS, subAccountIDs);
+  public ParamsBuilder subAccountIds(@Nullable List<String> subAccountIds) {
+    return addCommaSeparatedList(ArgNames.SUB_ACCOUNT_IDS, subAccountIds);
   }
 
-  public ParamsBuilder depositAddressGenerationEnabled(Boolean enabled) {
+  public ParamsBuilder depositAddressGenerationEnabled(@Nullable Boolean enabled) {
     return addArg(ArgNames.DEPOSIT_ADDRESS_GENERATION_ENABLED, enabled);
   }
 
-  public ParamsBuilder withdrawEnabled(Boolean enabled) {
+  public ParamsBuilder withdrawEnabled(@Nullable Boolean enabled) {
     return addArg(ArgNames.WITHDRAW_ENABLED, enabled);
   }
 
-  public ParamsBuilder createdAt(String createdAt) {
+  public ParamsBuilder createdAt(@Nullable String createdAt) {
     return addArg(ArgNames.CREATED_AT, createdAt);
   }
 
-  public ParamsBuilder updatedAt(String updatedAt) {
+  public ParamsBuilder updatedAt(@Nullable String updatedAt) {
     return addArg(ArgNames.UPDATED_AT, updatedAt);
   }
 
-  public ParamsBuilder description(String description) {
+  public ParamsBuilder description(@Nullable String description) {
     return addArg(ArgNames.DESCRIPTION, description);
   }
 
-  public ParamsBuilder subAccountID(String subAccountID) {
-    return addArg(ArgNames.SUB_ACCOUNT_ID, subAccountID);
+  public ParamsBuilder subAccountId(@Nullable String subAccountId) {
+    return addArg(ArgNames.SUB_ACCOUNT_ID, subAccountId);
   }
 
-  public ParamsBuilder transferType(TransferType transferType) {
+  public ParamsBuilder transferType(@Nullable SubAccountTransferType transferType) {
     return addArg(ArgNames.TRANSFER_TYPE, transferType);
   }
 
+  public ParamsBuilder subcriptionMode(@Nullable SubscriptionMode mode) {
+    return addArg(ArgNames.SUBSCRIPTION_MODE, mode);
+  }
+
+  public ParamsBuilder networkCode(@Nullable String networkCode) {
+    return addArg(ArgNames.NETWORK_CODE, networkCode);
+  }
+
+  public ParamsBuilder targetCurrency(@Nullable String targetCurrency) {
+    return addArg(ArgNames.TARGET_CURRENCY, targetCurrency);
+  }
+
+  public ParamsBuilder preferredNetwork(@Nullable String preferredNetwork) {
+    return addArg(ArgNames.PREFERRED_NETWORK, preferredNetwork);
+  }
+
+  public ParamsBuilder depth(@Nullable Integer depth) {
+    return addArg(ArgNames.DEPTH, depth);
+  }
+
+  public ParamsBuilder orderId(@Nullable String orderId) {
+    return addArg(ArgNames.ORDER_ID, orderId);
+  }
+
+  public ParamsBuilder networks(@Nullable List<String> networks) {
+    return addCommaSeparatedList(ArgNames.NETWORKS, networks);
+  }
+
+  public ParamsBuilder email(@Nullable String email) {
+    return addArg(ArgNames.EMAIL, email);
+  }
+
+  public ParamsBuilder status(@Nullable SubAccountStatus status) {
+    return addArg(ArgNames.STATUS, status);
+  }
+
+  public ParamsBuilder symbolList(List<String> symbols) {
+    return addList(ArgNames.SYMBOLS, symbols);
+  }
+
+  public ParamsBuilder currencyListOrAsteric(@Nullable List<String> currencies) {
+    return addListOrAsterisc(ArgNames.CURRENCIES, currencies);
+  }
 }

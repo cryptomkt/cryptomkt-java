@@ -5,23 +5,24 @@ import java.util.List;
 import com.cryptomarket.params.ContingencyType;
 import com.cryptomarket.params.OrderStatus;
 import com.cryptomarket.params.OrderType;
+import com.cryptomarket.params.Side;
+import com.cryptomarket.params.TimeInForce;
 import com.squareup.moshi.Json;
 
 public class Order {
-  @Json(name = "id")
-  private String ID;
+  private String id;
   @Json(name = "client_order_id")
-  private String clientOrderID;
-  @Json(name="order_list_id")
-  private String orderListID;
-  @Json(name="contingency_type")
+  private String clientOrderId;
+  @Json(name = "order_list_id")
+  private String orderListId;
+  @Json(name = "contingency_type")
   private ContingencyType contingencyType;
   private String symbol;
-  private String side;
+  private Side side;
   private OrderStatus status;
   private OrderType type;
   @Json(name = "time_in_force")
-  private String timeInForce;
+  private TimeInForce timeInForce;
   private String price;
   private String quantity;
   @Json(name = "quantity_cumulative")
@@ -31,29 +32,45 @@ public class Order {
   @Json(name = "updated_at")
   private String updatedAt;
   @Json(name = "post_only")
-  private boolean postOnly;
+  private Boolean postOnly;
   @Json(name = "stop_price")
   private String stopPrice;
   @Json(name = "expire_time")
   private String expireTime;
   private List<Trade> trades;
   @Json(name = "original_client_order_id")
-  private String originalClientOrderID;
+  private String originalClientOrderId;
 
-  public String getID() {
-    return ID;
+  public String getId() {
+    return id;
   }
 
-  public void setID(String iD) {
-    ID = iD;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public String getClientOrderID() {
-    return clientOrderID;
+  public String getClientOrderId() {
+    return clientOrderId;
   }
 
-  public void setClientOrderID(String clientOrderID) {
-    this.clientOrderID = clientOrderID;
+  public void setClientOrderId(String clientOrderId) {
+    this.clientOrderId = clientOrderId;
+  }
+
+  public String getOrderListId() {
+    return orderListId;
+  }
+
+  public void setOrderListId(String orderListId) {
+    this.orderListId = orderListId;
+  }
+
+  public ContingencyType getContingencyType() {
+    return contingencyType;
+  }
+
+  public void setContingencyType(ContingencyType contingencyType) {
+    this.contingencyType = contingencyType;
   }
 
   public String getSymbol() {
@@ -64,11 +81,11 @@ public class Order {
     this.symbol = symbol;
   }
 
-  public String getSide() {
+  public Side getSide() {
     return side;
   }
 
-  public void setSide(String side) {
+  public void setSide(Side side) {
     this.side = side;
   }
 
@@ -88,11 +105,11 @@ public class Order {
     this.type = type;
   }
 
-  public String getTimeInForce() {
+  public TimeInForce getTimeInForce() {
     return timeInForce;
   }
 
-  public void setTimeInForce(String timeInForce) {
+  public void setTimeInForce(TimeInForce timeInForce) {
     this.timeInForce = timeInForce;
   }
 
@@ -136,11 +153,11 @@ public class Order {
     this.updatedAt = updatedAt;
   }
 
-  public boolean isPostOnly() {
+  public Boolean isPostOnly() {
     return postOnly;
   }
 
-  public void setPostOnly(boolean postOnly) {
+  public void setPostOnly(Boolean postOnly) {
     this.postOnly = postOnly;
   }
 
@@ -168,39 +185,21 @@ public class Order {
     this.trades = trades;
   }
 
-  public String getOriginalClientOrderID() {
-    return originalClientOrderID;
+  public String getOriginalClientOrderId() {
+    return originalClientOrderId;
   }
 
-  public void setOriginalClientOrderID(String originalClientOrderID) {
-    this.originalClientOrderID = originalClientOrderID;
-  }
-
-
-  public String getOrderListID() {
-    return orderListID;
-  }
-
-  public void setOrderListID(String orderListID) {
-    this.orderListID = orderListID;
-  }
-
-  public ContingencyType getContingencyType() {
-    return contingencyType;
-  }
-
-  public void setContingencyType(ContingencyType contingencyType) {
-    this.contingencyType = contingencyType;
+  public void setOriginalClientOrderId(String originalClientOrderId) {
+    this.originalClientOrderId = originalClientOrderId;
   }
 
   @Override
   public String toString() {
-    return "Order [ID=" + ID + ", clientOrderID=" + clientOrderID + ", contingencyType=" + contingencyType
-        + ", createdAt=" + createdAt + ", expireTime=" + expireTime + ", orderListID=" + orderListID
-        + ", originalClientOrderID=" + originalClientOrderID + ", postOnly=" + postOnly + ", price=" + price
-        + ", quantity=" + quantity + ", quantityCumulative=" + quantityCumulative + ", side=" + side + ", status="
-        + status + ", stopPrice=" + stopPrice + ", symbol=" + symbol + ", timeInForce=" + timeInForce + ", trades="
-        + trades + ", type=" + type + ", updatedAt=" + updatedAt + "]";
+    return "Order [id=" + id + ", clientOrderId=" + clientOrderId + ", orderListId=" + orderListId
+        + ", contingencyType=" + contingencyType + ", symbol=" + symbol + ", side=" + side + ", status=" + status
+        + ", type=" + type + ", timeInForce=" + timeInForce + ", price=" + price + ", quantity=" + quantity
+        + ", quantityCumulative=" + quantityCumulative + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+        + ", postOnly=" + postOnly + ", stopPrice=" + stopPrice + ", expireTime=" + expireTime + ", trades=" + trades
+        + ", originalClientOrderId=" + originalClientOrderId + "]";
   }
-
 }

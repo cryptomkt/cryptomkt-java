@@ -52,7 +52,7 @@ public class PublicTrade {
 
 	@Override
 	public String toString() {
-        return "Trade [id=" + id + ", price=" + price + ", quantity=" + quantity
-                + ", side=" + side + ", timestamp=" + timestamp + "]";
+		return "Trade [id=" + id + ", price=" + price + ", quantity=" + quantity
+				+ ", side=" + side + ", timestamp=" + timestamp + "]";
 	}
 }
