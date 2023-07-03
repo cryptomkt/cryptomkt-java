@@ -17,6 +17,8 @@ add the Maven dependency
 
 This sdk makes use of the [api version 2](https://api.exchange.cryptomkt.com/v2) of cryptomarket.
 
+> API version 2.0 is deprecated and will be supported till 01/08/2023. 
+
 # Quick Start
 
 ## rest client
