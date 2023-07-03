@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.cryptomarket.params.NotificationType;
+import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 
 public class Helpers {
   public static void sleep(int seconds) {
@@ -31,62 +32,90 @@ public class Helpers {
     }
   }
 
-  public static <T> BiConsumer<T, NotificationType> checker(FailChecker failCheck, Consumer<T> checker) {
+  public static <T> BiConsumer<T, NotificationType> checker(FailChecker failChecker, Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failCheck.fail();
+        failChecker.fail();
         return;
       }
-      System.out.println(notificationType);
-      System.out.println(data);
       try {
         checker.accept(data);
       } catch (AssertionError e) {
-        failCheck.fail();
+        failChecker.fail();
       }
     };
   }
 
-  public static <T> BiConsumer<List<T>, NotificationType> listChecker(FailChecker failCheck, Consumer<T> checker) {
+  public static <T> BiConsumer<T, CryptomarketSDKException> objectAndExceptionChecker(FailChecker failChecker,
+      Consumer<T> checker) {
+    return (data, error) -> {
+      if (error != null) {
+        failChecker.fail();
+      }
+      try {
+        checker.accept(data);
+      } catch (AssertionError e) {
+        failChecker.fail();
+      }
+    };
+  }
+
+  public static <T> BiConsumer<List<T>, CryptomarketSDKException> listAndExceptionChecker(FailChecker failChecker,
+      Consumer<T> checker) {
+    return (data, error) -> {
+      if (error != null) {
+        failChecker.fail();
+      }
+      try {
+        data.forEach(v -> checker.accept(v));
+      } catch (AssertionError e) {
+        failChecker.fail();
+      }
+    };
+  }
+
+  public static <T> BiConsumer<List<T>, NotificationType> notificationListChecker(FailChecker failChecker,
+      Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failCheck.fail();
+        failChecker.fail();
         return;
       }
       try {
         data.forEach(v -> checker.accept(v));
       } catch (AssertionError e) {
-        failCheck.fail();
+        failChecker.fail();
       }
     };
   }
 
-  public static <T> BiConsumer<Map<String, T>, NotificationType> mapChecker(FailChecker failCheck,
+  public static <T> BiConsumer<Map<String, T>, NotificationType> notificationMapChecker(FailChecker failChecker,
       Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failCheck.fail();
+        failChecker.fail();
         return;
       }
       try {
         data.forEach((k, v) -> checker.accept(v));
       } catch (AssertionError e) {
-        failCheck.fail();
+        failChecker.fail();
       }
     };
   }
 
-  public static <T> BiConsumer<Map<String, List<T>>, NotificationType> mapListChecker(FailChecker failCheck,
+  public static <T> BiConsumer<Map<String, List<T>>, NotificationType> notificationMapListChecker(
+      FailChecker failChecker,
       Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failCheck.fail();
+        failChecker.fail();
         return;
       }
       try {
         data.forEach((k, v) -> v.forEach(checker));
       } catch (AssertionError e) {
-        failCheck.fail();
+        failChecker.fail();
       }
     };
   }

@@ -3,6 +3,8 @@ package com.cryptomarket.sdk;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Side;
 import com.cryptomarket.params.SubscriptionMode;
@@ -16,29 +18,12 @@ import org.junit.Test;
 
 public class TestWSSpotTradingClientSubs {
   CryptomarketWSSpotTradingClient wsClient;
-  Boolean authenticated = false;
-  Callback<Boolean> resultCallback = new Callback<Boolean>() {
-    @Override
-    public void resolve(Boolean result) {
-      ;
-    }
-
-    @Override
-    public void reject(Throwable exception) {
-      fail();
-    }
-  };
-
+  
   @Before
-  public void before() {
-    try {
-      wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-      wsClient.connect();
-
-      Helpers.sleep(3);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void before() throws IOException {
+    wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    wsClient.connect();
+    Helpers.sleep(3);
   }
 
   @After
@@ -66,15 +51,10 @@ public class TestWSSpotTradingClientSubs {
 
   @Test
   public void testReportSubscription() {
+    var failChecker = new FailChecker();
     wsClient.subscribeToReports(
-        (data, notificationType) -> {
-          data.forEach(report -> Checker.checkReport.accept(report));
-        },
-        (result, exception) -> {
-          if (!result) {
-            fail();
-          }
-        });
+        Helpers.notificationListChecker(failChecker, Checker.checkReport),
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(3);
 
     String clientOrderId = String.format("%d", System.currentTimeMillis());
@@ -87,6 +67,7 @@ public class TestWSSpotTradingClientSubs {
     });
 
     Helpers.sleep(3);
+    assertFalse(failChecker.failed());
   }
 
   private void cancelOrder(String clientOrderId) {
@@ -109,11 +90,11 @@ public class TestWSSpotTradingClientSubs {
 
   @Test
   public void testSpotBalanceSubscriptions() {
-    FailChecker failChecker = new FailChecker();
+    var failChecker = new FailChecker();
     wsClient.subscribeToSpotBalances(
         SubscriptionMode.UPDATES,
-        Helpers.listChecker(failChecker, Checker.checkBalance),
-        null);
+        Helpers.notificationListChecker(failChecker, Checker.checkBalance),
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
 
     Helpers.sleep(4);
     String clientOrderId = String.format("%d", System.currentTimeMillis());
@@ -124,14 +105,8 @@ public class TestWSSpotTradingClientSubs {
 
     // three updates, the first, one creation and one cancel.
 
-    wsClient.unsubscribeToSpotBalances((result, exception) -> {
-      if (exception != null) {
-        fail(exception.toString());
-      }
-      if (!result) {
-        fail();
-      }
-    });
+    wsClient.unsubscribeToSpotBalances(
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(4);
     assertFalse(failChecker.failed());
 

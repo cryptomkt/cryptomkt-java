@@ -3,6 +3,8 @@ package com.cryptomarket.sdk;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +15,10 @@ public class TestWSWalletClient {
   Boolean authenticated = false;
 
   @Before
-  public void before() {
-    try {
-      wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-      wsClient.connect();
-      Helpers.sleep(3);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void before() throws IOException {
+    wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    wsClient.connect();
+    Helpers.sleep(3);
   }
 
   @After

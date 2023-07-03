@@ -6,6 +6,7 @@ import com.cryptomarket.params.ArgNames;
 import com.cryptomarket.params.ParamsBuilder;
 import com.squareup.moshi.Json;
 
+@SuppressWarnings("unused")
 public class WithdrawRequest {
   private String currency;
   @Json(name = "network_code")

@@ -1,11 +1,13 @@
 package com.cryptomarket.sdk;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.sdk.Helpers.FailChecker;
+import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.rest.CryptomarketRestClient;
 import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
@@ -18,29 +20,13 @@ import org.junit.Test;
 public class TestWSWalletClientSubs {
   CryptomarketWSWalletClient wsClient;
   CryptomarketRestClient restClient;
-  Boolean authenticated = false;
-  Callback<Boolean> resultCallback = new Callback<Boolean>() {
-    @Override
-    public void resolve(Boolean result) {
-      ;
-    }
-
-    @Override
-    public void reject(Throwable exception) {
-      fail();
-    }
-  };
-
+  
   @Before
-  public void before() {
-    try {
-      wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-      wsClient.connect();
-      restClient = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-      Helpers.sleep(3);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void before() throws IOException {
+    wsClient = new CryptomarketWSWalletClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    wsClient.connect();
+    restClient = new CryptomarketRestClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+    Helpers.sleep(3);
   }
 
   @After
@@ -49,91 +35,51 @@ public class TestWSWalletClientSubs {
   }
 
   @Test
-  public void testSubscribeToTransactions() {
+  public void testSubscribeToTransactions() throws CryptomarketSDKException {
     FailChecker failChecker = new FailChecker();
     wsClient.subscribeToTransactions(
         Helpers.checker(failChecker, Checker.checkTransaction),
-        (result, exception) -> {
-          if (exception != null) {
-            fail();
-          }
-          if (!result) {
-            fail();
-          }
-        });
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(3);
-    try {
-      restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("EOS")
-          .amount("0.01")
-          .source(AccountType.WALLET)
-          .destination(AccountType.SPOT));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail();
-    }
+    restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("EOS")
+        .amount("0.01")
+        .source(AccountType.WALLET)
+        .destination(AccountType.SPOT));
     Helpers.sleep(3);
-    try {
-      restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("EOS")
-          .amount("0.01")
-          .destination(AccountType.WALLET)
-          .source(AccountType.SPOT));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail();
-    }
+    restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("EOS")
+        .amount("0.01")
+        .destination(AccountType.WALLET)
+        .source(AccountType.SPOT));
     Helpers.sleep(3);
-    wsClient.unsubscribeToTransactions((result, exception) -> {
-      if (!result) {
-        fail();
-      }
-    });
+    wsClient.unsubscribeToTransactions(
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(3);
     assertFalse(failChecker.failed());
   }
 
   @Test
-  public void testSubscribeToWalletBalances() {
+  public void testSubscribeToWalletBalances() throws CryptomarketSDKException {
     FailChecker failChecker = new FailChecker();
     wsClient.subscribeToWalletBalances(
-        Helpers.listChecker(failChecker, Checker.checkBalance),
-        (result, exception) -> {
-          if (!result) {
-            fail();
-          }
-        });
+        Helpers.notificationListChecker(failChecker, Checker.checkBalance),
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(3);
-    try {
-      restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("EOS")
-          .amount("0.01")
-          .source(AccountType.WALLET)
-          .destination(AccountType.SPOT));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail();
-    }
+    restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("EOS")
+        .amount("0.01")
+        .source(AccountType.WALLET)
+        .destination(AccountType.SPOT));
     Helpers.sleep(3);
-    try {
-      restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
-          .currency("EOS")
-          .amount("0.01")
-          .destination(AccountType.WALLET)
-          .source(AccountType.SPOT));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail();
-    }
+    restClient.transferBetweenWalletAndExchange(new ParamsBuilder()
+        .currency("EOS")
+        .amount("0.01")
+        .destination(AccountType.WALLET)
+        .source(AccountType.SPOT));
     Helpers.sleep(3);
-    wsClient.unsubscribeToWalletBalances((result, exception) -> {
-      if (exception != null) {
-        fail();
-      }
-      if (!result) {
-        fail();
-      }
-    });
+    wsClient.unsubscribeToWalletBalances(
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBooleanTrue));
     Helpers.sleep(3);
     assertFalse(failChecker.failed());
   }

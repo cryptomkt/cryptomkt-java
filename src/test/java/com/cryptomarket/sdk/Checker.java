@@ -38,6 +38,11 @@ import com.cryptomarket.sdk.models.WSTicker;
 
 public class Checker {
 
+  static Consumer<Boolean> checkBooleanTrue = bool -> {
+    if (bool == null || !bool)
+      fail("boolean not true");
+  };
+
   static Consumer<String> checkString = str -> {
     if (str == null || str.equals(""))
       fail(str);

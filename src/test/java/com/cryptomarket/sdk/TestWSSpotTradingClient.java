@@ -3,6 +3,7 @@ package com.cryptomarket.sdk;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -29,15 +30,10 @@ public class TestWSSpotTradingClient {
   Boolean authenticated = false;
 
   @Before
-  public void before() {
-    try {
-      wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 10_000);
-      wsClient.connect();
-
-      Helpers.sleep(3);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void before() throws IOException {
+    wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 10_000);
+    wsClient.connect();
+    Helpers.sleep(3);
   }
 
   @After
@@ -47,28 +43,20 @@ public class TestWSSpotTradingClient {
 
   @Test
   public void testGetSpotTradingBalances() {
-    wsClient.getSpotTradingBalances((result, exception) -> {
-      if (exception != null) {
-        fail();
-      }
-      System.out.println(result);
-      result.forEach(Checker.checkBalance);
-    });
-
+    FailChecker failChecker = new FailChecker();
+    wsClient.getSpotTradingBalances(
+        Helpers.listAndExceptionChecker(failChecker, Checker.checkBalance));
     Helpers.sleep(3);
+    assertFalse(failChecker.failed());
   }
 
   @Test
   public void testSpotTradingBalance() {
-    wsClient.getSpotTradingBalanceOfCurrency("EOS", (result, exception) -> {
-      if (exception != null) {
-        System.out.println(exception);
-        fail();
-      }
-      Checker.checkBalance.accept(result);
-    });
-
+    FailChecker failChecker = new FailChecker();
+    wsClient.getSpotTradingBalanceOfCurrency("EOS",
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkBalance));
     Helpers.sleep(3);
+    assertFalse(failChecker.failed());
   }
 
   @Test
@@ -152,7 +140,7 @@ public class TestWSSpotTradingClient {
               .quantity("0.01"),
           null);
     }
-    BiConsumer<List<Report>, CryptomarketSDKException> resultBiConsumer = (reportList, exception) -> {
+    BiConsumer<List<Report>, CryptomarketSDKException> checkReportListSizeAndValidity = (reportList, exception) -> {
       if (exception != null) {
         fail();
       }
@@ -163,10 +151,10 @@ public class TestWSSpotTradingClient {
     };
 
     Helpers.sleep(3);
-    wsClient.getAllActiveOrders(resultBiConsumer);
+    wsClient.getAllActiveOrders(checkReportListSizeAndValidity);
 
     Helpers.sleep(3);
-    wsClient.cancelAllSpotOrders(resultBiConsumer);
+    wsClient.cancelAllSpotOrders(checkReportListSizeAndValidity);
 
     Helpers.sleep(3);
   }
@@ -194,7 +182,7 @@ public class TestWSSpotTradingClient {
     Side side = Side.SELL;
     String quantity = "0.01";
     String price = "10000";
-    FailChecker failChecker = new FailChecker();
+    var failChecker = new FailChecker();
     wsClient.createSpotOrderList(
         ContingencyType.ALL_OR_NONE,
         Arrays.asList(
@@ -213,11 +201,7 @@ public class TestWSSpotTradingClient {
                 .quantity(quantity)
                 .price(price)),
         orderListId,
-        (result, exception) -> {
-          if (exception != null) {
-            failChecker.fail();
-          }
-        });
+        Helpers.objectAndExceptionChecker(failChecker, Checker.checkReport));
 
     Helpers.sleep(12);
     assertFalse(failChecker.failed());

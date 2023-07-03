@@ -2,6 +2,7 @@ package com.cryptomarket.params;
 
 import com.squareup.moshi.Json;
 
+@SuppressWarnings("unused")
 public class OrderBuilder {
   @Json(name = "client_order_id")
   private String clientOrderId;
