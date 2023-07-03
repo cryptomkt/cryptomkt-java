@@ -1,0 +1,54 @@
+# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+
+[*.{js,jsx,json,scss,css,html}]
+indent_size = 2
+
+[*.{js,jsx,json,scss,css,html,md}]
+indent_style = space
+
+# Docstrings and comments use max_line_length = 79
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 79
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+# Minified JavaScript files shouldn't be changed
+[**.min.{js,css}]
+indent_style = unset
+insert_final_newline = unset
+
+# The JSON files contain newlines inconsistently
+[*.json]
+indent_size = 2
+insert_final_newline = unset
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+
+# Batch files use tabs for indentation
+[*.bat]
+indent_style = tab
+
+[*.yml]
+indent_size = 2
+
+[*.{java,scala}]
+indent_style = space
+indent_size = 2
+max_line_length = 80
