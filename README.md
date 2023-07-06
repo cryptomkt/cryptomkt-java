@@ -1,12 +1,12 @@
 # CryptoMarket-Java
 
-[main page](https://www.cryptomkt.com/)
+[Main page](https://www.cryptomkt.com/).
 
-[sign up in CryptoMarket](https://www.cryptomkt.com/account/register).
+[Sign up in CryptoMarket](https://www.cryptomkt.com/account/register).
 
 # Installation
 
-add the Maven dependency
+Add the Maven dependency
 
 ```xml
 <dependency>
@@ -18,11 +18,11 @@ add the Maven dependency
 
 # Documentation
 
-This sdk makes use of the [api version 3](https://api.exchange.cryptomkt.com) of cryptomarket.
+This sdk makes use of the [api version 3](https://api.exchange.cryptomkt.com) of Cryptomarket.
 
 # Quick Start
 
-## rest client
+## Rest client
 
 ```java
 
@@ -72,7 +72,7 @@ Order order = client.createOrder(new ParamsBuilder()
 
 ## Using the ParamsBuilder
 
-most client methods have a version that accepts a ParamBuilder. This class makes easier to pass parameters, and is expected to recieve the same parameters as the parameterized version.
+Most client methods have a version that accepts a ParamBuilder. This class makes easier to pass parameters, and is expected to recieve the same parameters as the parameterized version.
 
 ```java
 import com.cryptomarket.params.ParamsBuilder;
@@ -93,7 +93,7 @@ Map<String, List<Candle>> candles client.getCandles(new ParamsBuilder()
           .sort(Sort.ASC));
 ```
 
-## exception handling
+## Exception handling
 
 ```java
 
@@ -111,7 +111,7 @@ try {
 
 ```
 
-## websocket client
+## Websocket client
 
 There are three websocket clients, the market data client, the spot trading client and the wallet client.
 The market data client requires no authentication, while the spot trading client and the wallet client do require it.
