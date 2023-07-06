@@ -2,19 +2,23 @@ package com.cryptomarket.params;
 
 import com.squareup.moshi.Json;
 
+/** side */
 public enum Side {
-    @Json(name = "buy")
-    BUY("buy"),
-    @Json(name = "sell")
-    SELL("sell");
+  /** buy */
+  @Json(name = "buy")
+  BUY("buy"),
+  /** sell */
+  @Json(name = "sell")
+  SELL("sell");
 
-    private final String label;
+  private final String label;
 
-    private Side(String label) {
-        this.label = label;
-    }
+  private Side(String label) {
+    this.label = label;
+  }
 
-    public String toString() {
-        return label;
-    }
+  @Override
+  public String toString() {
+    return label;
+  }
 }

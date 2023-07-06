@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.cryptomarket.params.AccountType;
-import com.cryptomarket.params.ArgNames;
 import com.cryptomarket.params.ContingencyType;
 import com.cryptomarket.params.SortBy;
 import com.cryptomarket.params.SubAccountStatus;
@@ -24,6 +23,7 @@ import com.cryptomarket.params.IdentifyBy;
 import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.UseOffchain;
 import com.cryptomarket.sdk.Adapter;
+import com.cryptomarket.sdk.ArgNames;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.AmountLock;
@@ -213,6 +213,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   public List<PublicTrade> getTradesBySymbol(
       String symbol,
       Sort sort,
+      SortBy by,
       String from,
       String till,
       Integer limit,
@@ -221,6 +222,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return getTradesBySymbol(new ParamsBuilder()
         .symbol(symbol)
         .sort(sort)
+        .by(by)
         .from(from)
         .till(till)
         .limit(limit)
@@ -921,14 +923,8 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
-  public List<SubAccount> getSubAccountList(
-      String email,
-      SubAccountStatus status) throws CryptomarketSDKException {
-    Map<String, String> params = new ParamsBuilder()
-        .email(email)
-        .status(status)
-        .build();
-    String jsonResponse = httpClient.get("sub-account", params);
+  public List<SubAccount> getSubAccountList() throws CryptomarketSDKException {
+    String jsonResponse = httpClient.get("sub-account", null);
     return adapter.listFromJson(jsonResponse, SubAccount.class);
   }
 

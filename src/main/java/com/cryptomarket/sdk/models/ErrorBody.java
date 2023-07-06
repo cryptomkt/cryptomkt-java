@@ -1,36 +1,69 @@
 package com.cryptomarket.sdk.models;
 
+/**
+ * Body of an error response
+ */
 public class ErrorBody {
-    private int code;
-    private String message;
-    private String description;
+  private int code;
+  private String message;
+  private String description;
 
-    public int getCode() {
-        return code;
-    }
+  /**
+   * Gets the error code
+   *
+   * @return
+   */
+  public int getCode() {
+    return code;
+  }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+  /**
+   * Sets the error code
+   *
+   * @param code
+   */
+  public void setCode(int code) {
+    this.code = code;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  /**
+   * Gets the error message
+   *
+   * @return
+   */
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  /**
+   * Sets the error message
+   *
+   * @param message
+   */
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  /**
+   * Gets the error description
+   *
+   * @return
+   */
+  public String getDescription() {
+    return description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    @Override
-    public String toString() {
-        return "ErrorBody [code=" + code + ", description=" + description + ", message=" + message + "]";
-    }
+  /**
+   * Sets the error description
+   *
+   * @param description
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public String toString() {
+    return "ErrorBody [code=" + code + ", description=" + description + ", message=" + message + "]";
+  }
 }

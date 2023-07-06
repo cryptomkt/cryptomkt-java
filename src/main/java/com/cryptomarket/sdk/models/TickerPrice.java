@@ -1,28 +1,51 @@
 package com.cryptomarket.sdk.models;
 
+/**
+ * Ticker price
+ */
 public class TickerPrice {
 
-    private String price;
-    private String timestamp;
+  private String price;
+  private String timestamp;
 
-    public String getPrice() {
-        return price;
-    }
+  /**
+   * Get the ticker price
+   *
+   * @return
+   */
+  public String getPrice() {
+    return price;
+  }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
+  /**
+   * Sets the ticker price
+   *
+   * @param price
+   */
+  public void setPrice(String price) {
+    this.price = price;
+  }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
+  /**
+   * Gets the ticker timestamp
+   *
+   * @return
+   */
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
+  /**
+   * Sets the timestamp
+   *
+   * @param timestamp
+   */
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-    @Override
-    public String toString() {
-        return "TickerPrice [price=" + price + ", timestamp=" + timestamp + "]";
-    }
+  @Override
+  public String toString() {
+    return "TickerPrice [price=" + price + ", timestamp=" + timestamp + "]";
+  }
 }

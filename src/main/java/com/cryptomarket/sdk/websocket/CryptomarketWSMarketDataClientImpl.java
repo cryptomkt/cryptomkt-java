@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import com.cryptomarket.params.TickerSpeed;
-import com.cryptomarket.params.ArgNames;
 import com.cryptomarket.params.Depth;
 import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.params.OBSpeed;
@@ -14,6 +13,7 @@ import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
 import com.cryptomarket.params.PriceSpeed;
 import com.cryptomarket.sdk.Adapter;
+import com.cryptomarket.sdk.ArgNames;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.WSCandle;
 import com.cryptomarket.sdk.models.WSJsonResponse;
@@ -154,7 +154,7 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       String targetCurrency,
       List<String> currencies,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().currencyListOrAsteric(currencies).targetCurrency(targetCurrency);
+    ParamsBuilder params = new ParamsBuilder().currencyListOrAsterisc(currencies).targetCurrency(targetCurrency);
     String channel = String.format("price/rate/%s", speed);
     makeSubscriptionWithInterceptors(channel, params, WSPriceRate.class, notificationBiConsumer, resultBiConsumer);
   }
@@ -166,7 +166,7 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
       String targetCurrency,
       List<String> currencies,
       BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
-    ParamsBuilder params = new ParamsBuilder().currencyListOrAsteric(currencies).targetCurrency(targetCurrency);
+    ParamsBuilder params = new ParamsBuilder().currencyListOrAsterisc(currencies).targetCurrency(targetCurrency);
     String channel = String.format("price/rate/%s/batches", speed);
     makeSubscriptionWithInterceptors(channel, params, WSPriceRate.class, notificationBiConsumer, resultBiConsumer);
   }

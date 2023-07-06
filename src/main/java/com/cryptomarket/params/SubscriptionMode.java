@@ -1,17 +1,20 @@
 package com.cryptomarket.params;
 
+/** Subscription mode */
 public enum SubscriptionMode {
-    
-    UPDATES("updates"),
-    BATCHES("batches");
+  /** updates */
+  UPDATES("updates"),
+  /** batches */
+  BATCHES("batches");
 
-    public final String label;
+  public final String label;
 
-    private SubscriptionMode(String label) {
-        this.label = label;
-    }
+  private SubscriptionMode(String label) {
+    this.label = label;
+  }
 
-    public String toString() {
-        return label;
-    }
+  @Override
+  public String toString() {
+    return label;
+  }
 }

@@ -2,94 +2,187 @@ package com.cryptomarket.sdk.models;
 
 import com.squareup.moshi.Json;
 
+/**
+ * Ticker
+ */
 public class Ticker {
-	private String ask;
-	private String bid;
-	private String last;
-	private String low;
-	private String high;
-	private String open;
-	private String volume;
-	@Json(name = "volume_quote")
-	private String volumeQuote;
-	private String timestamp;
+  private String ask;
+  private String bid;
+  private String last;
+  private String low;
+  private String high;
+  private String open;
+  private String volume;
+  @Json(name = "volume_quote")
+  private String volumeQuote;
+  private String timestamp;
 
-	public String getAsk() {
-		return ask;
-	}
+  /**
+   * Gets the ticker ask price
+   *
+   * @return
+   */
+  public String getAsk() {
+    return ask;
+  }
 
-	public void setAsk(String ask) {
-		this.ask = ask;
-	}
+  /**
+   * Sets the ticker ask price
+   *
+   * @param ask
+   */
+  public void setAsk(String ask) {
+    this.ask = ask;
+  }
 
-	public String getBid() {
-		return bid;
-	}
+  /**
+   * Gets the ticker bid price
+   *
+   * @return
+   */
+  public String getBid() {
+    return bid;
+  }
 
-	public void setBid(String bid) {
-		this.bid = bid;
-	}
+  /**
+   * Sets the ticker bid price
+   *
+   * @param bid
+   */
+  public void setBid(String bid) {
+    this.bid = bid;
+  }
 
-	public String getLast() {
-		return last;
-	}
+  /**
+   * Gets the ticker last price
+   *
+   * @return
+   */
+  public String getLast() {
+    return last;
+  }
 
-	public void setLast(String last) {
-		this.last = last;
-	}
+  /**
+   * Sets the ticker last price
+   *
+   * @param last
+   */
+  public void setLast(String last) {
+    this.last = last;
+  }
 
-	public String getLow() {
-		return low;
-	}
+  /**
+   * Gets the ticker low price
+   *
+   * @return
+   */
+  public String getLow() {
+    return low;
+  }
 
-	public void setLow(String low) {
-		this.low = low;
-	}
+  /**
+   * Sets the ticker low price
+   *
+   * @param low
+   */
+  public void setLow(String low) {
+    this.low = low;
+  }
 
-	public String getHigh() {
-		return high;
-	}
+  /**
+   * Gets the ticker high price
+   *
+   * @return
+   */
+  public String getHigh() {
+    return high;
+  }
 
-	public void setHigh(String high) {
-		this.high = high;
-	}
+  /**
+   * Sets the ticker high price
+   *
+   * @param high
+   */
+  public void setHigh(String high) {
+    this.high = high;
+  }
 
-	public String getOpen() {
-		return open;
-	}
+  /**
+   * Gets the ticker open price
+   *
+   * @return
+   */
+  public String getOpen() {
+    return open;
+  }
 
-	public void setOpen(String open) {
-		this.open = open;
-	}
+  /**
+   * Sets the ticker open price
+   *
+   * @param open
+   */
+  public void setOpen(String open) {
+    this.open = open;
+  }
 
-	public String getVolume() {
-		return volume;
-	}
+  /**
+   * Gets the ticker volume in base currency
+   *
+   * @return
+   */
+  public String getVolume() {
+    return volume;
+  }
 
-	public void setVolume(String volume) {
-		this.volume = volume;
-	}
+  /**
+   * Sets the ticker volume
+   *
+   * @param volume
+   */
+  public void setVolume(String volume) {
+    this.volume = volume;
+  }
 
-	public String getVolumeQuote() {
-		return volumeQuote;
-	}
+  /**
+   * Gets the ticker volume in quote currency
+   *
+   * @return
+   */
+  public String getVolumeQuote() {
+    return volumeQuote;
+  }
 
-	public void setVolumeQuote(String volumeQuote) {
-		this.volumeQuote = volumeQuote;
-	}
+  /**
+   * Sets the ticker volume quote
+   *
+   * @param volumeQuote
+   */
+  public void setVolumeQuote(String volumeQuote) {
+    this.volumeQuote = volumeQuote;
+  }
 
-	public String getTimestamp() {
-		return timestamp;
-	}
+  /**
+   * Gets the ticker timestamp
+   *
+   * @return
+   */
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+  /**
+   * Sets the ticker timestamp
+   *
+   * @param timestamp
+   */
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	@Override
-	public String toString() {
-		return "Ticker [ask=" + ask + ", bid=" + bid + ", high=" + high + ", last=" + last + ", low=" + low + ", open="
-				+ open + ", timestamp=" + timestamp + ", volume=" + volume + ", volumeQuote=" + volumeQuote + "]";
-	}
+  @Override
+  public String toString() {
+    return "Ticker [ask=" + ask + ", bid=" + bid + ", high=" + high + ", last=" + last + ", low=" + low + ", open="
+        + open + ", timestamp=" + timestamp + ", volume=" + volume + ", volumeQuote=" + volumeQuote + "]";
+  }
 
 }

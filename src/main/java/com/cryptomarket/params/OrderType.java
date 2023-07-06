@@ -1,20 +1,28 @@
 package com.cryptomarket.params;
 
+/** Type of order */
 public enum OrderType {
-    LIMIT("limit"),
-    MARKET("market"),
-    STOP_LIMIT("stopLimit"),
-    STOP_MARKET("stopMarket"),
-    TAKE_PROFIT_LIMIT("takeProfitLimit"),
-    TAKE_PROFIT_MARKET("takeProfitMarket");
+  /** Order type limit */
+  LIMIT("limit"),
+  /** Order type market */
+  MARKET("market"),
+  /** Order type stop limit */
+  STOP_LIMIT("stopLimit"),
+  /** Order type stop market */
+  STOP_MARKET("stopMarket"),
+  /** Order type take profit limit */
+  TAKE_PROFIT_LIMIT("takeProfitLimit"),
+  /** Order type take profit market */
+  TAKE_PROFIT_MARKET("takeProfitMarket");
 
-    private final String label;
+  private final String label;
 
-    private OrderType(String label) {
-        this.label = label;
-    }
+  private OrderType(String label) {
+    this.label = label;
+  }
 
-    public String toString() {
-        return label;
-    }
+  @Override
+  public String toString() {
+    return label;
+  }
 }

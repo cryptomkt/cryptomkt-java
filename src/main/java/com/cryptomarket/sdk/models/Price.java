@@ -1,36 +1,69 @@
 package com.cryptomarket.sdk.models;
 
+/**
+ * Price
+ */
 public class Price {
-    private String currency;
-    private String price;
-    private String timestamp;
+  private String currency;
+  private String price;
+  private String timestamp;
 
-    public String getCurrency() {
-        return currency;
-    }
+  /**
+   * Gets the price currency
+   *
+   * @return
+   */
+  public String getCurrency() {
+    return currency;
+  }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+  /**
+   * Sets the price currency
+   *
+   * @param currency
+   */
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
 
-    public String getPrice() {
-        return price;
-    }
+  /**
+   * Gets the quotation price
+   *
+   * @return
+   */
+  public String getPrice() {
+    return price;
+  }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
+  /**
+   * Sets the quotation price
+   *
+   * @param price
+   */
+  public void setPrice(String price) {
+    this.price = price;
+  }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
+  /**
+   * Gets the timestamp
+   *
+   * @return
+   */
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
+  /**
+   * Sets the timestamp
+   *
+   * @param timestamp
+   */
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-    @Override
-    public String toString() {
-        return "Price [currency=" + currency + ", price=" + price + ", timestamp=" + timestamp + "]";
-    }
+  @Override
+  public String toString() {
+    return "Price [currency=" + currency + ", price=" + price + ", timestamp=" + timestamp + "]";
+  }
 }

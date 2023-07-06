@@ -2,8 +2,8 @@ package com.cryptomarket.sdk.requests;
 
 import java.util.Map;
 
-import com.cryptomarket.params.ArgNames;
 import com.cryptomarket.params.ParamsBuilder;
+import com.cryptomarket.sdk.ArgNames;
 import com.squareup.moshi.Json;
 
 @SuppressWarnings("unused")

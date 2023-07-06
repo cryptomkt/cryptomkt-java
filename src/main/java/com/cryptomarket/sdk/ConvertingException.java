@@ -5,10 +5,24 @@ import java.io.IOException;
 import com.cryptomarket.sdk.exceptions.ParseException;
 import com.squareup.moshi.JsonDataException;
 
+/**
+ * Converts exceptions
+ */
 public class ConvertingException {
-  static public <T1, T2> T2 jsonDataToParse(
-      Throwing.Specific.Function<T1, T2, JsonDataException> fn,
-      T1 arg)
+  /**
+   * calls a function that may throw a json data exception and converts it to a
+   * parse exception
+   *
+   * @param <T> The argument type of the function
+   * @param <R> The return type of the function
+   * @param fn  The function
+   * @param arg The argument of the function
+   * @return The result of calling the function with the argument
+   * @throws ParseException if a json data exception was thrown
+   */
+  static public <T, R> R jsonDataToParse(
+      Throwing.Specific.Function<T, R, JsonDataException> fn,
+      T arg)
       throws ParseException {
     try {
       return fn.apply(arg);
@@ -17,9 +31,20 @@ public class ConvertingException {
     }
   }
 
-  static public <T1, T2> T2 assertionToParse(
-      Throwing.Specific.Function<T1, T2, AssertionError> fn,
-      T1 arg)
+  /**
+   * calls a function that may throw an assertion error and converts it to a
+   * parse exception
+   *
+   * @param <T> The argument type of the function
+   * @param <R> The return type of the function
+   * @param fn  The function
+   * @param arg The argument of the function
+   * @return The result of calling the function with the argument
+   * @throws ParseException if an assertion error was thrown
+   */
+  static public <T, R> R assertionToParse(
+      Throwing.Specific.Function<T, R, AssertionError> fn,
+      T arg)
       throws ParseException {
     try {
       return fn.apply(arg);
@@ -28,9 +53,21 @@ public class ConvertingException {
     }
   }
 
-  static public <T1, T2> T2 jsonDataAndAssertionToParse(
-      Throwing.Specific.Function2<T1, T2, JsonDataException, AssertionError> fn,
-      T1 arg)
+  /**
+   * calls a function that may throw a json data exception or an assertion error
+   * and converts it to a parse exception
+   *
+   * @param <T> The argument type of the function
+   * @param <R> The return type of the function
+   * @param fn  The function
+   * @param arg The argument of the function
+   * @return The result of calling the function with the argument
+   * @throws ParseException if a json data exception or an assertion error was
+   *                        thrown
+   */
+  static public <T, R> R jsonDataAndAssertionToParse(
+      Throwing.Specific.Function2<T, R, JsonDataException, AssertionError> fn,
+      T arg)
       throws ParseException {
     try {
       return fn.apply(arg);
@@ -39,6 +76,18 @@ public class ConvertingException {
     }
   }
 
+  /**
+   * calls a function that may throw a json data exception or an assertion error
+   * or an IO exception and converts it to a parse exception
+   *
+   * @param <T> The argument type of the function
+   * @param <R> The return type of the function
+   * @param fn  The function
+   * @param arg The argument of the function
+   * @return The result of calling the function with the argument
+   * @throws ParseException if a json data exception or an assertion error or an
+   *                        IO exception was thrown
+   */
   static public <T, R> R ioAndJsonDataAndAssertionToParse(
       Throwing.Specific.Function3<T, R, JsonDataException, AssertionError, IOException> fn,
       T arg)
@@ -50,9 +99,20 @@ public class ConvertingException {
     }
   }
 
-  static public <T1, T2> T2 ioToParse(
-      Throwing.Specific.Function<T1, T2, IOException> fn,
-      T1 arg)
+  /**
+   * calls a function that may throw an IO exception and converts it to a
+   * parse exception
+   *
+   * @param <T> The argument type of the function
+   * @param <R> The return type of the function
+   * @param fn  The function
+   * @param arg The argument of the function
+   * @return The result of calling the function with the argument
+   * @throws ParseException if an IO exception was thrown
+   */
+  static public <T, R> R ioToParse(
+      Throwing.Specific.Function<T, R, IOException> fn,
+      T arg)
       throws ParseException {
     try {
       return fn.apply(arg);

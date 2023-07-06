@@ -241,8 +241,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @param by      Optional. Sorting parameter. 'id' or 'timestamp'. Default is
    *                'timestamp'
    * @param sort    Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
-   * @param since   Optional. Initial value of the queried interval
-   * @param until   Optional. Last value of the queried interval
+   * @param from    Optional. Initial value of the queried interval
+   * @param till    Optional. Last value of the queried interval
    * @param limit   Optional. Prices per currency pair. Defaul is 10. Min is 1.
    *                Max is 1000
    * @return A map with a list of trades for each symbol of the query. Indexed by
@@ -280,8 +280,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @param by     Optional. Sorting parameter. 'id' or 'timestamp'. Default is
    *               'timestamp'
    * @param sort   Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
-   * @param since  Optional. Initial value of the queried interval
-   * @param until  Optional. Last value of the queried interval
+   * @param from   Optional. Initial value of the queried interval
+   * @param till   Optional. Last value of the queried interval
    * @param limit  Optional. Prices per currency pair. Defaul is 10. Min is 1. Max
    *               is 1000
    * @param offset Optional. Default is 0. Min is 0. Max is 100000
@@ -291,6 +291,7 @@ public interface CryptomarketRestClient extends Closeable {
   public List<PublicTrade> getTradesBySymbol(
       String symbol,
       @Nullable Sort sort,
+      @Nullable SortBy by,
       @Nullable String from,
       @Nullable String till,
       @Nullable Integer limit,
@@ -298,7 +299,8 @@ public interface CryptomarketRestClient extends Closeable {
       throws CryptomarketSDKException;
 
   /**
-   * @see #getTradesBySymbol(String, Sort, String, String, Integer, Integer)
+   * @see #getTradesBySymbol(String, Sort, SortBy, String, String, Integer,
+   *      Integer)
    * @param paramsBuilder
    * @throws CryptomarketSDKException
    */
@@ -396,15 +398,18 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * https://api.exchange.cryptomkt.com/#candles
    *
-   * @param symbol A symbol id
-   * @param period Optional. A valid tick interval. 'M1' (one minute), 'M3', 'M5',
-   *               'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7', '1M'
-   *               (one month). Default is 'M30'
-   * @param sort   Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
-   * @param from   Optional. Initial value of the queried interval. As DateTime
-   * @param till   Optional. Last value of the queried interval. As DateTime
-   * @param limit  Optional. Prices per currency pair. Defaul is 10. Min is 1. Max
-   *               is 1000
+   * @param symbols A list of symbols
+   * @param period  Optional. A valid tick interval. 'M1' (one minute), 'M3',
+   *                'M5',
+   *                'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day), 'D7',
+   *                '1M'
+   *                (one month). Default is 'M30'
+   * @param sort    Optional. Sort direction. 'ASC' or 'DESC'. Default is 'DESC'
+   * @param from    Optional. Initial value of the queried interval. As DateTime
+   * @param till    Optional. Last value of the queried interval. As DateTime
+   * @param limit   Optional. Prices per currency pair. Defaul is 10. Min is 1.
+   *                Max
+   *                is 1000
    * @return A map with a list of candles for each symbol of the query. indexed by
    *         symbol
    * @throws CryptomarketSDKException
@@ -419,7 +424,7 @@ public interface CryptomarketRestClient extends Closeable {
       throws CryptomarketSDKException;
 
   /**
-   * @see #getCandles(List, Period, Sort, String, String, Integer, Integer)
+   * @see #getCandles(List, Period, Sort, String, String, Integer)
    * @param paramsBuilder
    * @throws CryptomarketSDKException
    */
@@ -1072,7 +1077,7 @@ public interface CryptomarketRestClient extends Closeable {
    * @param fromCurrency currency code of origin
    * @param toCurrency   currency code of destiny
    * @param amount       the amount to be converted
-   * @return A list of transaction identifiers of the convertion
+   * @return A list of transaction identifiers of the conversion
    * @throws CryptomarketSDKException
    */
   public List<String> convertBetweenCurrencies(
@@ -1148,7 +1153,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @param by            type of identifier. Either 'email' or 'username'
    * @param identifier    the email or username of the recieving user
    * @param publicComment Optional. Can be up to 255 characters long, excluding
-   *                      the following characters: &, ', <, >, "
+   *                      the following characters: &amp;, &#39;, &lt;, &gt;,
+   *                      &quot;
    * @return the transaction identifier of the transfer
    * @throws CryptomarketSDKException
    */
@@ -1157,7 +1163,7 @@ public interface CryptomarketRestClient extends Closeable {
       throws CryptomarketSDKException;
 
   /**
-   * @see #transferMoneyToAnotherUser(String, String, IdentifyBy, String)
+   * @see #transferMoneyToAnotherUser(String, String, IdentifyBy, String, String)
    * @param paramsBuilder
    * @throws CryptomarketSDKException
    */
@@ -1314,14 +1320,11 @@ public interface CryptomarketRestClient extends Closeable {
    * Requires no API key Access Rights.
    * <p>
    * https://api.exchange.cryptomkt.com/#get-sub-accounts-list
-   * 
-   * @param subAccountId Optional. UUID of the sub-account to query
+   *
    * @return A list of subaccounts
    * @throws CryptomarketSDKException
    */
-  public List<SubAccount> getSubAccountList(
-      @Nullable String email,
-      @Nullable SubAccountStatus status) throws CryptomarketSDKException;
+  public List<SubAccount> getSubAccountList() throws CryptomarketSDKException;
 
   /**
    * gets a sub-account by id.
@@ -1329,7 +1332,7 @@ public interface CryptomarketRestClient extends Closeable {
    * Requires no API key Access Rights.
    * <p>
    * https://api.exchange.cryptomkt.com/#get-sub-accounts-list
-   * 
+   *
    * @param subAccountId UUID of the sub-account to query
    * @return A list of subaccounts
    * @throws CryptomarketSDKException

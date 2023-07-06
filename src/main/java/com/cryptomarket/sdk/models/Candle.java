@@ -2,76 +2,149 @@ package com.cryptomarket.sdk.models;
 
 import com.squareup.moshi.Json;
 
+/**
+ * Candle
+ */
 public class Candle {
-	private String timestamp;
-	private String open;
-	private String close;
-	private String min;
-	private String max;
-	private String volume;
-  @Json(name="volume_quote")
-	private String volumeQuote;
+  private String timestamp;
+  private String open;
+  private String close;
+  private String min;
+  private String max;
+  private String volume;
+  @Json(name = "volume_quote")
+  private String volumeQuote;
 
-	public String getTimestamp() {
-		return timestamp;
-	}
+  /**
+   * Gets the candle timestamp
+   *
+   * @return
+   */
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+  /**
+   * Sets the candle timestamp
+   *
+   * @param timestamp
+   */
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	public String getOpen() {
-		return open;
-	}
+  /**
+   * Gets the open price
+   *
+   * @return
+   */
+  public String getOpen() {
+    return open;
+  }
 
-	public void setOpen(String open) {
-		this.open = open;
-	}
+  /**
+   * Sets the open price
+   *
+   * @param open
+   */
+  public void setOpen(String open) {
+    this.open = open;
+  }
 
-	public String getClose() {
-		return close;
-	}
+  /**
+   * Gets the close price
+   *
+   * @return
+   */
+  public String getClose() {
+    return close;
+  }
 
-	public void setClose(String close) {
-		this.close = close;
-	}
+  /**
+   * Sets the close price
+   *
+   * @param close
+   */
+  public void setClose(String close) {
+    this.close = close;
+  }
 
-	public String getMin() {
-		return min;
-	}
+  /**
+   * Get the minimum price
+   *
+   * @return
+   */
+  public String getMin() {
+    return min;
+  }
 
-	public void setMin(String min) {
-		this.min = min;
-	}
+  /**
+   * Sets the minimum price
+   *
+   * @param min
+   */
+  public void setMin(String min) {
+    this.min = min;
+  }
 
-	public String getMax() {
-		return max;
-	}
+  /**
+   * Gets the maximum price
+   *
+   * @return
+   */
+  public String getMax() {
+    return max;
+  }
 
-	public void setMax(String max) {
-		this.max = max;
-	}
+  /**
+   * Sets the maximum price
+   *
+   * @param max
+   */
+  public void setMax(String max) {
+    this.max = max;
+  }
 
-	public String getVolume() {
-		return volume;
-	}
+  /**
+   * Gets the volume in base currency
+   *
+   * @return
+   */
+  public String getVolume() {
+    return volume;
+  }
 
-	public void setVolume(String volume) {
-		this.volume = volume;
-	}
+  /**
+   * Sets the volume in base currency
+   *
+   * @param volume
+   */
+  public void setVolume(String volume) {
+    this.volume = volume;
+  }
 
-	public String getVolumeQuote() {
-		return volumeQuote;
-	}
+  /**
+   * Gets the volume in quote currency
+   *
+   * @return
+   */
+  public String getVolumeQuote() {
+    return volumeQuote;
+  }
 
-	public void setVolumeQuote(String volumeQuote) {
-		this.volumeQuote = volumeQuote;
-	}
+  /**
+   * Sets the volume in quote currency
+   *
+   * @param volumeQuote
+   */
+  public void setVolumeQuote(String volumeQuote) {
+    this.volumeQuote = volumeQuote;
+  }
 
-	@Override
-	public String toString() {
-		return "Candle [close=" + close + ", max=" + max + ", min=" + min + ", open=" + open + ", timestamp="
-				+ timestamp + ", volume=" + volume + ", volumeQuote=" + volumeQuote + "]";
-	}
+  @Override
+  public String toString() {
+    return "Candle [close=" + close + ", max=" + max + ", min=" + min + ", open=" + open + ", timestamp="
+        + timestamp + ", volume=" + volume + ", volumeQuote=" + volumeQuote + "]";
+  }
 
 }

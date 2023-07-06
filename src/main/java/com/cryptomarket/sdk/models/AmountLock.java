@@ -2,14 +2,15 @@ package com.cryptomarket.sdk.models;
 
 import com.squareup.moshi.Json;
 
+/** Amount lock. amount of user balance locked */
 public class AmountLock {
-  private String id;
+  private Long id;
   private String currency;
   private String amount;
   @Json(name = "date_end")
   private String dateEnd;
   private String description;
-  private String canceled;
+  private Boolean canceled;
   @Json(name = "canceled_at")
   private String canceledAt;
   @Json(name = "cancel_description")
@@ -17,74 +18,162 @@ public class AmountLock {
   @Json(name = "created_at")
   private String createdAt;
 
-  public String getId() {
+  /**
+   * Gets the lock id
+   *
+   * @return An id
+   */
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  /**
+   * Sets the amount lock id
+   * @param id An id
+   */
+  public void setId(Long id) {
     this.id = id;
   }
 
+  /**
+   * Gets the lock currency
+   *
+   * @return A currency code
+   */
   public String getCurrency() {
     return currency;
   }
 
+  /**
+   * Sets the lock currency
+   *
+   * @param currency A currency
+   */
   public void setCurrency(String currency) {
     this.currency = currency;
   }
 
+  /**
+   * Gets the locked amount
+   *
+   * @return An amount
+   */
   public String getAmount() {
     return amount;
   }
 
+  /**
+   * Sets the locked amount
+   *
+   * @param amount An amount
+   */
   public void setAmount(String amount) {
     this.amount = amount;
   }
 
+  /**
+   * Gets the date and time of lock expiration
+   *
+   * @return the datetime
+   */
   public String getDateEnd() {
     return dateEnd;
   }
 
+  /**
+   * Sets the datetime of lock expiration
+   *
+   * @param dateEnd a datetime
+   */
   public void setDateEnd(String dateEnd) {
     this.dateEnd = dateEnd;
   }
 
+  /**
+   * Gets the lock description
+   *
+   * @return A description
+   */
   public String getDescription() {
     return description;
   }
 
+  /**
+   * Sets the lock description
+   *
+   * @param description A description
+   */
   public void setDescription(String description) {
     this.description = description;
   }
 
-  public String getCanceled() {
+  /**
+   *
+   * @return True if the lock is canceled
+   */
+  public Boolean isCanceled() {
     return canceled;
   }
 
-  public void setCanceled(String cancelled) {
-    this.canceled = cancelled;
+  /**
+   * Sets the canceled flag
+   *
+   * @param canceled A boolean
+   */
+  public void setCanceled(Boolean canceled) {
+    this.canceled = canceled;
   }
 
+  /**
+   * Gets the datetime of cancelation
+   *
+   * @return A datetime
+   */
   public String getCanceledAt() {
     return canceledAt;
   }
 
-  public void setCanceledAt(String cancelledAt) {
-    this.canceledAt = cancelledAt;
+  /**
+   * Sets the datetime of canceltion
+   *
+   * @param canceledAt a datetime
+   */
+  public void setCanceledAt(String canceledAt) {
+    this.canceledAt = canceledAt;
   }
 
+  /**
+   * Gets the cancelation description
+   *
+   * @return A description
+   */
   public String getCancelDescription() {
     return cancelDescription;
   }
 
+  /**
+   * Sets the cancelation description
+   *
+   * @param cancelDescription A description
+   */
   public void setCancelDescription(String cancelDescription) {
     this.cancelDescription = cancelDescription;
   }
 
+  /**
+   * Gets the created at datetime
+   *
+   * @return A datetime
+   */
   public String getCreatedAt() {
     return createdAt;
   }
 
+  /**
+   * Sets the created at datetime
+   *
+   * @param createdAt
+   */
   public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
   }

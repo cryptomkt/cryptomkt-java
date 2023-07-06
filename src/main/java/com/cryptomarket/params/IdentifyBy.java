@@ -1,16 +1,20 @@
 package com.cryptomarket.params;
 
+/** Identify user by */
 public enum IdentifyBy {
-    EMAIL("email"),
-    USERNAME("username");
+  /** Identify by email */
+  EMAIL("email"),
+  /** Identify by username */
+  USERNAME("username");
 
-    private final String label;
+  private final String label;
 
-    private IdentifyBy(String label) {
-        this.label = label;
-    }
+  private IdentifyBy(String label) {
+    this.label = label;
+  }
 
-    public String toString() {
-        return label;
-    }
+  @Override
+  public String toString() {
+    return label;
+  }
 }

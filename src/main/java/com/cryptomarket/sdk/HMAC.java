@@ -8,6 +8,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 
+/**
+ *
+ */
 public class HMAC {
   private static String HMAC_SHA256 = "HmacSHA256";
   private static Charset charset = Charset.forName("US-ASCII");

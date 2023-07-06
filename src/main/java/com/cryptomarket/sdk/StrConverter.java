@@ -1,6 +1,6 @@
 package com.cryptomarket.sdk;
 
-public class Utils {
+public class StrConverter {
   public static String fromCamelCaseToCapSnakeCase(String str) {
     StringBuilder builder = new StringBuilder();
     for (char ch : str.toCharArray()) {

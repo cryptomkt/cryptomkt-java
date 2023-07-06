@@ -1,7 +1,12 @@
 package com.cryptomarket.params;
 
+/**
+ * Account type
+ */
 public enum AccountType {
+  /** Account type wallet */
   WALLET("wallet"),
+  /** Account type spot */
   SPOT("spot");
 
   private final String label;
@@ -10,6 +15,7 @@ public enum AccountType {
     this.label = label;
   }
 
+  @Override
   public String toString() {
     return label;
   }

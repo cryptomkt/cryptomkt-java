@@ -1,17 +1,22 @@
 package com.cryptomarket.params;
 
+/** Param to sort by */
 public enum SortBy {
-    TIMESTAMP("timestamp"),
-    ID("id"),
-    DATETIME("created_at");
+  /** sort by timestamp */
+  TIMESTAMP("timestamp"),
+  /** sort by id */
+  ID("id"),
+  /** sort by datetime */
+  DATETIME("created_at");
 
-    private final String label;
+  private final String label;
 
-    private SortBy(String label) {
-        this.label = label;
-    }
+  private SortBy(String label) {
+    this.label = label;
+  }
 
-    public String toString() {
-        return label;
-    }
+  @Override
+  public String toString() {
+    return label;
+  }
 }
