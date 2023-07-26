@@ -49,9 +49,8 @@ public class HttpClientImpl implements CloseableHttpClient {
   private final JsonAdapter<ErrorResponse> errorJsonAdapter = moshi.adapter(ErrorResponse.class);
   private final ParameterizedType mapStringString = Types.newParameterizedType(Map.class, String.class, String.class);
   private final JsonAdapter<Map<String, String>> mapStrStrJsonAdapter = moshi.adapter(mapStringString);
-  org.apache.http.impl.client.CloseableHttpClient client = HttpClients.createDefault();
+  private final org.apache.http.impl.client.CloseableHttpClient client;
   private HMAC hmac;
-
 
   class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     public static final String METHOD_NAME = "DELETE";
@@ -79,10 +78,29 @@ public class HttpClientImpl implements CloseableHttpClient {
     this(url, apiVersion, apiKey, apiSecret, 0);
   }
 
+  public HttpClientImpl(org.apache.http.impl.client.CloseableHttpClient client, String url, String apiVersion,
+      String apiKey, String apiSecret) {
+    this(client, url, apiVersion, apiKey, apiSecret, 0);
+  }
+
   public HttpClientImpl(String url, String apiVersion, String apiKey, String apiSecret, Integer window) {
+    this.client = HttpClients.createDefault();
     this.hmac = new HMAC(apiKey, apiSecret, window);
     this.url = url;
     this.apiVersion = apiVersion;
+  }
+
+  public HttpClientImpl(org.apache.http.impl.client.CloseableHttpClient client, String url, String apiVersion,
+      String apiKey, String apiSecret, Integer window) {
+    this.client = client;
+    this.hmac = new HMAC(apiKey, apiSecret, window);
+    this.url = url;
+    this.apiVersion = apiVersion;
+  }
+
+  @Override
+  public void changeCredentials(String apiKey, String apiSecret) {
+    this.hmac = new HMAC(apiKey, apiSecret, hmac.getWindow());
   }
 
   public void close() throws IOException {

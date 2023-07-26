@@ -10,6 +10,13 @@ import org.jetbrains.annotations.Nullable;
 public interface CloseableHttpClient extends Closeable {
 
   /**
+   * Changes the user credentials used for authentication in calls
+   * @param apiKey the user public key used in new calls
+   * @param apiSecret the user secret key used in new calls
+   */
+  public void changeCredentials(String apiKey, String apiSecret);
+
+  /**
    * Does an http get without authentication
    *
    * @param endpoint The endpoint to make the request

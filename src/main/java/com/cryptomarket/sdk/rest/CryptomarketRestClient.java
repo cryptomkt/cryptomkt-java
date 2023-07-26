@@ -4,25 +4,25 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ContingencyType;
-import com.cryptomarket.params.SortBy;
-import com.cryptomarket.params.SubAccountStatus;
+import com.cryptomarket.params.IdentifyBy;
+import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.OrderType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
 import com.cryptomarket.params.Side;
 import com.cryptomarket.params.Sort;
+import com.cryptomarket.params.SortBy;
+import com.cryptomarket.params.SubAccountTransferType;
 import com.cryptomarket.params.TimeInForce;
 import com.cryptomarket.params.TransactionStatus;
 import com.cryptomarket.params.TransactionSubtype;
 import com.cryptomarket.params.TransactionType;
-import com.cryptomarket.params.SubAccountTransferType;
-import com.cryptomarket.params.IdentifyBy;
-import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.UseOffchain;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
-import com.cryptomarket.sdk.models.SubAccountSettings;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.AmountLock;
 import com.cryptomarket.sdk.models.Balance;
@@ -36,18 +36,25 @@ import com.cryptomarket.sdk.models.PriceHistory;
 import com.cryptomarket.sdk.models.PublicTrade;
 import com.cryptomarket.sdk.models.SubAccount;
 import com.cryptomarket.sdk.models.SubAccountBalances;
+import com.cryptomarket.sdk.models.SubAccountSettings;
 import com.cryptomarket.sdk.models.Symbol;
 import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * Rest Client Interface for cryptomarket API V3.
  */
 public interface CryptomarketRestClient extends Closeable {
+
+  /**
+   * Changes the user credentials used for authentication in calls
+   *
+   * @param apiKey    the user public key used in new calls
+   * @param apiSecret the user secret key used in new calls
+   */
+  public void changeCredentials(String apiKey, String apiSecret);
 
   /// PUBLIC CALLS///
 
