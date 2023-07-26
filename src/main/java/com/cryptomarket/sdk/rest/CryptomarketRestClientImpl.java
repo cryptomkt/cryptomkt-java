@@ -5,22 +5,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.impl.client.HttpClients;
+
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ContingencyType;
-import com.cryptomarket.params.SortBy;
-import com.cryptomarket.params.SubAccountStatus;
+import com.cryptomarket.params.IdentifyBy;
+import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.OrderType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
 import com.cryptomarket.params.Side;
 import com.cryptomarket.params.Sort;
+import com.cryptomarket.params.SortBy;
+import com.cryptomarket.params.SubAccountTransferType;
 import com.cryptomarket.params.TimeInForce;
 import com.cryptomarket.params.TransactionStatus;
 import com.cryptomarket.params.TransactionSubtype;
 import com.cryptomarket.params.TransactionType;
-import com.cryptomarket.params.SubAccountTransferType;
-import com.cryptomarket.params.IdentifyBy;
-import com.cryptomarket.params.OrderBuilder;
 import com.cryptomarket.params.UseOffchain;
 import com.cryptomarket.sdk.Adapter;
 import com.cryptomarket.sdk.ArgNames;
@@ -52,13 +53,22 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   Adapter adapter = new Adapter();
 
   public CryptomarketRestClientImpl(String apiKey, String apiSecret) {
+    this(apiKey,  apiSecret, HttpClients.createDefault());
+  }
+
+  public CryptomarketRestClientImpl(String apiKey, String apiSecret,
+      org.apache.http.impl.client.CloseableHttpClient client) {
     String url = "https://api.exchange.cryptomkt.com";
     String apiVersion = "/api/3/";
-    httpClient = new HttpClientImpl(url, apiVersion, apiKey, apiSecret);
+    httpClient = new HttpClientImpl(client, url, apiVersion, apiKey, apiSecret);
   }
 
   public CryptomarketRestClientImpl() {
     this("", "");
+  }
+
+  public CryptomarketRestClientImpl(org.apache.http.impl.client.CloseableHttpClient client) {
+    this("", "", client);
   }
 
   // PUBLIC
