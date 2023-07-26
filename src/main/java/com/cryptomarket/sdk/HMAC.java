@@ -25,6 +25,10 @@ public class HMAC {
     this.window = window;
   }
 
+  public Integer getWindow() {
+    return window;
+  }
+
   public String getCredential(String method, String body, String url) {
     String timestamp = String.format("%d", System.currentTimeMillis());
     String message = new StringBuffer()

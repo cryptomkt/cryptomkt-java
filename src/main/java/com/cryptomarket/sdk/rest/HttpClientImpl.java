@@ -98,6 +98,11 @@ public class HttpClientImpl implements CloseableHttpClient {
     this.apiVersion = apiVersion;
   }
 
+  @Override
+  public void changeCredentials(String apiKey, String apiSecret) {
+    this.hmac = new HMAC(apiKey, apiSecret, hmac.getWindow());
+  }
+
   public void close() throws IOException {
     client.close();
   }

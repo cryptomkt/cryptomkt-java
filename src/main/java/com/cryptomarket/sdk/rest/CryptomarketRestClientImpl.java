@@ -53,7 +53,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   Adapter adapter = new Adapter();
 
   public CryptomarketRestClientImpl(String apiKey, String apiSecret) {
-    this(apiKey,  apiSecret, HttpClients.createDefault());
+    this(apiKey, apiSecret, HttpClients.createDefault());
   }
 
   public CryptomarketRestClientImpl(String apiKey, String apiSecret,
@@ -69,6 +69,11 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
 
   public CryptomarketRestClientImpl(org.apache.http.impl.client.CloseableHttpClient client) {
     this("", "", client);
+  }
+
+  @Override
+  public void changeCredentials(String apiKey, String apiSecret) {
+    httpClient.changeCredentials(apiKey, apiSecret);
   }
 
   // PUBLIC
