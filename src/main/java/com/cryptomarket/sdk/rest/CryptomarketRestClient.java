@@ -48,6 +48,14 @@ import com.cryptomarket.sdk.models.Transaction;
  */
 public interface CryptomarketRestClient extends Closeable {
 
+  /**
+   * Changes the user credentials used for authentication in calls
+   *
+   * @param apiKey    the user public key used in new calls
+   * @param apiSecret the user secret key used in new calls
+   */
+  public void changeCredentials(String apiKey, String apiSecret);
+
   /// PUBLIC CALLS///
 
   /**
