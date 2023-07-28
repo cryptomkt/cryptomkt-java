@@ -1,5 +1,7 @@
 package com.cryptomarket.params;
 
+import com.squareup.moshi.Json;
+
 /** Time in force */
 public enum TimeInForce {
   /** good till canceled */
@@ -9,12 +11,8 @@ public enum TimeInForce {
   /** fill or kill */
   FOK,
   /** day */
-  DAY {
-    @Override
-    public String toString() {
-      return "Day";
-    }
-  },
+  @Json(name="Day")
+  DAY,
   /** good till date */
   GTD,
 }

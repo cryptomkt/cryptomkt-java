@@ -65,6 +65,7 @@ public class TestRestClientSpotTrading {
         .symbol("EOSETH")
         .side(Side.SELL)
         .quantity("0.01")
+        .timeInForce(TimeInForce.DAY)
         .orderType(OrderType.LIMIT)
         .price("1000"));
     Checker.checkOrder.accept(order);
