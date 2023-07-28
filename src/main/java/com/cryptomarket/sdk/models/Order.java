@@ -27,6 +27,8 @@ public class Order {
   @Json(name = "time_in_force")
   private TimeInForce timeInForce;
   private String price;
+  @Json(name = "price_average")
+  private String averagePrice;
   private String quantity;
   @Json(name = "quantity_cumulative")
   private String quantityCumulative;
@@ -227,6 +229,19 @@ public class Order {
   }
 
   /**
+   * gets the average price of the executed order quantity
+   *
+   * @return
+   */
+  public String getAveragePrice() {
+    return averagePrice;
+  }
+
+  public void setAveragePrice(String averagePrice) {
+    this.averagePrice = averagePrice;
+  }
+
+  /**
    * Gets the order quantity
    *
    * @return
@@ -392,9 +407,9 @@ public class Order {
   public String toString() {
     return "Order [id=" + id + ", clientOrderId=" + clientOrderId + ", orderListId=" + orderListId
         + ", contingencyType=" + contingencyType + ", symbol=" + symbol + ", side=" + side + ", status=" + status
-        + ", type=" + type + ", timeInForce=" + timeInForce + ", price=" + price + ", quantity=" + quantity
-        + ", quantityCumulative=" + quantityCumulative + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
-        + ", postOnly=" + postOnly + ", stopPrice=" + stopPrice + ", expireTime=" + expireTime + ", trades=" + trades
-        + ", originalClientOrderId=" + originalClientOrderId + "]";
+        + ", type=" + type + ", timeInForce=" + timeInForce + ", price=" + price + ", averagePrice=" + averagePrice
+        + ", quantity=" + quantity + ", quantityCumulative=" + quantityCumulative + ", createdAt=" + createdAt
+        + ", updatedAt=" + updatedAt + ", postOnly=" + postOnly + ", stopPrice=" + stopPrice + ", expireTime="
+        + expireTime + ", trades=" + trades + ", originalClientOrderId=" + originalClientOrderId + "]";
   }
 }
