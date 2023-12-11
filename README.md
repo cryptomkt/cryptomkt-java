@@ -151,10 +151,45 @@ On an authenticated client, onConnect is called after authentication, which happ
 // ws client lifetime
 CryptomarketWSSpotTradingClient wsClient;
     wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
-    wsClient.onConnect(() -> System.out.println("connecting"));
+    wsClient.onConnect(() -> System.out.println("client is connected!"));
     wsClient.onClose(reason -> System.out.println("closing: "+ reason));
     wsClient.onFailure(t -> t.printStackTrace());
     wsClient.connect();
+```
+
+### Websocket Connection
+The websockets take some time (around one second) to connect, and authenticated sockets take a little more time to authenticate, so we must wait to the client to call onConnect first. 
+
+A way of doing this is using a future task
+```java
+var wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+var ft = new FutureTask<Object>(() -> {}, new Object());
+wsClient.onConnect(ft);
+wsClient.connect();
+ft.get();
+// here we are connected and authenticated already
+wsClient.getSpotTradingBalances((balances, err) -> {...});
+```
+We can also run our logic inside the onConnect hook
+
+```java
+var wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+var ft = new FutureTask<Object>(() -> {}, new Object());
+wsClient.onConnect(()-> {
+  // here we are connected and authenticated already
+  wsClient.getSpotTradingBalances((balances, err) -> {...});
+});
+wsClient.connect();
+```
+Or we can sleep some time to wait connection
+
+```java
+var wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
+var ft = new FutureTask<Object>(() -> {}, new Object());
+wsClient.connect();
+TimeUnit.Seconds.sleep(3);
+// here we are connected and authenticated already
+wsClient.getSpotTradingBalances((balances, err) -> {...});
 ```
 
 ### MarketDataClient
