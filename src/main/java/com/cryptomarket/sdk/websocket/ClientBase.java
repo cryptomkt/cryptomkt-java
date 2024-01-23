@@ -73,9 +73,13 @@ public class ClientBase implements WSHandler {
   }
 
   protected void sendById(String method, Map<String, Object> params, Interceptor interceptor) {
+    sendById(method, params, interceptor, 1);
+  }
+
+  protected void sendById(String method, Map<String, Object> params, Interceptor interceptor, Integer callCount) {
     Payload payload = new Payload(method, params);
     if (interceptor != null) {
-      Integer id = interceptorCache.storeInterceptor(interceptor);
+      Integer id = interceptorCache.saveInterceptor(interceptor, callCount);
       payload.id = id;
     }
     String json = payloadAdapter.toJson(payload);
@@ -100,9 +104,11 @@ public class ClientBase implements WSHandler {
   }
 
   protected void handleResponse(WSJsonResponse response) {
-    Interceptor interceptor = interceptorCache.popInterceptor(response.getId());
-    if (interceptor != null)
-      interceptor.makeCall(response);
+    var interceptor = interceptorCache.getInterceptor(response.getId());
+    if (interceptor.isEmpty()) {
+      return;
+    }
+    interceptor.get().makeCall(response);
   }
 
   protected String buildKey(String method) {

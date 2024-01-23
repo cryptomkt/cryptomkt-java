@@ -61,7 +61,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * notifications are updates of the user orders
    * <p>
    * https://api.exchange.cryptomkt.com/#subscribe-to-spot-balances
-   * 
+   *
    * @param mode                   Optional. SubscriptionMode.UPDATES to recieve a
    *                               notification on each balance update, and
    *                               SubscriptionMode.BATCHES to recieve
@@ -80,7 +80,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    * stop recieving the balance feed subscription
    * <p>
    * https://api.exchange.cryptomkt.com/#subscribe-to-spot-balances
-   * 
+   *
    * @param resultBiConsumer Optional. recieves true if the unsubscription is
    *                         successfull, and a CryptomarketSDKException if
    *                         there was a problem (or null if there was none)
@@ -174,6 +174,8 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
 
   /**
    * creates a list of spot orders
+   * <p>
+   * <b>calls the report consumer once per order in list</b>
    * <p>
    * <b>Types or contingency:</b>
    * <ul>

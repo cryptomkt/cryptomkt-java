@@ -198,7 +198,7 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
     Interceptor interceptor = (resultBiConsumer == null)
         ? null
         : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Report.class);
-    sendById("spot_new_order_list", params.buildObjectMap(), interceptor);
+    sendById("spot_new_order_list", params.buildObjectMap(), interceptor, orders.size());
   }
 
   @Override

@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -21,27 +22,31 @@ public class Helpers {
   }
 
   public static class FailChecker {
-    private Boolean _failed = false;
+    private Optional<String> errMsg = Optional.empty();
 
-    public void fail() {
-      _failed = true;
+    public void fail(String errMsg) {
+      this.errMsg = Optional.of(errMsg);
     }
 
     public Boolean failed() {
-      return _failed;
+      return errMsg.isPresent();
+    }
+
+    public Optional<String> getErrMsg() {
+      return errMsg;
     }
   }
 
   public static <T> BiConsumer<T, NotificationType> checker(FailChecker failChecker, Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failChecker.fail();
+        failChecker.fail("failed to parse notification");
         return;
       }
       try {
         checker.accept(data);
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
@@ -50,12 +55,12 @@ public class Helpers {
       Consumer<T> checker) {
     return (data, error) -> {
       if (error != null) {
-        failChecker.fail();
+        failChecker.fail(error.getMessage());
       }
       try {
         checker.accept(data);
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
@@ -64,12 +69,12 @@ public class Helpers {
       Consumer<T> checker) {
     return (data, error) -> {
       if (error != null) {
-        failChecker.fail();
+        failChecker.fail(error.getMessage());
       }
       try {
         data.forEach(v -> checker.accept(v));
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
@@ -78,13 +83,13 @@ public class Helpers {
       Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failChecker.fail();
+        failChecker.fail("invalid notification type");
         return;
       }
       try {
         data.forEach(v -> checker.accept(v));
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
@@ -93,13 +98,13 @@ public class Helpers {
       Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failChecker.fail();
+        failChecker.fail("invalid notification type");
         return;
       }
       try {
         data.forEach((k, v) -> checker.accept(v));
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
@@ -109,13 +114,13 @@ public class Helpers {
       Consumer<T> checker) {
     return (data, notificationType) -> {
       if (notificationType.isError()) {
-        failChecker.fail();
+        failChecker.fail("invalid notification type");
         return;
       }
       try {
         data.forEach((k, v) -> v.forEach(checker));
       } catch (AssertionError e) {
-        failChecker.fail();
+        failChecker.fail(e.getMessage());
       }
     };
   }
