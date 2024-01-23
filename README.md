@@ -12,7 +12,7 @@ Add the Maven dependency
 <dependency>
     <groupId>com.cryptomkt.api</groupId>
     <artifactId>cryptomarket</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
