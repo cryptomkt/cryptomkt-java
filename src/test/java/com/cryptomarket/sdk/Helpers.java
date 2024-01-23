@@ -22,7 +22,7 @@ public class Helpers {
   }
 
   public static class FailChecker {
-    private Optional<String> errMsg;
+    private Optional<String> errMsg = Optional.empty();
 
     public void fail(String errMsg) {
       this.errMsg = Optional.of(errMsg);
