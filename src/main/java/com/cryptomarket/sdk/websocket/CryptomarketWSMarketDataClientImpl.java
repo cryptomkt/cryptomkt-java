@@ -62,7 +62,7 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
     interceptorCache.storeSubscriptionInterceptor(key, feedInterceptor);
     Payload payload = new Payload("subscribe", channel, params);
     if (resultInterceptor != null) {
-      Integer id = interceptorCache.storeInterceptor(resultInterceptor);
+      Integer id = interceptorCache.saveInterceptor(resultInterceptor);
       payload.id = id;
     }
     String json = payloadAdapter.toJson(payload);

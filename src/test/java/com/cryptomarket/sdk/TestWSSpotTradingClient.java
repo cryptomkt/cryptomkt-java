@@ -24,16 +24,22 @@ import com.cryptomarket.sdk.models.Report;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSSpotTradingClientImpl;
 
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutionException;
+
 public class TestWSSpotTradingClient {
 
   CryptomarketWSSpotTradingClient wsClient;
   Boolean authenticated = false;
 
   @Before
-  public void before() throws IOException {
-    wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 10_000);
+  public void before() throws IOException, InterruptedException, ExecutionException {
+    wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret(), 60_000);
+    var ft = new FutureTask<Object>(() -> {
+    }, new Object());
+    wsClient.onConnect(ft);
     wsClient.connect();
-    Helpers.sleep(3);
+    ft.get();
   }
 
   @After
@@ -56,6 +62,9 @@ public class TestWSSpotTradingClient {
     wsClient.getSpotTradingBalanceOfCurrency("EOS",
         Helpers.objectAndExceptionChecker(failChecker, Checker.checkBalance));
     Helpers.sleep(3);
+    if (failChecker.failed()) {
+      fail(failChecker.getErrMsg().get());
+    }
     assertFalse(failChecker.failed());
   }
 
@@ -204,6 +213,9 @@ public class TestWSSpotTradingClient {
         Helpers.objectAndExceptionChecker(failChecker, Checker.checkReport));
 
     Helpers.sleep(12);
+    if (failChecker.failed()) {
+      fail(failChecker.getErrMsg().get());
+    }
     assertFalse(failChecker.failed());
   }
 }

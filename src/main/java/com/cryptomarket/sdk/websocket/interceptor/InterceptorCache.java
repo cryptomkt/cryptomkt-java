@@ -2,41 +2,54 @@ package com.cryptomarket.sdk.websocket.interceptor;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Optional;
 
 public class InterceptorCache {
-    Map<String, Interceptor> interceptors = new HashMap<String, Interceptor>();
-    Integer nextId = 1;
+  private Map<String, Interceptor> subscriptionInterceptors = new HashMap<String, Interceptor>();
+  private Map<String, RecallableIntercaptor> interceptors = new HashMap<String, RecallableIntercaptor>();
+  private Integer nextId = 1;
 
-    private Integer getNextId() {
-        int next = nextId;
-        nextId++;
-        if (nextId <= 0) nextId = 1;
-        return next;
-    }
+  private Integer getNextId() {
+    int next = nextId;
+    nextId++;
+    if (nextId <= 0)
+      nextId = 1;
+    return next;
+  }
 
-    public Integer storeInterceptor(Interceptor interceptor) {
-        Integer id = getNextId();
-        interceptors.put(id.toString(), interceptor);
-        return id;
-    }
-    public Interceptor popInterceptor(Integer id) {
-        // if (!interceptors.containsKey(id)) throw CallbackCacheException.newIdException(id.toString());
-        Interceptor callback = interceptors.get(id.toString());
-        interceptors.remove(id.toString());
-        return callback;
-    }
+  public Integer saveInterceptor(Interceptor interceptor) {
+    return saveInterceptor(interceptor, 1);
+  }
 
-    public void storeSubscriptionInterceptor(String key, Interceptor interceptor) {
-        this.interceptors.put(key, interceptor);
-    }
+  public Integer saveInterceptor(Interceptor interceptor, Integer callCount) {
+    Integer id = getNextId();
+    interceptors.put(id.toString(), new RecallableIntercaptor(interceptor, callCount));
+    return id;
+  }
 
-    public Interceptor getSubscriptionInterceptor(String key) {
-        if (!this.interceptors.containsKey(key)) return null;
-        return this.interceptors.get(key);
+  public Optional<Interceptor> getInterceptor(Integer id) {
+    var recallableInterceptor = interceptors.get(id.toString());
+    if (recallableInterceptor == null) {
+      return Optional.empty();
     }
+    var interceptor = recallableInterceptor.getInterceptor();
+    if (recallableInterceptor.doneRecalling()) {
+      subscriptionInterceptors.remove(id.toString());
+    }
+    return interceptor;
+  }
 
-    public void deleteSubscriptionInterceptor(String key) {
-        this.interceptors.remove(key);
-    }
+  public void storeSubscriptionInterceptor(String key, Interceptor interceptor) {
+    this.subscriptionInterceptors.put(key, interceptor);
+  }
+
+  public Interceptor getSubscriptionInterceptor(String key) {
+    if (!this.subscriptionInterceptors.containsKey(key))
+      return null;
+    return this.subscriptionInterceptors.get(key);
+  }
+
+  public void deleteSubscriptionInterceptor(String key) {
+    this.subscriptionInterceptors.remove(key);
+  }
 }

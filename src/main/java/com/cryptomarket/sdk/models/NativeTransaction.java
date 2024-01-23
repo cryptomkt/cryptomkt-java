@@ -23,6 +23,8 @@ public class NativeTransaction {
   private String confirmations;
   @Json(name = "public_comment")
   private String publicComment;
+  @Json(name = "network_code")
+  private String networkCode;
   @Json(name = "error_code")
   private String errorCode;
   private List<String> sender;
@@ -261,8 +263,8 @@ public class NativeTransaction {
   public String toString() {
     return "NativeTransaction [id=" + id + ", index=" + index + ", currency=" + currency + ", amount=" + amount
         + ", fee=" + fee + ", address=" + address + ", paymentId=" + paymentId + ", hash=" + hash + ", offchainId="
-        + offchainId + ", confirmations=" + confirmations + ", publicComment=" + publicComment + ", errorCode="
-        + errorCode + ", sender=" + sender + "]";
+        + offchainId + ", confirmations=" + confirmations + ", publicComment=" + publicComment + ", networkCode="
+        + networkCode + ", errorCode=" + errorCode + ", sender=" + sender + "]";
   }
 
 }
