@@ -264,4 +264,11 @@ public class Adapter {
     }
     return listFromValue(list, String.class);
   }
+
+  public <T> String listToJson(List<T> list, Class<T> cls) throws ParseException {
+    Type type = Types.newParameterizedType(List.class, cls);
+    JsonAdapter<List<T>> listAdapter = moshi.adapter(type);
+    return ConvertingException.ioAndJsonDataAndAssertionToParse(listAdapter::toJson, list);
+
+  }
 }

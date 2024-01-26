@@ -11,6 +11,7 @@ import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.Balance;
+import com.cryptomarket.sdk.models.FeeRequest;
 import com.cryptomarket.sdk.models.Transaction;
 import com.cryptomarket.sdk.rest.CryptomarketRestClient;
 import com.cryptomarket.sdk.rest.CryptomarketRestClientImpl;
@@ -109,6 +110,16 @@ public class TestRestClientWalletManagement {
     if (!result) {
       fail();
     }
+  }
+
+
+  @Test
+  public void testGetEstimateWithdrawFees() throws CryptomarketSDKException {
+    var fees = client.getEstimateWithdrawalFees(List.of(new FeeRequest("EOS", "100", null),new FeeRequest("ETH", "100", null)));
+    if (fees.size()!=2) {
+      fail("invalid amount of fees");
+    }
+    fees.forEach(Checker.checkFee);
   }
 
   @Test

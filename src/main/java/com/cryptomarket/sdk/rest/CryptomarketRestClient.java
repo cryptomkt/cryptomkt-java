@@ -29,6 +29,8 @@ import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
 import com.cryptomarket.sdk.models.Currency;
+import com.cryptomarket.sdk.models.Fee;
+import com.cryptomarket.sdk.models.FeeRequest;
 import com.cryptomarket.sdk.models.Order;
 import com.cryptomarket.sdk.models.OrderBook;
 import com.cryptomarket.sdk.models.Price;
@@ -1066,6 +1068,19 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public String getEstimateWithdrawalFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
+   * Get estimates of withdrawal fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#estimate-withdrawal-fees
+   *
+   * @param feeRequests a list of fee requests
+   * @return the list of fees
+   * @throws CryptomarketSDKException
+   */
+  public List<Fee> getEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
 
   /**
    * Converts between currencies

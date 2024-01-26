@@ -32,6 +32,8 @@ import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
 import com.cryptomarket.sdk.models.Currency;
+import com.cryptomarket.sdk.models.Fee;
+import com.cryptomarket.sdk.models.FeeRequest;
 import com.cryptomarket.sdk.models.Order;
 import com.cryptomarket.sdk.models.OrderBook;
 import com.cryptomarket.sdk.models.Price;
@@ -739,7 +741,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         "wallet/crypto/fee/estimate",
         paramsBuilder.build());
     return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
+  }
 
+  @Override
+  public List<Fee> getEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
+    var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+    String jsonResponse = httpClient.post(
+        "wallet/crypto/fees/estimate",
+        payload);
+        System.out.println(jsonResponse);
+    return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
   @Override

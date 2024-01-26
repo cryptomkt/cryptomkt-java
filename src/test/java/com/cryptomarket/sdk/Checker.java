@@ -12,6 +12,7 @@ import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
 import com.cryptomarket.sdk.models.Currency;
+import com.cryptomarket.sdk.models.Fee;
 import com.cryptomarket.sdk.models.HistoryPoint;
 import com.cryptomarket.sdk.models.NativeTransaction;
 import com.cryptomarket.sdk.models.Network;
@@ -287,22 +288,30 @@ public class Checker {
     // obj.getReportType().toString()
     fields.forEach(checkString);
   };
-
-  public static Consumer<SubAccount> checkSubAccount = obj -> {
+  static Consumer<SubAccount> checkSubAccount = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getSubAccountId(),
         obj.getEmail(),
         obj.getStatus().toString()));
     fields.forEach(checkString);
   };
-
-  public static Consumer<? super SubAccountSettings> checkSubAccountSettings = obj -> {
+  static Consumer<? super SubAccountSettings> checkSubAccountSettings = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getSubAccountId(),
         obj.isDepositAddressGenerationEnabled().toString(),
         obj.getDescription(),
         obj.getCreatedAt(),
         obj.getUpdatedAt()));
+    fields.forEach(checkString);
+  };
+  static Consumer<Fee> checkFee = obj -> {
+    List<String> fields = new ArrayList<>(Arrays.asList(
+        obj.getFee(),
+        obj.getNetworkFee(),
+        obj.getCurrency(),
+        obj.getAmount()
+    // obj.getUpdatedAt()
+    ));
     fields.forEach(checkString);
   };
 }
