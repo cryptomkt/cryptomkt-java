@@ -73,7 +73,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * @param notificationBiConsumer recieves a feed of candles as a map of them,
    *                               indexed by symbol id, and the
    *                               type of notification, either SNAPSHOT or UPDATE
-   * @param period                 Optional. A valid tick interval. 'M1' (one
+   * @param period                 A valid tick interval. 'M1' (one
    *                               minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one
    *                               hour), 'H4', 'D1' (one day), 'D7', '1M' (one
    *                               month).
@@ -103,7 +103,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * <p>
    * Conversion from the symbol quote currency to the target currency is the mean
    * of "best" bid price and "best" ask price in the order book. If there is no
-   * "best" bid of ask price, the last price is returned.
+   * "best" bid or ask price, the last price is returned.
    * <p>
    * https://api.exchange.cryptomkt.com/#subscribe-to-candles
    *
@@ -111,7 +111,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    *                               indexed by symbol id, and the
    *                               type of notification, either SNAPSHOT or UPDATE
    * @param symbols                A list of symbol ids to subscribe
-   * @param period                 Optional. A valid tick interval. 'M1' (one
+   * @param period                 A valid tick interval. 'M1' (one
    *                               minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one
    *                               hour), 'H4', 'D1' (one day), 'D7', '1M' (one
    *                               month).
