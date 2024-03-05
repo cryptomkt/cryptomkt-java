@@ -76,7 +76,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * @param period                 Optional. A valid tick interval. 'M1' (one
    *                               minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one
    *                               hour), 'H4', 'D1' (one day), 'D7', '1M' (one
-   *                               month). Default is 'M30'
+   *                               month).
    * @param symbols                A list of symbol ids to subscribe
    * @param limit                  Optional. Number of historical entries returned
    *                               in the first feed. Min is 0. Max is 1000.
@@ -94,6 +94,44 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
       @Nullable BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer);
 
   /**
+   * subscribe to a feed of candles regarding the last price converted to the
+   * target currency for the specified symbols
+   * <p>
+   * subscription is for the specified symbols
+   * <p>
+   * normal subscriptions have one update message per symbol
+   * <p>
+   * Conversion from the symbol quote currency to the target currency is the mean
+   * of "best" bid price and "best" ask price in the order book. If there is no
+   * "best" bid of ask price, the last price is returned.
+   * <p>
+   * https://api.exchange.cryptomkt.com/#subscribe-to-candles
+   *
+   * @param notificationBiConsumer recieves a feed of candles as a map of them,
+   *                               indexed by symbol id, and the
+   *                               type of notification, either SNAPSHOT or UPDATE
+   * @param symbols                A list of symbol ids to subscribe
+   * @param period                 Optional. A valid tick interval. 'M1' (one
+   *                               minute), 'M3', 'M5', 'M15', 'M30', 'H1' (one
+   *                               hour), 'H4', 'D1' (one day), 'D7', '1M' (one
+   *                               month).
+   * @param limit                  Optional. Number of historical entries returned
+   *                               in the first feed. Min is 0. Max is 1000.
+   *                               Default is 0
+   * @param resultBiConsumer       Optional. recieves a list of successfully
+   *                               subscribed symbols, and a
+   *                               CryptomarketSDKException if
+   *                               there was a problem (or null if there was none)
+   */
+  public void subscribeToConvertedCandles(
+      BiConsumer<Map<String, List<WSCandle>>, NotificationType> notificationBiConsumer,
+      String targetCurrency,
+      Period period,
+      List<String> symbols,
+      @Nullable Integer limit,
+      @Nullable BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer);
+
+  /**
    * subscribe to a feed of price rates
    * <p>
    * subscription is for all currencies or for the specified currencies
@@ -101,7 +139,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * normal subscription have one update message per currency
    * <p>
    * https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
-   * 
+   *
    * @param notificationBiConsumer recieves a feed of price rates as a map of
    *                               them,
    *                               indexed by currency id, and the
@@ -130,7 +168,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * batch subscriptions have a joined update for all symbols
    * <p>
    * https://api.exchange.cryptomkt.com/#subscribe-to-price-rates
-   * 
+   *
    * @param notificationBiConsumer recieves a feed of price rates as a map of
    *                               them,
    *                               indexed by currency id, and the

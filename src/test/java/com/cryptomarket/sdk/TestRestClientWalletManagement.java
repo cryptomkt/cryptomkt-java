@@ -112,11 +112,11 @@ public class TestRestClientWalletManagement {
     }
   }
 
-
   @Test
   public void testGetEstimateWithdrawFees() throws CryptomarketSDKException {
-    var fees = client.getEstimateWithdrawalFees(List.of(new FeeRequest("EOS", "100", null),new FeeRequest("ETH", "100", null)));
-    if (fees.size()!=2) {
+    var fees = client
+        .getEstimateWithdrawalFees(List.of(new FeeRequest("EOS", "100", null), new FeeRequest("ETH", "100", null)));
+    if (fees.size() != 2) {
       fail("invalid amount of fees");
     }
     fees.forEach(Checker.checkFee);

@@ -145,6 +145,7 @@ public class HttpClientImpl implements CloseableHttpClient {
     }
   }
 
+  @Override
   public String post(String endpoint, Map<String, String> payload) throws CryptomarketSDKException {
     String strPayload = "";
     if (payload != null)

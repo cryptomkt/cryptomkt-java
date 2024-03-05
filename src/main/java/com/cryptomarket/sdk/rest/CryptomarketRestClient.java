@@ -28,6 +28,8 @@ import com.cryptomarket.sdk.models.AmountLock;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
+import com.cryptomarket.sdk.models.ConvertedCandles;
+import com.cryptomarket.sdk.models.ConvertedCandlesBySymbol;
 import com.cryptomarket.sdk.models.Currency;
 import com.cryptomarket.sdk.models.Fee;
 import com.cryptomarket.sdk.models.FeeRequest;
@@ -483,6 +485,122 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public List<Candle> getCandlesBySymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
+   * Gets data with a map of candles regarding the last price converted to the
+   * target currency for all symbols or for the specified symbols. indexed by
+   * symbol
+   * <p>
+   * Candels are used for OHLC representation
+   * <p>
+   * The result contains candles with non-zero volume only (no trades = no
+   * candles)
+   * <p>
+   * Conversion from the symbol quote currency to the target currency is the mean
+   * of "best" bid price and "best" ask price in the order book. If there is no
+   * "best" bid or ask price, the last price is returned.
+   * <p>
+   * Requires no API key Access Rights
+   * <p>
+   * https://api.exchange.cryptomkt.com/#candles
+   *
+   * @param targetCurrency Target currency for conversion
+   * @param symbols        A list of symbol ids
+   * @param period         Optional. A valid tick interval. 'M1' (one minute),
+   *                       'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1'
+   *                       (one day), 'D7', '1M' (one month). Default is 'M30'
+   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default is
+   *                       'DESC'
+   * @param from           Optional. Initial value of the queried interval. As
+   *                       DateTime
+   * @param till           Optional. Last value of the queried interval. As
+   *                       DateTime
+   * @param limit          Optional. Prices per currency pair. Defaul is 10. Min
+   *                       is 1. Max is 1000
+   * @return A class with the target currency and data with a map with a list of
+   *         candles for each symbol of the query. indexed by symbol
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandles getConvertedCandles(
+      String targetCurrency,
+      @Nullable List<String> symbols,
+      @Nullable Period period,
+      @Nullable Sort sort,
+      @Nullable String from,
+      @Nullable String till,
+      @Nullable Integer limit)
+      throws CryptomarketSDKException;
+
+  /**
+   * @see #getConvertedCandles(String, List, Period, Sort, String, String,
+   *      Integer)
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandles getConvertedCandles(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
+   * Gets data with a list of candles regarding the last price converted to the
+   * target currency for the specified symbols
+   * <p>
+   * Candels are used for OHLC representation
+   * <p>
+   * The result contains candles with non-zero volume only (no trades = no
+   * candles)
+   * <p>
+   * Conversion from the symbol quote currency to the target currency is the mean
+   * of "best" bid price and "best" ask price in the order book. If there is no
+   * "best" bid or ask price, the last price is returned.
+   * <p>
+   * Requires no API key Access Rights
+   * <p>
+   * https://api.exchange.cryptomkt.com/#candles
+   *
+   * @param targetCurrency Target currency for conversion
+   * @param symbol         A symbol id
+   * @param period         Optional. A valid tick interval. 'M1' (one minute),
+   *                       'M3',
+   *                       'M5',
+   *                       'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day),
+   *                       'D7',
+   *                       '1M'
+   *                       (one month). Default is 'M30'
+   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default is
+   *                       'DESC'
+   * @param from           Optional. Initial value of the queried interval. As
+   *                       DateTime
+   * @param till           Optional. Last value of the queried interval. As
+   *                       DateTime
+   * @param limit          Optional. Prices per currency pair. Defaul is 10. Min
+   *                       is 1. Max is 1000
+   * @param offset         Optional. Default is 0. Min is 0. Max is 100000
+   * @return A class with the target currency and data with a list of candles for
+   *         the symbol of the query.
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(
+      String targetCurrency,
+      @Nullable String symbol,
+      @Nullable Period period,
+      @Nullable Sort sort,
+      @Nullable String from,
+      @Nullable String till,
+      @Nullable Integer limit,
+      @Nullable Integer offset)
+      throws CryptomarketSDKException;
+
+  /**
+   * @see #getConvertedCandlesBySymbol(String, String, Period, Sort, String,
+   *      String, Integer,
+   *      Integer)
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(ParamsBuilder paramsBuilder)
       throws CryptomarketSDKException;
 
   /// AUTHENTICATED CALLS ///
@@ -1418,7 +1536,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @return The transaction id of the tranfer
    * @throws CryptomarketSDKException
    */
-  public String transferFunds(String subAccountId, String amount, String currency, SubAccountTransferType transferType)
+  public String transferFunds(String subAccountId, String amount, String currency,
+      SubAccountTransferType transferType)
       throws CryptomarketSDKException;
 
   /**

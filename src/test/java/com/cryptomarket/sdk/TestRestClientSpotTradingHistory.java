@@ -23,7 +23,7 @@ public class TestRestClientSpotTradingHistory {
 
     @Test
     public void testGetTradingHistory() throws CryptomarketSDKException {
-        List<Trade> trades = client.getSpotTradesHistory(new ParamsBuilder());
+        List<Trade> trades = client.getSpotTradesHistory(new ParamsBuilder().limit(12));
         trades.forEach(Checker.checkTrade);
     }
 }

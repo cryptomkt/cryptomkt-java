@@ -31,6 +31,8 @@ import com.cryptomarket.sdk.models.AmountLock;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
+import com.cryptomarket.sdk.models.ConvertedCandles;
+import com.cryptomarket.sdk.models.ConvertedCandlesBySymbol;
 import com.cryptomarket.sdk.models.Currency;
 import com.cryptomarket.sdk.models.Fee;
 import com.cryptomarket.sdk.models.FeeRequest;
@@ -374,6 +376,50 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Candle.class);
   }
 
+  @Override
+  public ConvertedCandles getConvertedCandles(String targetCurrency, List<String> symbols, Period period, Sort sort,
+      String from, String till, Integer limit) throws CryptomarketSDKException {
+    return getConvertedCandles(new ParamsBuilder()
+        .targetCurrency(targetCurrency)
+        .symbols(symbols)
+        .period(period)
+        .sort(sort)
+        .from(from)
+        .till(till)
+        .limit(limit));
+  }
+
+  @Override
+  public ConvertedCandles getConvertedCandles(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    paramsBuilder.checkRequired(Arrays.asList(ArgNames.TARGET_CURRENCY));
+    String jsonResponse = httpClient.publicGet("public/converted/candles", paramsBuilder.build());
+    return adapter.objectFromJson(jsonResponse, ConvertedCandles.class);
+  }
+
+  @Override
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(String targetCurrency, String symbol, Period period,
+      Sort sort, String from, String till, Integer limit, Integer offset) throws CryptomarketSDKException {
+    return getConvertedCandlesBySymbol(new ParamsBuilder()
+        .targetCurrency(targetCurrency)
+        .symbol(symbol)
+        .period(period)
+        .sort(sort)
+        .from(from)
+        .till(till)
+        .limit(limit)
+        .offset(offset));
+  }
+
+  @Override
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException {
+    paramsBuilder.checkRequired(Arrays.asList(ArgNames.TARGET_CURRENCY, ArgNames.SYMBOL));
+    String symbol = (String) paramsBuilder.remove(ArgNames.SYMBOL);
+    String jsonResponse = httpClient.publicGet(
+        String.format("public/converted/candles/%s", symbol),
+        paramsBuilder.build());
+    return adapter.objectFromJson(jsonResponse, ConvertedCandlesBySymbol.class);
+  }
   // SPOT TRADING
 
   @Override
@@ -749,7 +795,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     String jsonResponse = httpClient.post(
         "wallet/crypto/fees/estimate",
         payload);
-        System.out.println(jsonResponse);
+    System.out.println(jsonResponse);
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
