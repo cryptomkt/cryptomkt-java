@@ -252,6 +252,18 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
   }
 
   @Override
+  public void getSpotTradingBalanceByCurrency(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer) {
+    getSpotTradingBalanceOfCurrency(currency, resultBiConsumer);
+  }
+
+  @Override
+  public void getSpotTradingBalance(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer) {
+    getSpotTradingBalanceOfCurrency(currency, resultBiConsumer);
+  }
+
+  @Override
   public void getSpotCommissions(BiConsumer<List<Commission>, CryptomarketSDKException> resultBiConsumer) {
     Interceptor interceptor = (resultBiConsumer == null)
         ? null
@@ -267,6 +279,18 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
         ? null
         : InterceptorFactory.newOfWSResponseObject(resultBiConsumer, Commission.class);
     sendById("spot_fee", paramsBuilder.buildObjectMap(), interceptor);
+  }
+
+  @Override
+  public void getSpotCommissionBySymbol(String symbol,
+      BiConsumer<Commission, CryptomarketSDKException> resultBiConsumer) {
+    getSpotCommissionOfSymbol(symbol, resultBiConsumer);
+  }
+
+  @Override
+  public void getSpotCommission(String symbol,
+      BiConsumer<Commission, CryptomarketSDKException> resultBiConsumer) {
+    getSpotCommissionOfSymbol(symbol, resultBiConsumer);
   }
 
 }

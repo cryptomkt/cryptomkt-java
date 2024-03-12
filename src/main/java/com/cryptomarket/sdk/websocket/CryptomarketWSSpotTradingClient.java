@@ -327,6 +327,24 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
       BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
 
   /**
+   * alias of {@link #getSpotTradingBalance(String, BiConsumer)}
+   *
+   * @param currency
+   * @param resultBiConsumer
+   */
+  public void getSpotTradingBalanceByCurrency(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
+
+  /**
+   * alias of {@link #getSpotTradingBalance(String, BiConsumer)}
+   *
+   * @param currency
+   * @param resultBiConsumer
+   */
+  public void getSpotTradingBalance(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
+
+  /**
    * Get the personal trading commission rates for all symbols
    * <p>
    * https://api.exchange.cryptomkt.com/#get-all-trading-commission
@@ -348,6 +366,24 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    *                         null if there was none)
    */
   public void getSpotCommissionOfSymbol(String symbol,
+      BiConsumer<Commission, CryptomarketSDKException> resultBiConsumer);
+
+  /**
+   * alias of {@link #getSpotCommissionBySymbol(String, BiConsumer)}
+   *
+   * @param symbol
+   * @param resultBiConsumer
+   */
+  public void getSpotCommissionBySymbol(String symbol,
+      BiConsumer<Commission, CryptomarketSDKException> resultBiConsumer);
+
+  /**
+   * alias of {@link #getSpotCommissionBySymbol(String, BiConsumer)}
+   *
+   * @param symbol
+   * @param resultBiConsumer
+   */
+  public void getSpotCommission(String symbol,
       BiConsumer<Commission, CryptomarketSDKException> resultBiConsumer);
 
 }
