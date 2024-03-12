@@ -105,7 +105,7 @@ public interface CryptomarketWSMarketDataClient extends CryptomarketWS {
    * of "best" bid price and "best" ask price in the order book. If there is no
    * "best" bid or ask price, the last price is returned.
    * <p>
-   * https://api.exchange.cryptomkt.com/#subscribe-to-candles
+   * https://api.exchange.cryptomkt.com/#subscribe-to-converted-candles
    *
    * @param notificationBiConsumer recieves a feed of candles as a map of them,
    *                               indexed by symbol id, and the
