@@ -28,6 +28,8 @@ import com.cryptomarket.sdk.models.AmountLock;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
+import com.cryptomarket.sdk.models.ConvertedCandles;
+import com.cryptomarket.sdk.models.ConvertedCandlesBySymbol;
 import com.cryptomarket.sdk.models.Currency;
 import com.cryptomarket.sdk.models.Fee;
 import com.cryptomarket.sdk.models.FeeRequest;
@@ -148,6 +150,16 @@ public interface CryptomarketRestClient extends Closeable {
   public Ticker getTicker(String symbol) throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getTicker(String)}
+   */
+  public Ticker getTickerBySymbol(String symbol) throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getTicker(String)}
+   */
+  public Ticker getTickerOfSymbol(String symbol) throws CryptomarketSDKException;
+
+  /**
    * Get a map of quotation prices of currencies
    * <p>
    * Requires no API key Access Rights
@@ -237,6 +249,26 @@ public interface CryptomarketRestClient extends Closeable {
       throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getTickerLastPrice(String)}
+   *
+   * @param symbol
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public TickerPrice getTickerLastPriceOfSymbol(String symbol)
+      throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getTickerLastPrice(String)}
+   *
+   * @param symbol
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public TickerPrice getTickerLastPrice(String symbol)
+      throws CryptomarketSDKException;
+
+  /**
    * Get a map of trades for all symbols or for specified symbols
    * <p>
    * 'from' param and 'till' param must have the same format, both id or both
@@ -317,6 +349,16 @@ public interface CryptomarketRestClient extends Closeable {
       throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getTradesOfSymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public List<PublicTrade> getTradesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
    * Get a map of orderbooks for all symbols or for the specified symbols
    * <p>
    * An Order Book is an electronic list of buy and sell orders for a specific
@@ -372,6 +414,24 @@ public interface CryptomarketRestClient extends Closeable {
   public OrderBook getOrderBookBySymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getOrderBookBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public OrderBook getOrderBookOfSymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getOrderBookBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public OrderBook getOrderBook(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
    * Get order book of a symbol with the desired volume for market depth search
    * <p>
    * An Order Book is an electronic list of buy and sell orders for a specific
@@ -394,6 +454,24 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public OrderBook getOrderBookVolumeBySymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getOrderBookVolumeBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public OrderBook getOrderBookVolumeOfSymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getOrderBookVolumeBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public OrderBook getOrderBookVolume(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
 
   /**
    * Get a map of candles for all symbols or for specified symbols
@@ -485,6 +563,142 @@ public interface CryptomarketRestClient extends Closeable {
   public List<Candle> getCandlesBySymbol(ParamsBuilder paramsBuilder)
       throws CryptomarketSDKException;
 
+  /**
+   * alias of {@link #getCandlesBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public List<Candle> getCandlesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
+   * Gets data with a map of candles regarding the last price converted to the
+   * target currency for all symbols or for the specified symbols. indexed by
+   * symbol
+   * <p>
+   * Candels are used for OHLC representation
+   * <p>
+   * The result contains candles with non-zero volume only (no trades = no
+   * candles)
+   * <p>
+   * Conversion from the symbol quote currency to the target currency is the mean
+   * of "best" bid price and "best" ask price in the order book. If there is no
+   * "best" bid or ask price, the last price is returned.
+   * <p>
+   * Requires no API key Access Rights
+   * <p>
+   * https://api.exchange.cryptomkt.com/#candles
+   *
+   * @param targetCurrency Target currency for conversion
+   * @param symbols        A list of symbol ids
+   * @param period         Optional. A valid tick interval. 'M1' (one minute),
+   *                       'M3', 'M5', 'M15', 'M30', 'H1' (one hour), 'H4', 'D1'
+   *                       (one day), 'D7', '1M' (one month). Default is 'M30'
+   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default is
+   *                       'DESC'
+   * @param from           Optional. Initial value of the queried interval. As
+   *                       DateTime
+   * @param till           Optional. Last value of the queried interval. As
+   *                       DateTime
+   * @param limit          Optional. Prices per currency pair. Defaul is 10. Min
+   *                       is 1. Max is 1000
+   * @return A class with the target currency and data with a map with a list of
+   *         candles for each symbol of the query. indexed by symbol
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandles getConvertedCandles(
+      String targetCurrency,
+      @Nullable List<String> symbols,
+      @Nullable Period period,
+      @Nullable Sort sort,
+      @Nullable String from,
+      @Nullable String till,
+      @Nullable Integer limit)
+      throws CryptomarketSDKException;
+
+  /**
+   * @see #getConvertedCandles(String, List, Period, Sort, String, String,
+   *      Integer)
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandles getConvertedCandles(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
+   * Gets data with a list of candles regarding the last price converted to the
+   * target currency for the specified symbols
+   * <p>
+   * Candels are used for OHLC representation
+   * <p>
+   * The result contains candles with non-zero volume only (no trades = no
+   * candles)
+   * <p>
+   * Conversion from the symbol quote currency to the target currency is the mean
+   * of "best" bid price and "best" ask price in the order book. If there is no
+   * "best" bid or ask price, the last price is returned.
+   * <p>
+   * Requires no API key Access Rights
+   * <p>
+   * https://api.exchange.cryptomkt.com/#candles
+   *
+   * @param targetCurrency Target currency for conversion
+   * @param symbol         A symbol id
+   * @param period         Optional. A valid tick interval. 'M1' (one minute),
+   *                       'M3',
+   *                       'M5',
+   *                       'M15', 'M30', 'H1' (one hour), 'H4', 'D1' (one day),
+   *                       'D7',
+   *                       '1M'
+   *                       (one month). Default is 'M30'
+   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default is
+   *                       'DESC'
+   * @param from           Optional. Initial value of the queried interval. As
+   *                       DateTime
+   * @param till           Optional. Last value of the queried interval. As
+   *                       DateTime
+   * @param limit          Optional. Prices per currency pair. Defaul is 10. Min
+   *                       is 1. Max is 1000
+   * @param offset         Optional. Default is 0. Min is 0. Max is 100000
+   * @return A class with the target currency and data with a list of candles for
+   *         the symbol of the query.
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(
+      String targetCurrency,
+      @Nullable String symbol,
+      @Nullable Period period,
+      @Nullable Sort sort,
+      @Nullable String from,
+      @Nullable String till,
+      @Nullable Integer limit,
+      @Nullable Integer offset)
+      throws CryptomarketSDKException;
+
+  /**
+   * @see #getConvertedCandlesBySymbol(String, String, Period, Sort, String,
+   *      String, Integer,
+   *      Integer)
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getConvertedCandlesBySymbol(ParamsBuilder)}
+   *
+   * @param paramsBuilder
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public ConvertedCandlesBySymbol getConvertedCandlesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException;
+
   /// AUTHENTICATED CALLS ///
 
   // SPOT TRADING
@@ -513,6 +727,24 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public Balance getSpotTradingBalanceByCurrency(String currency) throws CryptomarketSDKException;
+
+  /**
+   * alias {@link #getSpotTradingBalanceByCurrency(String)}
+   *
+   * @param currency
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Balance getSpotTradingBalanceOfCurrency(String currency) throws CryptomarketSDKException;
+
+  /**
+   * alias {@link #getSpotTradingBalanceByCurrency(String)}
+   *
+   * @param currency
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Balance getSpotTradingBalance(String currency) throws CryptomarketSDKException;
 
   /**
    * Get the user's active spot orders
@@ -756,6 +988,14 @@ public interface CryptomarketRestClient extends Closeable {
   public List<Commission> getAllTradingCommissions() throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getAllTradingCommissions()}
+   *
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public List<Commission> getTradingCommissions() throws CryptomarketSDKException;
+
+  /**
    * Get the personal trading commission rate of a symbol
    * <p>
    * Requires the "Place/cancel orders" API key Access Right
@@ -767,6 +1007,24 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public Commission getTradingCommission(String symbol) throws CryptomarketSDKException;
+
+  /**
+   * alias {@link #getTradingCommission(String)}
+   *
+   * @param symbol
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Commission getTradingCommissionOfCurrency(String symbol) throws CryptomarketSDKException;
+
+  /**
+   * alias {@link #getTradingCommission(String)}
+   *
+   * @param symbol
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Commission getTradingCommissionByCurrency(String symbol) throws CryptomarketSDKException;
 
   // TRADING HISTORY
 
@@ -886,6 +1144,24 @@ public interface CryptomarketRestClient extends Closeable {
   public Balance getWalletBalanceByCurrency(String currency) throws CryptomarketSDKException;
 
   /**
+   * alias of {@link #getWalletBalanceByCurrency(String)}
+   *
+   * @param currency
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Balance getWalletBalanceOfCurrency(String currency) throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #getWalletBalanceByCurrency(String)}
+   *
+   * @param currency
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Balance getWalletBalance(String currency) throws CryptomarketSDKException;
+
+  /**
    * Get the current addresses of the user
    * <p>
    * If the address for a currency did not previously exist, calling this method
@@ -917,6 +1193,28 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public Address createDepositCryptoAddress(String currency, @Nullable String networkCode)
+      throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #createDepositCryptoAddress(String, String)}
+   *
+   * @param currency
+   * @param networkCode
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Address createDepositCryptoAddressOfCurrency(String currency, @Nullable String networkCode)
+      throws CryptomarketSDKException;
+
+  /**
+   * alias of {@link #createDepositCryptoAddress(String, String)}
+   *
+   * @param currency
+   * @param networkCode
+   * @return
+   * @throws CryptomarketSDKException
+   */
+  public Address createDepositCryptoAddressByCurrency(String currency, @Nullable String networkCode)
       throws CryptomarketSDKException;
 
   /**
@@ -1418,7 +1716,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @return The transaction id of the tranfer
    * @throws CryptomarketSDKException
    */
-  public String transferFunds(String subAccountId, String amount, String currency, SubAccountTransferType transferType)
+  public String transferFunds(String subAccountId, String amount, String currency,
+      SubAccountTransferType transferType)
       throws CryptomarketSDKException;
 
   /**

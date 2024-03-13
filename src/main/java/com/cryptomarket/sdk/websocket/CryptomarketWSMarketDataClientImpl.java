@@ -148,6 +148,21 @@ public class CryptomarketWSMarketDataClientImpl extends ClientBase implements Cr
   }
 
   @Override
+  public void subscribeToConvertedCandles(
+      BiConsumer<Map<String, List<WSCandle>>, NotificationType> notificationBiConsumer, String targetCurrency,
+      Period period, List<String> symbols, Integer limit,
+      BiConsumer<List<String>, CryptomarketSDKException> resultBiConsumer) {
+    ParamsBuilder params = new ParamsBuilder().targetCurrency(targetCurrency).symbolList(symbols).limit(limit);
+    String channel = String.format("converted/candles/%s", period);
+    makeSubscriptionWithListInterceptors(
+        channel,
+        params,
+        WSCandle.class,
+        notificationBiConsumer,
+        resultBiConsumer);
+  }
+
+  @Override
   public void subscribeToPriceRates(
       BiConsumer<Map<String, WSPriceRate>, NotificationType> notificationBiConsumer,
       PriceSpeed speed,

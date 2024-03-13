@@ -134,6 +134,18 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
   }
 
   @Override
+  public void getWalletBalanceOfCurrency(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer) {
+    getWalletBalanceByCurrency(currency, resultBiConsumer);
+  }
+
+  @Override
+  public void getWalletBalance(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer) {
+    getWalletBalanceByCurrency(currency, resultBiConsumer);
+  }
+
+  @Override
   public void getTransactions(
       BiConsumer<List<Transaction>, CryptomarketSDKException> resultBiConsumer,
       List<TransactionType> types,

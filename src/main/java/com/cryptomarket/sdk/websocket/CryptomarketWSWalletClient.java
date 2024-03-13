@@ -112,6 +112,24 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
       BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
 
   /**
+   * alias of {@link #getWalletBalance(String, BiConsumer)}
+   *
+   * @param currency
+   * @param resultBiConsumer
+   */
+  public void getWalletBalanceOfCurrency(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
+
+  /**
+   * alias of {@link #getWalletBalance(String, BiConsumer)}
+   *
+   * @param currency
+   * @param resultBiConsumer
+   */
+  public void getWalletBalance(String currency,
+      BiConsumer<Balance, CryptomarketSDKException> resultBiConsumer);
+
+  /**
    * Get the transaction history of the account
    * <p>
    * Important:

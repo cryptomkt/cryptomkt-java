@@ -1,5 +1,6 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import com.cryptomarket.params.Sort;
 
 import org.junit.Test;
 
-public class TestRestClientPublic {
+public class TestRestClientMarketData {
   CryptomarketRestClient client = new CryptomarketRestClientImpl();
 
   @Test
@@ -194,5 +195,35 @@ public class TestRestClientPublic {
     candles.forEach((key, candleList) -> {
       candleList.forEach(Checker.checkCandle);
     });
+  }
+
+  @Test
+  public void getCandlesBySymbol() throws CryptomarketSDKException {
+    var candles = client.getCandlesBySymbol("EOSETH", Period._4_HOURS, Sort.ASC, null, null, null, null);
+    candles.forEach(Checker.checkCandle);
+  }
+
+  @Test
+  public void getConvertedCandles() throws CryptomarketSDKException {
+    var symbols = new ArrayList<String>(Arrays.asList("EOSETH", "CROETH", "CROBTC"));
+    var targetCurrency = "BTC";
+    var convertedCandles = client.getConvertedCandles(targetCurrency, symbols, Period._4_HOURS, Sort.ASC, null, null,
+        null);
+    System.out.println(convertedCandles);
+    assertEquals(targetCurrency, convertedCandles.getTargetCurrency());
+    assertTrue(convertedCandles.getData().keySet().size() == 3);
+    convertedCandles.getData().forEach((key, candleList) -> {
+      candleList.forEach(Checker.checkCandle);
+    });
+  }
+
+  @Test
+  public void getConvertedCandlesBySymbol() throws CryptomarketSDKException {
+    var targetCurrency = "BTC";
+    var convertedCandles = client.getConvertedCandlesBySymbol(targetCurrency, "EOSETH", Period._4_HOURS, Sort.ASC, null,
+        null, null, null);
+    System.out.println(convertedCandles);
+    assertEquals(targetCurrency, convertedCandles.getTargetCurrency());
+    convertedCandles.getData().forEach(Checker.checkCandle);
   }
 }

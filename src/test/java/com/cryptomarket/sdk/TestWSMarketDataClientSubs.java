@@ -66,6 +66,20 @@ public class TestWSMarketDataClientSubs {
   }
 
   @Test
+  public void testSubscribeToConvertedCandles() {
+    symbols = Arrays.asList("EOSETH", "ETHBTC");
+    wsClient.subscribeToConvertedCandles(
+        Helpers.notificationMapListChecker(failChecker, Checker.checkWSCandle),
+        "BTC",
+        Period._1_MINUTES,
+        symbols,
+        null,
+        Helpers.listAndExceptionChecker(failChecker, Checker.checkString));
+    Helpers.sleep(30);
+    assertFalse(failChecker.failed());
+  }
+
+  @Test
   public void testSubscribeToPriceRates() {
     List<String> currencies = Arrays.asList("BTC", "ETH");
 
@@ -83,7 +97,7 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testSubscribeToMiniTicker() {
     List<String> symbols = Arrays.asList("EOSETH");
-    
+
     wsClient.subscribeToMiniTicker(
         Helpers.notificationMapChecker(failChecker, Checker.checkWSCandle),
         TickerSpeed._1_SECONDS,
@@ -97,7 +111,7 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testSubscribeToTicker() {
     List<String> symbols = Arrays.asList("EOSETH");
-    
+
     wsClient.subscribeToTicker(
         Helpers.notificationMapChecker(failChecker, Checker.checkWSTicker),
         TickerSpeed._1_SECONDS,
@@ -111,7 +125,7 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testFullOrderbook() {
     List<String> symbols = Arrays.asList("EOSETH");
-    
+
     wsClient.subscribeToFullOrderBook(
         Helpers.notificationMapChecker(failChecker, Checker.checkWSOrderBook),
         symbols,
@@ -124,7 +138,7 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testPartialOrderbook() {
     List<String> symbols = Arrays.asList("EOSETH");
-    
+
     wsClient.subscribeToPartialOrderBook(
         Helpers.notificationMapChecker(failChecker, Checker.checkWSOrderBook),
         Depth._5,
@@ -139,7 +153,7 @@ public class TestWSMarketDataClientSubs {
   @Test
   public void testOrderbookTop() {
     List<String> symbols = Arrays.asList("EOSETH");
-    
+
     wsClient.subscribeToTopOfOrderBook(
         Helpers.notificationMapChecker(failChecker, Checker.checkWSOrderBookTop),
         OBSpeed._500_MILISECONDS,

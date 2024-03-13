@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.impl.client.HttpClients;
+import org.jetbrains.annotations.Nullable;
 
 import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ContingencyType;
@@ -31,6 +32,8 @@ import com.cryptomarket.sdk.models.AmountLock;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
+import com.cryptomarket.sdk.models.ConvertedCandles;
+import com.cryptomarket.sdk.models.ConvertedCandlesBySymbol;
 import com.cryptomarket.sdk.models.Currency;
 import com.cryptomarket.sdk.models.Fee;
 import com.cryptomarket.sdk.models.FeeRequest;
@@ -134,6 +137,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
+  public Ticker getTickerBySymbol(String symbol) throws CryptomarketSDKException {
+    return getTicker(symbol);
+  }
+
+  @Override
+  public Ticker getTickerOfSymbol(String symbol) throws CryptomarketSDKException {
+    return getTicker(symbol);
+  }
+
+  @Override
   public Map<String, Price> getPrices(String to, String from)
       throws CryptomarketSDKException {
     return getPrices(new ParamsBuilder().to(to).from(from));
@@ -199,6 +212,18 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
+  public TickerPrice getTickerLastPriceOfSymbol(String symbol)
+      throws CryptomarketSDKException {
+    return getTickerLastPriceBySymbol(symbol);
+  }
+
+  @Override
+  public TickerPrice getTickerLastPrice(String symbol)
+      throws CryptomarketSDKException {
+    return getTickerLastPriceBySymbol(symbol);
+  }
+
+  @Override
   public Map<String, List<PublicTrade>> getTrades(
       List<String> symbols,
       Sort sort,
@@ -255,7 +280,12 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         String.format("public/trades/%s", symbol),
         paramsBuilder.build());
     return adapter.listFromJson(jsonResponse, PublicTrade.class);
+  }
 
+  @Override
+  public List<PublicTrade> getTradesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException {
+    return getTradesBySymbol(paramsBuilder);
   }
 
   @Override
@@ -282,6 +312,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return getOrderBookBySymbol(new ParamsBuilder()
         .symbol(symbol)
         .depth(depth));
+  }
+
+  @Override
+  public OrderBook getOrderBookOfSymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    return getOrderBookBySymbol(paramsBuilder);
+  }
+
+  @Override
+  public OrderBook getOrderBook(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    return getOrderBookBySymbol(paramsBuilder);
   }
 
   @Override
@@ -314,6 +354,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         String.format("public/orderbook/%s", symbol),
         paramsBuilder.build());
     return adapter.objectFromJson(jsonResponse, OrderBook.class);
+  }
+
+  @Override
+  public OrderBook getOrderBookVolumeOfSymbol(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    return getOrderBookVolumeBySymbol(paramsBuilder);
+  }
+
+  @Override
+  public OrderBook getOrderBookVolume(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    return getOrderBookVolumeBySymbol(paramsBuilder);
   }
 
   @Override
@@ -374,6 +424,63 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Candle.class);
   }
 
+  @Override
+  public List<Candle> getCandlesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException {
+    return getCandlesBySymbol(paramsBuilder);
+  }
+
+  @Override
+  public ConvertedCandles getConvertedCandles(String targetCurrency, List<String> symbols, Period period, Sort sort,
+      String from, String till, Integer limit) throws CryptomarketSDKException {
+    return getConvertedCandles(new ParamsBuilder()
+        .targetCurrency(targetCurrency)
+        .symbols(symbols)
+        .period(period)
+        .sort(sort)
+        .from(from)
+        .till(till)
+        .limit(limit));
+  }
+
+  @Override
+  public ConvertedCandles getConvertedCandles(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    paramsBuilder.checkRequired(Arrays.asList(ArgNames.TARGET_CURRENCY));
+    String jsonResponse = httpClient.publicGet("public/converted/candles", paramsBuilder.build());
+    return adapter.objectFromJson(jsonResponse, ConvertedCandles.class);
+  }
+
+  @Override
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(String targetCurrency, String symbol, Period period,
+      Sort sort, String from, String till, Integer limit, Integer offset) throws CryptomarketSDKException {
+    return getConvertedCandlesBySymbol(new ParamsBuilder()
+        .targetCurrency(targetCurrency)
+        .symbol(symbol)
+        .period(period)
+        .sort(sort)
+        .from(from)
+        .till(till)
+        .limit(limit)
+        .offset(offset));
+  }
+
+  @Override
+  public ConvertedCandlesBySymbol getConvertedCandlesBySymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException {
+    paramsBuilder.checkRequired(Arrays.asList(ArgNames.TARGET_CURRENCY, ArgNames.SYMBOL));
+    String symbol = (String) paramsBuilder.remove(ArgNames.SYMBOL);
+    String jsonResponse = httpClient.publicGet(
+        String.format("public/converted/candles/%s", symbol),
+        paramsBuilder.build());
+    return adapter.objectFromJson(jsonResponse, ConvertedCandlesBySymbol.class);
+  }
+
+  @Override
+  public ConvertedCandlesBySymbol getConvertedCandlesOfSymbol(ParamsBuilder paramsBuilder)
+      throws CryptomarketSDKException {
+    return getConvertedCandlesBySymbol(paramsBuilder);
+  }
+
   // SPOT TRADING
 
   @Override
@@ -391,6 +498,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     Balance balance = adapter.objectFromJson(jsonResponse, Balance.class);
     balance.setCurrency(currency);
     return balance;
+  }
+
+  @Override
+  public Balance getSpotTradingBalanceOfCurrency(String currency) throws CryptomarketSDKException {
+    return getSpotTradingBalanceByCurrency(currency);
+  }
+
+  @Override
+  public Balance getSpotTradingBalance(String currency) throws CryptomarketSDKException {
+    return getSpotTradingBalanceByCurrency(currency);
   }
 
   @Override
@@ -528,6 +645,11 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
+  public List<Commission> getTradingCommissions() throws CryptomarketSDKException {
+    return getAllTradingCommissions();
+  }
+
+  @Override
   public Commission getTradingCommission(String symbol)
       throws CryptomarketSDKException {
     String jsonResponse = httpClient.get(
@@ -536,6 +658,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     Commission commission = adapter.objectFromJson(jsonResponse, Commission.class);
     commission.setSymbol(symbol);
     return commission;
+  }
+
+  @Override
+  public Commission getTradingCommissionOfCurrency(String symbol) throws CryptomarketSDKException {
+    return getTradingCommission(symbol);
+  }
+
+  @Override
+  public Commission getTradingCommissionByCurrency(String symbol) throws CryptomarketSDKException {
+    return getTradingCommission(symbol);
   }
 
   // TRADING HISTORY
@@ -617,6 +749,16 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
+  public Balance getWalletBalanceOfCurrency(String currency) throws CryptomarketSDKException {
+    return getWalletBalanceByCurrency(currency);
+  }
+
+  @Override
+  public Balance getWalletBalance(String currency) throws CryptomarketSDKException {
+    return getWalletBalanceByCurrency(currency);
+  }
+
+  @Override
   public List<Address> getDepositCryptoAddresses(String currency, String networkCode) throws CryptomarketSDKException {
     Map<String, String> params = new ParamsBuilder()
         .currency(currency)
@@ -637,6 +779,18 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         "wallet/crypto/address",
         params);
     return adapter.objectFromJson(jsonResponse, Address.class);
+  }
+
+  @Override
+  public Address createDepositCryptoAddressOfCurrency(String currency, @Nullable String networkCode)
+      throws CryptomarketSDKException {
+    return createDepositCryptoAddress(currency, networkCode);
+  }
+
+  @Override
+  public Address createDepositCryptoAddressByCurrency(String currency, @Nullable String networkCode)
+      throws CryptomarketSDKException {
+    return createDepositCryptoAddress(currency, networkCode);
   }
 
   @Override
@@ -749,7 +903,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     String jsonResponse = httpClient.post(
         "wallet/crypto/fees/estimate",
         payload);
-        System.out.println(jsonResponse);
+    System.out.println(jsonResponse);
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
