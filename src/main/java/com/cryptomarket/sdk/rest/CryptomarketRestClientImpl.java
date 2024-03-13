@@ -903,7 +903,6 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     String jsonResponse = httpClient.post(
         "wallet/crypto/fees/estimate",
         payload);
-    System.out.println(jsonResponse);
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 

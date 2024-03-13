@@ -6,7 +6,7 @@
   <groupId>com.cryptomkt.api</groupId>
   <artifactId>cryptomarket</artifactId>
   <packaging>jar</packaging>
-  <version>2.3.0</version>
+  <version>3.0.0</version>
 
   <licenses>
     <license>
