@@ -12,6 +12,7 @@ import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ContingencyType;
 import com.cryptomarket.params.IdentifyBy;
 import com.cryptomarket.params.OrderBuilder;
+import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.OrderType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
@@ -1014,7 +1015,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
       List<TransactionSubtype> subtypes,
       List<TransactionStatus> statuses,
       Sort sort,
-      SortBy sortBy,
+      OrderBy orderBy,
       String from,
       String till,
       Integer idFrom,
@@ -1029,7 +1030,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         .subtypes(subtypes)
         .statuses(statuses)
         .sort(sort)
-        .by(sortBy)
+        .orderBy(orderBy)
         .from(from)
         .till(till)
         .idFrom(idFrom)
