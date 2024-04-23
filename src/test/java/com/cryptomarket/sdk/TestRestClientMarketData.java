@@ -209,7 +209,6 @@ public class TestRestClientMarketData {
     var targetCurrency = "BTC";
     var convertedCandles = client.getConvertedCandles(targetCurrency, symbols, Period._4_HOURS, Sort.ASC, null, null,
         null);
-    System.out.println(convertedCandles);
     assertEquals(targetCurrency, convertedCandles.getTargetCurrency());
     assertTrue(convertedCandles.getData().keySet().size() == 3);
     convertedCandles.getData().forEach((key, candleList) -> {
@@ -222,7 +221,6 @@ public class TestRestClientMarketData {
     var targetCurrency = "BTC";
     var convertedCandles = client.getConvertedCandlesBySymbol(targetCurrency, "EOSETH", Period._4_HOURS, Sort.ASC, null,
         null, null, null);
-    System.out.println(convertedCandles);
     assertEquals(targetCurrency, convertedCandles.getTargetCurrency());
     convertedCandles.getData().forEach(Checker.checkCandle);
   }
