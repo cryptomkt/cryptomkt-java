@@ -230,6 +230,17 @@ public class ParamsBuilder {
     return addArg(ArgNames.BY, by);
   }
 
+
+  /**
+   * Adds an order_by param to the ParamBuilder.
+   *
+   * @param by An OrderBy type
+   * @return The ParamsBuilder
+   */
+  public ParamsBuilder orderBy(@Nullable OrderBy by) {
+    return addArg(ArgNames.ORDER_BY, by);
+  }
+
   /**
    * Adds a to param to the ParamBuilder.
    *

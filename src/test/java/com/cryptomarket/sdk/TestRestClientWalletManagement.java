@@ -7,7 +7,10 @@ import java.util.List;
 import org.junit.Test;
 
 import com.cryptomarket.params.AccountType;
+import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.ParamsBuilder;
+import com.cryptomarket.params.Sort;
+import com.cryptomarket.params.SortBy;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.Balance;
@@ -163,6 +166,19 @@ public class TestRestClientWalletManagement {
   @Test
   public void testGetTransactionHistory() throws CryptomarketSDKException {
     List<Transaction> transactions = client.getTransactionHistory(new ParamsBuilder());
+    transactions.stream().forEach(System.out::println);
+    transactions.forEach(Checker.checkTransaction);
+  }
+
+  @Test
+  public void testGetTransactionHistoryWithParams() throws CryptomarketSDKException {
+    List<Transaction> transactions = client.getTransactionHistory(new ParamsBuilder()
+        .orderBy(OrderBy.CREATED_AT)
+        .sort(Sort.DESC)
+        .limit(1000)
+        .offset(0)
+        .currencies(List.of())
+        .from("1614815872000"));
     transactions.forEach(Checker.checkTransaction);
   }
 

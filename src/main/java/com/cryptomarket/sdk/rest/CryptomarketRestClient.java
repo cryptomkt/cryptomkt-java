@@ -10,6 +10,7 @@ import com.cryptomarket.params.AccountType;
 import com.cryptomarket.params.ContingencyType;
 import com.cryptomarket.params.IdentifyBy;
 import com.cryptomarket.params.OrderBuilder;
+import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.OrderType;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Period;
@@ -1525,7 +1526,7 @@ public interface CryptomarketRestClient extends Closeable {
    *                       'SUCCESS' and 'ROLLED_BACK'
    * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default
    *                       is 'DESC'
-   * @param sortBy         Optional. sorting parameter.'created_at' or 'id'.
+   * @param orderBy         Optional. sorting parameter.'created_at', 'updated_at' or 'id'.
    *                       Default is 'created_at'
    * @param from           Optional. Interval initial value when ordering by
    *                       'created_at'. As Datetime
@@ -1549,7 +1550,7 @@ public interface CryptomarketRestClient extends Closeable {
       @Nullable List<TransactionSubtype> subtypes,
       @Nullable List<TransactionStatus> statuses,
       @Nullable Sort sort,
-      @Nullable SortBy sortBy,
+      @Nullable OrderBy orderBy,
       @Nullable String from,
       @Nullable String till,
       @Nullable Integer idFrom,
