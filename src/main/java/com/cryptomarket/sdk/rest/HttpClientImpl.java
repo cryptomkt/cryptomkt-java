@@ -103,6 +103,11 @@ public class HttpClientImpl implements CloseableHttpClient {
     this.hmac = new HMAC(apiKey, apiSecret, hmac.getWindow());
   }
 
+  @Override
+  public void changeWindow(Integer window) {
+    this.hmac = new HMAC(hmac.getApiKey(), hmac.getApiSecret(), window);
+  }
+
   public void close() throws IOException {
     client.close();
   }

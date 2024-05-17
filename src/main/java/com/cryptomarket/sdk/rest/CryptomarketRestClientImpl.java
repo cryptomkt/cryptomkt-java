@@ -82,6 +82,11 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     httpClient.changeCredentials(apiKey, apiSecret);
   }
 
+  @Override
+  public void changeWindow(Integer window) {
+    httpClient.changeWindow(window);
+  }
+
   // PUBLIC
 
   @Override

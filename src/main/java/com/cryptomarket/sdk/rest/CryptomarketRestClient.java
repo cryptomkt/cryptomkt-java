@@ -61,6 +61,13 @@ public interface CryptomarketRestClient extends Closeable {
    */
   public void changeCredentials(String apiKey, String apiSecret);
 
+  /**
+   * Changes the window used in authenticated calls
+   *
+   * @param window acceptable time between request and server execution
+   */
+  public void changeWindow(Integer window);
+
   /// PUBLIC CALLS///
 
   /**
