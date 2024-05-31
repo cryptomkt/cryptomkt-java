@@ -3,7 +3,7 @@ package com.cryptomarket.sdk.models;
 import com.squareup.moshi.Json;
 
 public class CommitRisk {
-  private String score;
+  private Integer score;
   private String rbf;
   @Json(name = "low_fee")
   private String lowFee;
@@ -16,7 +16,7 @@ public class CommitRisk {
    *
    * @return
    */
-  public String getScore() {
+  public Integer getScore() {
     return score;
   }
 
@@ -25,7 +25,7 @@ public class CommitRisk {
    *
    * @param score
    */
-  public void setScore(String score) {
+  public void setScore(Integer score) {
     this.score = score;
   }
 
