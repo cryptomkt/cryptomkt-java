@@ -1025,7 +1025,8 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
       Integer idFrom,
       Integer idTill,
       Integer limit,
-      Integer offset) throws CryptomarketSDKException {
+      Integer offset,
+      Boolean asGroupTransactions) throws CryptomarketSDKException {
     return getTransactionHistory(new ParamsBuilder()
         .transactionIds(transactionIds)
         .currencies(currencies)
@@ -1040,7 +1041,8 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         .idFrom(idFrom)
         .idTill(idTill)
         .limit(limit)
-        .offset(offset));
+        .offset(offset)
+        .GroupTransactions(asGroupTransactions));
   }
 
   @Override

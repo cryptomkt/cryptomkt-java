@@ -3,7 +3,10 @@ package com.cryptomarket.sdk.websocket;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.cryptomarket.params.NotificationType;
+import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Sort;
 import com.cryptomarket.params.SortBy;
@@ -13,8 +16,6 @@ import com.cryptomarket.params.TransactionType;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Transaction;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * CryptomarketWSAccountClient connects via websocket to cryptomarket to get
@@ -161,8 +162,10 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
    * @param statuses         Optional. List of statuses to query. valid
    *                         subtypes are: 'CREATED', 'PENDING', 'FAILED',
    *                         'SUCCESS' and 'ROLLED_BACK'
-   * @param by               Optional. sorting parameter.'created_at' or 'id'.
-   *                         Default is 'created_at'
+   * @param orderBy           Optional. sorting parameter.'created_at',
+   *                          'updated_at',
+   *                          'last_activity_at' 'or 'id'.
+   *                          Default is 'created_at'
    * @param from             Optional. Interval initial value when ordering by
    *                         'created_at'. As Datetime
    * @param till             Optional. Interval end value when ordering by
@@ -176,6 +179,9 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
    * @param limit            Optional. Transactions per query. Defaul is 100.
    *                         Max is 1000
    * @param offset           Optional. Default is 0. Max is 100000
+   * @param groupTransactions Optional. Flag indicating whether the returned
+   *                          transactions will be parts of a single operation.
+   *                          Default is false.
    */
   public void getTransactions(
       BiConsumer<List<Transaction>, CryptomarketSDKException> resultBiConsumer,
@@ -185,13 +191,14 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
       @Nullable List<String> currencies,
       @Nullable List<String> transactionIds,
       @Nullable Sort sort,
-      @Nullable SortBy by,
+      @Nullable OrderBy orderBy,
       @Nullable String from,
       @Nullable String till,
       @Nullable Integer idFrom,
       @Nullable Integer idTill,
       @Nullable Integer limit,
-      @Nullable Integer offset);
+      @Nullable Integer offset,
+      @Nullable Boolean groupTransactions);
 
   /**
    * @see #getTransactions(BiConsumer, List, List, List, List, List, Sort, SortBy,

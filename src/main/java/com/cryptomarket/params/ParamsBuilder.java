@@ -141,6 +141,17 @@ public class ParamsBuilder {
   }
 
   /**
+   * Adds an arbitrary parameter
+   *
+   * @param key   the name of the parameter
+   * @param value the value of the parameter
+   * @return The ParamsBuilder
+   */
+  public ParamsBuilder parameter(String key, String value) {
+    return addArg(key, value);
+  }
+
+  /**
    * Adds a currencies param to the ParamBuilder.
    *
    * @param currencies A list of currencies
@@ -229,7 +240,6 @@ public class ParamsBuilder {
   public ParamsBuilder by(@Nullable SortBy by) {
     return addArg(ArgNames.BY, by);
   }
-
 
   /**
    * Adds an order_by param to the ParamBuilder.
@@ -902,5 +912,15 @@ public class ParamsBuilder {
    */
   public ParamsBuilder currencyListOrAsterisc(@Nullable List<String> currencies) {
     return addListOrAsterisc(ArgNames.CURRENCIES, currencies);
+  }
+
+  /**
+   * Adds a group_transaction param to the ParamBuilder.
+   *
+   * @param status A SubAccountStatus type
+   * @return The ParamsBuilder
+   */
+  public ParamsBuilder GroupTransactions(Boolean asGroupTransactions) {
+    return addArg(ArgNames.GROUP_TRANSACTIONS, asGroupTransactions);
   }
 }

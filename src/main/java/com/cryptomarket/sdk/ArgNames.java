@@ -147,4 +147,6 @@ public class ArgNames {
   public static final String EMAIL = "email";
   /** */
   public static final String STATUS = "status";
+  /** */
+  public static final String GROUP_TRANSACTIONS = "group_transactions";
 }

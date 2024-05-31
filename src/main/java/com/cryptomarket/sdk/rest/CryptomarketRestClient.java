@@ -1515,37 +1515,42 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * https://api.exchange.cryptomkt.com/#get-transactions-history
    *
-   * @param transactionIds Optional. List of transaction identifiers to query
-   * @param currencies     Optional. List of currency codes
-   * @param networks       Optional. List of network codes
-   * @param types          Optional. List of types to query. valid types are:
-   *                       'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
-   * @param subtypes       Optional. List of subtypes to query. valid
-   *                       subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
-   *                       'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
-   *                       'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
-   *                       'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
-   *                       'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
-   *                       'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
-   *                       'INSTANT_EXCHANGE'
-   * @param statuses       Optional. List of statuses to query. valid
-   *                       subtypes are: 'CREATED', 'PENDING', 'FAILED',
-   *                       'SUCCESS' and 'ROLLED_BACK'
-   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default
-   *                       is 'DESC'
-   * @param orderBy         Optional. sorting parameter.'created_at', 'updated_at' or 'id'.
-   *                       Default is 'created_at'
-   * @param from           Optional. Interval initial value when ordering by
-   *                       'created_at'. As Datetime
-   * @param till           Optional. Interval end value when ordering by
-   *                       'created_at'. As Datetime
-   * @param idFrom         Optional. Interval initial value when ordering by
-   *                       id. Min is 0
-   * @param idTill         Optional. Interval end value when ordering by id.
-   *                       Min is 0
-   * @param limit          Optional. Transactions per query. Defaul is 100.
-   *                       Max is 1000
-   * @param offset         Optional. Default is 0. Max is 100000
+   * @param transactionIds    Optional. List of transaction identifiers to query
+   * @param currencies        Optional. List of currency codes
+   * @param networks          Optional. List of network codes
+   * @param types             Optional. List of types to query. valid types are:
+   *                          'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
+   * @param subtypes          Optional. List of subtypes to query. valid
+   *                          subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
+   *                          'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
+   *                          'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
+   *                          'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
+   *                          'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
+   *                          'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
+   *                          'INSTANT_EXCHANGE'
+   * @param statuses          Optional. List of statuses to query. valid
+   *                          subtypes are: 'CREATED', 'PENDING', 'FAILED',
+   *                          'SUCCESS' and 'ROLLED_BACK'
+   * @param sort              Optional. Sort direction. 'ASC' or 'DESC'. Default
+   *                          is 'DESC'
+   * @param orderBy           Optional. sorting parameter.'created_at',
+   *                          'updated_at',
+   *                          'last_activity_at' 'or 'id'.
+   *                          Default is 'created_at'
+   * @param from              Optional. Interval initial value when ordering by
+   *                          'created_at'. As Datetime
+   * @param till              Optional. Interval end value when ordering by
+   *                          'created_at'. As Datetime
+   * @param idFrom            Optional. Interval initial value when ordering by
+   *                          id. Min is 0
+   * @param idTill            Optional. Interval end value when ordering by id.
+   *                          Min is 0
+   * @param limit             Optional. Transactions per query. Defaul is 100.
+   *                          Max is 1000
+   * @param offset            Optional. Default is 0. Max is 100000
+   * @param groupTransactions Optional. Flag indicating whether the returned
+   *                          transactions will be parts of a single operation.
+   *                          Default is false.
    * @return A list of transactions
    * @throws CryptomarketSDKException
    */
@@ -1563,7 +1568,8 @@ public interface CryptomarketRestClient extends Closeable {
       @Nullable Integer idFrom,
       @Nullable Integer idTill,
       @Nullable Integer limit,
-      @Nullable Integer offset)
+      @Nullable Integer offset,
+      @Nullable Boolean groupTransactions)
       throws CryptomarketSDKException;
 
   public List<Transaction> getTransactionHistory(ParamsBuilder paramsBuilder)

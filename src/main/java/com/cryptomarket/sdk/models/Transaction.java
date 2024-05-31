@@ -17,10 +17,14 @@ public class Transaction {
   private String createdAt;
   @Json(name = "updated_at")
   private String updatedAt;
+  @Json(name = "last_activity_at")
+  private String lastActivityAt;
   @Json(name = "native")
   private NativeTransaction nativeTransaction;
   @Json(name = "network_code")
   private String networkCode;
+  @Json(name = "commit_risk")
+  private CommitRisk commitRisk;
 
   /**
    * Gets the transaction id
@@ -131,6 +135,24 @@ public class Transaction {
   }
 
   /**
+   * Gets the last activity of the transaction
+   *
+   * @return
+   */
+  public String getLastActivityAt() {
+    return lastActivityAt;
+  }
+
+  /**
+   * Sets the last activity of the transaction
+   *
+   * @param lastActivityAt
+   */
+  public void setLastActivityAt(String lastActivityAt) {
+    this.lastActivityAt = lastActivityAt;
+  }
+
+  /**
    * Gets the native transaction
    *
    * @return
@@ -166,10 +188,27 @@ public class Transaction {
     this.networkCode = networkCode;
   }
 
+  /**
+   * Gets the commit risk of the transaction
+   * @return
+   */
+  public CommitRisk getCommitRisk() {
+    return commitRisk;
+  }
+
+  /**
+   * Sets the commit rist of the transaction
+   *
+   * @param commitRisk
+   */
+  public void setCommitRisk(CommitRisk commitRisk) {
+    this.commitRisk = commitRisk;
+  }
+
   @Override
   public String toString() {
     return "Transaction [id=" + id + ", status=" + status + ", type=" + type + ", subtype=" + subtype + ", createdAt="
-        + createdAt + ", updatedAt=" + updatedAt + ", nativeTransaction=" + nativeTransaction + ", networkCode="
-        + networkCode + "]";
+        + createdAt + ", updatedAt=" + updatedAt + ", lastActivityAt=" + lastActivityAt + ", nativeTransaction="
+        + nativeTransaction + ", networkCode=" + networkCode + ", commitRisk=" + commitRisk + "]";
   }
 }

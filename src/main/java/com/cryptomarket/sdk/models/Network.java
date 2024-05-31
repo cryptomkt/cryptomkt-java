@@ -1,5 +1,7 @@
 package com.cryptomarket.sdk.models;
 
+import java.util.Map;
+
 import com.squareup.moshi.Json;
 
 /**
@@ -8,8 +10,6 @@ import com.squareup.moshi.Json;
 public class Network {
   private String code;
   private String network;
-  @Json(name = "is_ens_available")
-  private Boolean ensAvailable;
   private String protocol;
   @Json(name = "default")
   private Boolean defaultNetwork;
@@ -41,6 +41,16 @@ public class Network {
   private String cryptoPaymentIdName;
   @Json(name = "crypto_explorer")
   private String cryptoExplorer;
+  @Json(name = "network_name")
+  private String networkName;
+  @Json(name = "is_ens_available")
+  private Boolean ensAvailable;
+  @Json(name = "contract_address")
+  private String contractAddress;
+  @Json(name = "is_multichain")
+  private Boolean multichain;
+  @Json(name = "asset_id")
+  private Map<String, String> assetId;
 
   /**
    * Gets the network code
@@ -376,6 +386,76 @@ public class Network {
    */
   public void setCryptoExplorer(String cryptoExplorer) {
     this.cryptoExplorer = cryptoExplorer;
+  }
+
+  /**
+   * Gets the full network name of the network
+   *
+   * @return
+   */
+  public String getNetworkName() {
+    return networkName;
+  }
+
+  /**
+   * Sets the network name
+   *
+   * @param networkName
+   */
+  public void setNetworkName(String networkName) {
+    this.networkName = networkName;
+  }
+
+  /**
+   * Gets the contract address of the network
+   *
+   * @return
+   */
+  public String getContractAddress() {
+    return contractAddress;
+  }
+
+  /**
+   * Sets the contract address of the network
+   *
+   * @param contractAddress
+   */
+  public void setContractAddress(String contractAddress) {
+    this.contractAddress = contractAddress;
+  }
+
+  /**
+   * Get a flag indicating if the multichain is active for the network
+   *
+   * @return
+   */
+  public Boolean getMultichain() {
+    return multichain;
+  }
+
+  /**
+   * Sets the multichain flag of the network
+   *
+   * @param multichain
+   */
+  public void setMultichain(Boolean multichain) {
+    this.multichain = multichain;
+  }
+
+  /**
+   * Gets arbitrary data particular of the network
+   * @return
+   */
+  public Map<String, String> getAssetId() {
+    return assetId;
+  }
+
+  /**
+   * Sets the asset id, extra data of the network
+   * @param assetId
+   */
+  public void setAssetId(Map<String, String> assetId) {
+    this.assetId = assetId;
   }
 
   @Override
