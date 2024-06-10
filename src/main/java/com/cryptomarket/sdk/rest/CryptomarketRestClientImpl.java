@@ -917,7 +917,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
     var payload = adapter.listToJson(feeRequests, FeeRequest.class);
     String jsonResponse = httpClient.post(
-        "wallet/crypto/fee/deposit/estimate/bulk",
+        "wallet/crypto/fee/estimate/bulk",
         payload);
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
