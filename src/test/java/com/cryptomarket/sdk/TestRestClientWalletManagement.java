@@ -125,8 +125,36 @@ public class TestRestClientWalletManagement {
   }
 
   @Test
+  public void testGetBulkEstimateWithdrawFees() throws CryptomarketSDKException {
+    var fees = client
+        .getBulkEstimateWithdrawalFees(List.of(new FeeRequest("EOS", "100", null), new FeeRequest("ETH", "100", null)));
+    if (fees.size() != 2) {
+      fail("invalid amount of fees");
+    }
+    fees.forEach(Checker.checkFee);
+  }
+
+  @Test
   public void testGetEstimateWithdrawFee() throws CryptomarketSDKException {
     String estimate = client.getEstimateWithdrawalFee("EOS", "100", null);
+    if (estimate.equals("")) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testGetEstimateDepositFees() throws CryptomarketSDKException {
+    var fees = client
+        .getBulkEstimateDepositFees(List.of(new FeeRequest("EOS", "100"), new FeeRequest("ETH", "100")));
+    if (fees.size() != 2) {
+      fail("invalid amount of fees");
+    }
+    fees.forEach(Checker.checkFee);
+  }
+
+  @Test
+  public void testGetEstimateDepositFee() throws CryptomarketSDKException {
+    String estimate = client.getEstimateDepositFee("EOS", "100", null);
     if (estimate.equals("")) {
       fail();
     }

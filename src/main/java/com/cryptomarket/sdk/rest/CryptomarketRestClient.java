@@ -1380,13 +1380,64 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * Requires the "Payment information" API key Access Right
    * <p>
-   * https://api.exchange.cryptomkt.com/#estimate-withdrawal-fees
+   * https://api.exchange.cryptomkt.com/#estimate-withdrawal-fee
    *
    * @param feeRequests a list of fee requests
    * @return the list of fees
    * @throws CryptomarketSDKException
    */
   public List<Fee> getEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+
+
+  /**
+   * Get estimates of withdrawal fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+   *
+   * @param feeRequests a list of fee requests
+   * @return the list of fees
+   * @throws CryptomarketSDKException
+   */
+  public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+
+
+  /**
+   * Get an estimate of the deposit fee
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#estimate-deposit-fee
+   *
+   * @param currency    the currency code for deposit
+   * @param amount      the expected deposit amount
+   * @param networkCode Optional. Network code
+   * @return The expected fee
+   * @throws CryptomarketSDKException
+   */
+  public String getEstimateDepositFee(String currency, String amount, @Nullable String networkCode)
+      throws CryptomarketSDKException;
+
+  /**
+   * @see #getEstimateWithdrawalFee(String, String, String)
+   * @param paramsBuilder
+   * @throws CryptomarketSDKException
+   */
+  public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+
+  /**
+   * Get estimates of deposit fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+   *
+   * @param feeRequests a list of fee requests
+   * @return the list of fees
+   * @throws CryptomarketSDKException
+   */
+  public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
 
   /**
    * Converts between currencies
@@ -1537,10 +1588,10 @@ public interface CryptomarketRestClient extends Closeable {
    *                          'updated_at',
    *                          'last_activity_at' 'or 'id'.
    *                          Default is 'created_at'
-   * @param from              Optional. Interval initial value when ordering by
-   *                          'created_at'. As Datetime
-   * @param till              Optional. Interval end value when ordering by
-   *                          'created_at'. As Datetime
+   * @param from              Optional. Optional. Interval initial value
+   *                          (inclusive). The value type depends on orderByy
+   * @param till              Optional. Interval end value (inclusive). The value
+   *                          type depends on orderBy
    * @param idFrom            Optional. Interval initial value when ordering by
    *                          id. Min is 0
    * @param idTill            Optional. Interval end value when ordering by id.

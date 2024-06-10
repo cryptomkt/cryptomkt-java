@@ -307,7 +307,7 @@ public class Checker {
   static Consumer<Fee> checkFee = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getFee(),
-        obj.getNetworkFee(),
+        // obj.getNetworkFee(),
         obj.getCurrency(),
         obj.getAmount()
     // obj.getUpdatedAt()

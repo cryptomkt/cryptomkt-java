@@ -912,6 +912,45 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
+
+  @Override
+  public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
+    var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+    String jsonResponse = httpClient.post(
+        "wallet/crypto/fee/deposit/estimate/bulk",
+        payload);
+    return adapter.listFromJson(jsonResponse, Fee.class);
+  }
+
+  @Override
+  public String getEstimateDepositFee(String currency, String amount, String networkCode)
+      throws CryptomarketSDKException {
+    return getEstimateDepositFee(new ParamsBuilder()
+        .currency(currency)
+        .networkCode(networkCode)
+        .amount(amount));
+  }
+
+  @Override
+  public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+    paramsBuilder.checkRequired(Arrays.asList(
+        ArgNames.CURRENCY,
+        ArgNames.AMOUNT));
+    String jsonResponse = httpClient.get(
+        "wallet/crypto/fee/deposit/estimate",
+        paramsBuilder.build());
+    return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
+  }
+
+  @Override
+  public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
+    var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+    String jsonResponse = httpClient.post(
+        "wallet/crypto/fee/deposit/estimate/bulk",
+        payload);
+    return adapter.listFromJson(jsonResponse, Fee.class);
+  }
+
   @Override
   public List<String> convertBetweenCurrencies(
       String fromCurrency, String toCurrency,

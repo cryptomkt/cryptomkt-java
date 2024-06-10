@@ -8,6 +8,11 @@ public class FeeRequest {
   @Json(name = "network_code")
   private String networkCode;
 
+  public FeeRequest(String currency, String amount) {
+    this.currency = currency;
+    this.amount = amount;
+  }
+
   public FeeRequest(String currency, String amount, String networkCode) {
     this.currency = currency;
     this.amount = amount;

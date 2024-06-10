@@ -145,40 +145,40 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
    * <p>
    * https://api.exchange.cryptomkt.com/#get-transactions-history
    *
-   * @param resultBiConsumer recieves a list of transactions, and a
-   *                         CryptomarketSDKException if
-   *                         there was a problem (or null if there was none)
-   * @param transactionIds   Optional. List of transaction identifiers to query
-   * @param types            Optional. List of types to query. valid types are:
-   *                         'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
-   * @param subtypes         Optional. List of subtypes to query. valid
-   *                         subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
-   *                         'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
-   *                         'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
-   *                         'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
-   *                         'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
-   *                         'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
-   *                         'INSTANT_EXCHANGE'
-   * @param statuses         Optional. List of statuses to query. valid
-   *                         subtypes are: 'CREATED', 'PENDING', 'FAILED',
-   *                         'SUCCESS' and 'ROLLED_BACK'
+   * @param resultBiConsumer  recieves a list of transactions, and a
+   *                          CryptomarketSDKException if
+   *                          there was a problem (or null if there was none)
+   * @param transactionIds    Optional. List of transaction identifiers to query
+   * @param types             Optional. List of types to query. valid types are:
+   *                          'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
+   * @param subtypes          Optional. List of subtypes to query. valid
+   *                          subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
+   *                          'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
+   *                          'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
+   *                          'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
+   *                          'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
+   *                          'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
+   *                          'INSTANT_EXCHANGE'
+   * @param statuses          Optional. List of statuses to query. valid
+   *                          subtypes are: 'CREATED', 'PENDING', 'FAILED',
+   *                          'SUCCESS' and 'ROLLED_BACK'
    * @param orderBy           Optional. sorting parameter.'created_at',
    *                          'updated_at',
    *                          'last_activity_at' 'or 'id'.
    *                          Default is 'created_at'
-   * @param from             Optional. Interval initial value when ordering by
-   *                         'created_at'. As Datetime
-   * @param till             Optional. Interval end value when ordering by
-   *                         'created_at'. As Datetime
-   * @param idFrom           Optional. Interval initial value when ordering by
-   *                         id. Min is 0
-   * @param idTill           Optional. Interval end value when ordering by id.
-   *                         Min is 0
-   * @param sort             Optional. Sort direction. 'ASC' or 'DESC'. Default
-   *                         is 'DESC'
-   * @param limit            Optional. Transactions per query. Defaul is 100.
-   *                         Max is 1000
-   * @param offset           Optional. Default is 0. Max is 100000
+   * @param from              Optional. Optional. Interval initial value
+   *                          (inclusive). The value type depends on orderBy
+   * @param till              Optional. Interval end value (inclusive). The value
+   *                          type depends on orderBy
+   * @param idFrom            Optional. Interval initial value when ordering by
+   *                          id. Min is 0
+   * @param idTill            Optional. Interval end value when ordering by id.
+   *                          Min is 0
+   * @param sort              Optional. Sort direction. 'ASC' or 'DESC'. Default
+   *                          is 'DESC'
+   * @param limit             Optional. Transactions per query. Defaul is 100.
+   *                          Max is 1000
+   * @param offset            Optional. Default is 0. Max is 100000
    * @param groupTransactions Optional. Flag indicating whether the returned
    *                          transactions will be parts of a single operation.
    *                          Default is false.
