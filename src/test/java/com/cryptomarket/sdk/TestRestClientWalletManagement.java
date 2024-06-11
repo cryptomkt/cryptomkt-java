@@ -1,5 +1,6 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -205,6 +206,7 @@ public class TestRestClientWalletManagement {
         .offset(0)
         .currencies(List.of())
         .from("1614815872000"));
+    assertTrue(transactions.size() > 0);
     transactions.forEach(Checker.checkTransaction);
   }
 

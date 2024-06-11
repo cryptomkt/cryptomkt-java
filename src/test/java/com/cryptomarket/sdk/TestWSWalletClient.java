@@ -1,9 +1,17 @@
 package com.cryptomarket.sdk;
 
+import com.cryptomarket.params.OrderBy;
+import com.cryptomarket.params.ParamsBuilder;
+import com.cryptomarket.params.Sort;
+import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.models.Transaction;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
 import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,6 +59,20 @@ public class TestWSWalletClient {
         (result, exception) -> result.forEach(Checker.checkTransaction),
         null);
     Helpers.sleep(3);
+  }
+
+  @Test
+  public void testGetTransactionHistoryWithParams() throws CryptomarketSDKException {
+    wsClient.getTransactions((transactions, exception) -> {
+      assertTrue(transactions.size() > 0);
+      transactions.forEach(Checker.checkTransaction);
+    }, new ParamsBuilder()
+        .orderBy(OrderBy.CREATED_AT)
+        .sort(Sort.DESC)
+        .limit(1000)
+        .offset(0)
+        .currencies(List.of())
+        .from("1614815872000"));
   }
 
 }

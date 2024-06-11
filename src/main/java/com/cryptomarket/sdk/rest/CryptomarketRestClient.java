@@ -64,7 +64,7 @@ public interface CryptomarketRestClient extends Closeable {
   /**
    * Changes the window used in authenticated calls
    *
-   * @param window acceptable time between request and server execution
+   * @param window acceptable time between request and server execution in millis
    */
   public void changeWindow(Integer window);
 
@@ -1394,7 +1394,7 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * Requires the "Payment information" API key Access Right
    * <p>
-   * https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+   * https://api.exchange.cryptomkt.com/#bulk-estimate-withdrawal-fee
    *
    * @param feeRequests a list of fee requests
    * @return the list of fees
