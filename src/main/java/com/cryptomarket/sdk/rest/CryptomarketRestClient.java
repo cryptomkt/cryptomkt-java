@@ -1388,7 +1388,6 @@ public interface CryptomarketRestClient extends Closeable {
    */
   public List<Fee> getEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
 
-
   /**
    * Get estimates of withdrawal fees
    * <p>
@@ -1401,7 +1400,6 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
-
 
   /**
    * Get an estimate of the deposit fee
@@ -1416,15 +1414,16 @@ public interface CryptomarketRestClient extends Closeable {
    * @return The expected fee
    * @throws CryptomarketSDKException
    */
-  public String getEstimateDepositFee(String currency, String amount, @Nullable String networkCode)
-      throws CryptomarketSDKException;
+  // public String getEstimateDepositFee(String currency, String amount, @Nullable
+  // String networkCode) throws CryptomarketSDKException;
 
   /**
    * @see #getEstimateWithdrawalFee(String, String, String)
    * @param paramsBuilder
    * @throws CryptomarketSDKException
    */
-  public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException;
+  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws
+  // CryptomarketSDKException;
 
   /**
    * Get estimates of deposit fees
@@ -1437,7 +1436,8 @@ public interface CryptomarketRestClient extends Closeable {
    * @return the list of fees
    * @throws CryptomarketSDKException
    */
-  public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests)
+  // throws CryptomarketSDKException;
 
   /**
    * Converts between currencies

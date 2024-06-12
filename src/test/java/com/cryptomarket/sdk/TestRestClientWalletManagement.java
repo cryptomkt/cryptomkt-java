@@ -143,23 +143,23 @@ public class TestRestClientWalletManagement {
     }
   }
 
-  @Test
-  public void testGetEstimateDepositFees() throws CryptomarketSDKException {
-    var fees = client
-        .getBulkEstimateDepositFees(List.of(new FeeRequest("EOS", "100"), new FeeRequest("ETH", "100")));
-    if (fees.size() != 2) {
-      fail("invalid amount of fees");
-    }
-    fees.forEach(Checker.checkFee);
-  }
+  // @Test
+  // public void testGetEstimateDepositFees() throws CryptomarketSDKException {
+  //   var fees = client
+  //       .getBulkEstimateDepositFees(List.of(new FeeRequest("EOS", "100"), new FeeRequest("ETH", "100")));
+  //   if (fees.size() != 2) {
+  //     fail("invalid amount of fees");
+  //   }
+  //   fees.forEach(Checker.checkFee);
+  // }
 
-  @Test
-  public void testGetEstimateDepositFee() throws CryptomarketSDKException {
-    String estimate = client.getEstimateDepositFee("EOS", "100", null);
-    if (estimate.equals("")) {
-      fail();
-    }
-  }
+  // @Test
+  // public void testGetEstimateDepositFee() throws CryptomarketSDKException {
+  //   String estimate = client.getEstimateDepositFee("EOS", "100", null);
+  //   if (estimate.equals("")) {
+  //     fail();
+  //   }
+  // }
 
   @Test
   public void testCryptoAddressBelongsToCurrentAccount() throws CryptomarketSDKException {
