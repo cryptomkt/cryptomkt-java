@@ -917,7 +917,7 @@ public class ParamsBuilder {
   /**
    * Adds a group_transaction param to the ParamBuilder.
    *
-   * @param status A SubAccountStatus type
+   * @param asGroupTransactions Flag indicating whether the returned transactions will be parts of a single operation
    * @return The ParamsBuilder
    */
   public ParamsBuilder GroupTransactions(Boolean asGroupTransactions) {

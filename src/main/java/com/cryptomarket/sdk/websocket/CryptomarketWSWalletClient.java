@@ -201,7 +201,7 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
       @Nullable Boolean groupTransactions);
 
   /**
-   * @see #getTransactions(BiConsumer, List, List, List, List, List, Sort, SortBy,
+   * @see #getTransactions(BiConsumer, List, List, List, List, List, Sort, OrderBy,
    *      String, String, Integer, Integer, Integer, Integer)
    * @param resultBiConsumer
    * @param paramsBuilder
