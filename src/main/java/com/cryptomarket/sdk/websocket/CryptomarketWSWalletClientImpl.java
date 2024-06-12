@@ -2,14 +2,14 @@ package com.cryptomarket.sdk.websocket;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import com.cryptomarket.params.NotificationType;
+import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Sort;
-import com.cryptomarket.params.SortBy;
 import com.cryptomarket.params.TransactionStatus;
 import com.cryptomarket.params.TransactionSubtype;
 import com.cryptomarket.params.TransactionType;
@@ -154,13 +154,14 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
       List<String> currencies,
       List<String> transactionIds,
       Sort sort,
-      SortBy by,
+      OrderBy orderBy,
       String from,
       String till,
       Integer idFrom,
       Integer idTill,
       Integer limit,
-      Integer offset) {
+      Integer offset,
+      Boolean groupTransactions) {
     getTransactions(
         resultBiConsumer,
         new ParamsBuilder()
@@ -170,13 +171,14 @@ public class CryptomarketWSWalletClientImpl extends AuthClient implements Crypto
             .currencies(currencies)
             .transactionIds(transactionIds)
             .sort(sort)
-            .by(by)
+            .orderBy(orderBy)
             .from(from)
             .till(till)
             .idFrom(idFrom)
             .idTill(idTill)
             .limit(limit)
-            .offset(offset));
+            .offset(offset)
+            .GroupTransactions(groupTransactions));
   }
 
   @Override

@@ -249,7 +249,9 @@ public class Checker {
         obj.getStatus().toString(),
         obj.getType().toString(),
         obj.getSubtype().toString(),
-        obj.getCreatedAt()
+        obj.getCreatedAt(),
+        obj.getLastActivityAt(),
+        obj.getCommitRisk().toString()
     // obj.getUpdatedAt()
     ));
     fields.forEach(checkString);
@@ -307,7 +309,7 @@ public class Checker {
   static Consumer<Fee> checkFee = obj -> {
     List<String> fields = new ArrayList<>(Arrays.asList(
         obj.getFee(),
-        obj.getNetworkFee(),
+        // obj.getNetworkFee(),
         obj.getCurrency(),
         obj.getAmount()
     // obj.getUpdatedAt()

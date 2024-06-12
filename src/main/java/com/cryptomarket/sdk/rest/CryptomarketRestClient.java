@@ -61,6 +61,13 @@ public interface CryptomarketRestClient extends Closeable {
    */
   public void changeCredentials(String apiKey, String apiSecret);
 
+  /**
+   * Changes the window used in authenticated calls
+   *
+   * @param window acceptable time between request and server execution in millis
+   */
+  public void changeWindow(Integer window);
+
   /// PUBLIC CALLS///
 
   /**
@@ -1373,13 +1380,64 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * Requires the "Payment information" API key Access Right
    * <p>
-   * https://api.exchange.cryptomkt.com/#estimate-withdrawal-fees
+   * https://api.exchange.cryptomkt.com/#estimate-withdrawal-fee
    *
    * @param feeRequests a list of fee requests
    * @return the list of fees
    * @throws CryptomarketSDKException
    */
   public List<Fee> getEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+
+  /**
+   * Get estimates of withdrawal fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#bulk-estimate-withdrawal-fee
+   *
+   * @param feeRequests a list of fee requests
+   * @return the list of fees
+   * @throws CryptomarketSDKException
+   */
+  public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+
+  /**
+   * Get an estimate of the deposit fee
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#estimate-deposit-fee
+   *
+   * @param currency    the currency code for deposit
+   * @param amount      the expected deposit amount
+   * @param networkCode Optional. Network code
+   * @return The expected fee
+   * @throws CryptomarketSDKException
+   */
+  // public String getEstimateDepositFee(String currency, String amount, @Nullable
+  // String networkCode) throws CryptomarketSDKException;
+
+  /**
+   * @see #getEstimateWithdrawalFee(String, String, String)
+   * @param paramsBuilder
+   * @throws CryptomarketSDKException
+   */
+  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws
+  // CryptomarketSDKException;
+
+  /**
+   * Get estimates of deposit fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#bulk-estimate-deposit-fee
+   *
+   * @param feeRequests a list of fee requests
+   * @return the list of fees
+   * @throws CryptomarketSDKException
+   */
+  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests)
+  // throws CryptomarketSDKException;
 
   /**
    * Converts between currencies
@@ -1508,37 +1566,42 @@ public interface CryptomarketRestClient extends Closeable {
    * <p>
    * https://api.exchange.cryptomkt.com/#get-transactions-history
    *
-   * @param transactionIds Optional. List of transaction identifiers to query
-   * @param currencies     Optional. List of currency codes
-   * @param networks       Optional. List of network codes
-   * @param types          Optional. List of types to query. valid types are:
-   *                       'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
-   * @param subtypes       Optional. List of subtypes to query. valid
-   *                       subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
-   *                       'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
-   *                       'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
-   *                       'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
-   *                       'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
-   *                       'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
-   *                       'INSTANT_EXCHANGE'
-   * @param statuses       Optional. List of statuses to query. valid
-   *                       subtypes are: 'CREATED', 'PENDING', 'FAILED',
-   *                       'SUCCESS' and 'ROLLED_BACK'
-   * @param sort           Optional. Sort direction. 'ASC' or 'DESC'. Default
-   *                       is 'DESC'
-   * @param orderBy         Optional. sorting parameter.'created_at', 'updated_at' or 'id'.
-   *                       Default is 'created_at'
-   * @param from           Optional. Interval initial value when ordering by
-   *                       'created_at'. As Datetime
-   * @param till           Optional. Interval end value when ordering by
-   *                       'created_at'. As Datetime
-   * @param idFrom         Optional. Interval initial value when ordering by
-   *                       id. Min is 0
-   * @param idTill         Optional. Interval end value when ordering by id.
-   *                       Min is 0
-   * @param limit          Optional. Transactions per query. Defaul is 100.
-   *                       Max is 1000
-   * @param offset         Optional. Default is 0. Max is 100000
+   * @param transactionIds    Optional. List of transaction identifiers to query
+   * @param currencies        Optional. List of currency codes
+   * @param networks          Optional. List of network codes
+   * @param types             Optional. List of types to query. valid types are:
+   *                          'DEPOSIT', 'WITHDRAW', 'TRANSFER' and 'SWAP'
+   * @param subtypes          Optional. List of subtypes to query. valid
+   *                          subtypes are: 'UNCLASSIFIED', 'BLOCKCHAIN',
+   *                          'AIRDROP', 'AFFILIATE', 'STAKING', 'BUY_CRYPTO',
+   *                          'OFFCHAIN', 'FIAT', 'SUB_ACCOUNT',
+   *                          'WALLET_TO_SPOT', 'SPOT_TO_WALLET',
+   *                          'WALLET_TO_DERIVATIVES', 'DERIVATIVES_TO_WALLET',
+   *                          'CHAIN_SWITCH_FROM', 'CHAIN_SWITCH_TO' and
+   *                          'INSTANT_EXCHANGE'
+   * @param statuses          Optional. List of statuses to query. valid
+   *                          subtypes are: 'CREATED', 'PENDING', 'FAILED',
+   *                          'SUCCESS' and 'ROLLED_BACK'
+   * @param sort              Optional. Sort direction. 'ASC' or 'DESC'. Default
+   *                          is 'DESC'
+   * @param orderBy           Optional. sorting parameter.'created_at',
+   *                          'updated_at',
+   *                          'last_activity_at' 'or 'id'.
+   *                          Default is 'created_at'
+   * @param from              Optional. Optional. Interval initial value
+   *                          (inclusive). The value type depends on orderByy
+   * @param till              Optional. Interval end value (inclusive). The value
+   *                          type depends on orderBy
+   * @param idFrom            Optional. Interval initial value when ordering by
+   *                          id. Min is 0
+   * @param idTill            Optional. Interval end value when ordering by id.
+   *                          Min is 0
+   * @param limit             Optional. Transactions per query. Defaul is 100.
+   *                          Max is 1000
+   * @param offset            Optional. Default is 0. Max is 100000
+   * @param groupTransactions Optional. Flag indicating whether the returned
+   *                          transactions will be parts of a single operation.
+   *                          Default is false.
    * @return A list of transactions
    * @throws CryptomarketSDKException
    */
@@ -1556,7 +1619,8 @@ public interface CryptomarketRestClient extends Closeable {
       @Nullable Integer idFrom,
       @Nullable Integer idTill,
       @Nullable Integer limit,
-      @Nullable Integer offset)
+      @Nullable Integer offset,
+      @Nullable Boolean groupTransactions)
       throws CryptomarketSDKException;
 
   public List<Transaction> getTransactionHistory(ParamsBuilder paramsBuilder)

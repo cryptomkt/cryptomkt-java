@@ -29,6 +29,14 @@ public class HMAC {
     return window;
   }
 
+  public String getApiSecret() {
+    return apiSecret;
+  }
+
+  public String getApiKey() {
+    return apiKey;
+  }
+
   public String getCredential(String method, String body, String url) {
     String timestamp = String.format("%d", System.currentTimeMillis());
     String message = new StringBuffer()

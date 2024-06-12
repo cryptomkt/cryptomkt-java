@@ -7,7 +7,9 @@ public enum OrderBy {
   /** sort by id */
   ID("id"),
   /** sort by update date */
-  UPDATE_AT("updated_at");
+  UPDATE_AT("updated_at"),
+  /** sort by last activity */
+  LAST_ACTIVITY_AT("last_activity_at");
 
   private final String label;
 

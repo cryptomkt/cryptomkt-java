@@ -82,6 +82,11 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     httpClient.changeCredentials(apiKey, apiSecret);
   }
 
+  @Override
+  public void changeWindow(Integer window) {
+    httpClient.changeWindow(window);
+  }
+
   // PUBLIC
 
   @Override
@@ -907,6 +912,45 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
+
+  @Override
+  public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
+    var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+    String jsonResponse = httpClient.post(
+        "wallet/crypto/fee/estimate/bulk",
+        payload);
+    return adapter.listFromJson(jsonResponse, Fee.class);
+  }
+
+  // @Override
+  // public String getEstimateDepositFee(String currency, String amount, String networkCode)
+  //     throws CryptomarketSDKException {
+  //   return getEstimateDepositFee(new ParamsBuilder()
+  //       .currency(currency)
+  //       .networkCode(networkCode)
+  //       .amount(amount));
+  // }
+
+  // @Override
+  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
+  //   paramsBuilder.checkRequired(Arrays.asList(
+  //       ArgNames.CURRENCY,
+  //       ArgNames.AMOUNT));
+  //   String jsonResponse = httpClient.get(
+  //       "wallet/crypto/fee/deposit/estimate",
+  //       paramsBuilder.build());
+  //   return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
+  // }
+
+  // @Override
+  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
+  //   var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+  //   String jsonResponse = httpClient.post(
+  //       "wallet/crypto/fee/deposit/estimate/bulk",
+  //       payload);
+  //   return adapter.listFromJson(jsonResponse, Fee.class);
+  // }
+
   @Override
   public List<String> convertBetweenCurrencies(
       String fromCurrency, String toCurrency,
@@ -1020,7 +1064,8 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
       Integer idFrom,
       Integer idTill,
       Integer limit,
-      Integer offset) throws CryptomarketSDKException {
+      Integer offset,
+      Boolean asGroupTransactions) throws CryptomarketSDKException {
     return getTransactionHistory(new ParamsBuilder()
         .transactionIds(transactionIds)
         .currencies(currencies)
@@ -1035,7 +1080,8 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         .idFrom(idFrom)
         .idTill(idTill)
         .limit(limit)
-        .offset(offset));
+        .offset(offset)
+        .GroupTransactions(asGroupTransactions));
   }
 
   @Override

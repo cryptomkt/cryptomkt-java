@@ -1,5 +1,6 @@
 package com.cryptomarket.sdk;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -125,12 +126,40 @@ public class TestRestClientWalletManagement {
   }
 
   @Test
+  public void testGetBulkEstimateWithdrawFees() throws CryptomarketSDKException {
+    var fees = client
+        .getBulkEstimateWithdrawalFees(List.of(new FeeRequest("EOS", "100", null), new FeeRequest("ETH", "100", null)));
+    if (fees.size() != 2) {
+      fail("invalid amount of fees");
+    }
+    fees.forEach(Checker.checkFee);
+  }
+
+  @Test
   public void testGetEstimateWithdrawFee() throws CryptomarketSDKException {
     String estimate = client.getEstimateWithdrawalFee("EOS", "100", null);
     if (estimate.equals("")) {
       fail();
     }
   }
+
+  // @Test
+  // public void testGetEstimateDepositFees() throws CryptomarketSDKException {
+  //   var fees = client
+  //       .getBulkEstimateDepositFees(List.of(new FeeRequest("EOS", "100"), new FeeRequest("ETH", "100")));
+  //   if (fees.size() != 2) {
+  //     fail("invalid amount of fees");
+  //   }
+  //   fees.forEach(Checker.checkFee);
+  // }
+
+  // @Test
+  // public void testGetEstimateDepositFee() throws CryptomarketSDKException {
+  //   String estimate = client.getEstimateDepositFee("EOS", "100", null);
+  //   if (estimate.equals("")) {
+  //     fail();
+  //   }
+  // }
 
   @Test
   public void testCryptoAddressBelongsToCurrentAccount() throws CryptomarketSDKException {
@@ -177,6 +206,7 @@ public class TestRestClientWalletManagement {
         .offset(0)
         .currencies(List.of())
         .from("1614815872000"));
+    assertTrue(transactions.size() > 0);
     transactions.forEach(Checker.checkTransaction);
   }
 
