@@ -249,7 +249,9 @@ public class Checker {
         obj.getStatus().toString(),
         obj.getType().toString(),
         obj.getSubtype().toString(),
-        obj.getCreatedAt()
+        obj.getCreatedAt(),
+        obj.getLastActivityAt(),
+        obj.getCommitRisk().toString()
     // obj.getUpdatedAt()
     ));
     fields.forEach(checkString);
