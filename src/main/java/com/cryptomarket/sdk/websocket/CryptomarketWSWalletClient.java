@@ -202,7 +202,7 @@ public interface CryptomarketWSWalletClient extends CryptomarketWS {
 
   /**
    * @see #getTransactions(BiConsumer, List, List, List, List, List, Sort, OrderBy,
-   *      String, String, Integer, Integer, Integer, Integer)
+   *      String, String, Integer, Integer, Integer, Integer, Boolean)
    * @param resultBiConsumer
    * @param paramsBuilder
    */
