@@ -1,13 +1,5 @@
 package com.cryptomarket.sdk;
 
-import com.cryptomarket.params.OrderBy;
-import com.cryptomarket.params.ParamsBuilder;
-import com.cryptomarket.params.Sort;
-import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
-import com.cryptomarket.sdk.models.Transaction;
-import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
-import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
-
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -16,6 +8,13 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.cryptomarket.params.OrderBy;
+import com.cryptomarket.params.ParamsBuilder;
+import com.cryptomarket.params.Sort;
+import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
+import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClient;
+import com.cryptomarket.sdk.websocket.CryptomarketWSWalletClientImpl;
 
 public class TestWSWalletClient {
 
