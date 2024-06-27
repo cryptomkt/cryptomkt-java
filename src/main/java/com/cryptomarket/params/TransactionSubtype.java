@@ -21,7 +21,9 @@ public enum TransactionSubtype {
   /** chain switch from */
   CHAIN_SWITCH_FROM("CHAIN_SWITCH_FROM"),
   /** chain switch to */
-  CHAIN_SWITCH_TO("CHAIN_SWITCH_TO");
+  CHAIN_SWITCH_TO("CHAIN_SWITCH_TO"),
+  /** airdrop */
+  AIRDROP("AIRDROP");
 
   private final String label;
 
