@@ -9,7 +9,6 @@ import com.cryptomarket.params.NotificationType;
 import com.cryptomarket.params.OrderBy;
 import com.cryptomarket.params.ParamsBuilder;
 import com.cryptomarket.params.Sort;
-import com.cryptomarket.params.SortBy;
 import com.cryptomarket.params.TransactionStatus;
 import com.cryptomarket.params.TransactionSubtype;
 import com.cryptomarket.params.TransactionType;
