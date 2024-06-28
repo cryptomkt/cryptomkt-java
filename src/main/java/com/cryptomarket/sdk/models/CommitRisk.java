@@ -4,7 +4,7 @@ import com.squareup.moshi.Json;
 
 public class CommitRisk {
   private Integer score;
-  private String rbf;
+  private Boolean rbf;
   @Json(name = "low_fee")
   private String lowFee;
 
@@ -36,7 +36,7 @@ public class CommitRisk {
    *
    * @return
    */
-  public String getRbf() {
+  public Boolean getRbf() {
     return rbf;
   }
 
@@ -45,7 +45,7 @@ public class CommitRisk {
    *
    * @param rbf
    */
-  public void setRbf(String rbf) {
+  public void setRbf(Boolean rbf) {
     this.rbf = rbf;
   }
 
