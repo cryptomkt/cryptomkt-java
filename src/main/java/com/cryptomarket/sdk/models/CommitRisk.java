@@ -6,7 +6,7 @@ public class CommitRisk {
   private Integer score;
   private Boolean rbf;
   @Json(name = "low_fee")
-  private String lowFee;
+  private Boolean lowFee;
 
   /**
    * Gets the risk score of the associated transaction. For more information see
@@ -57,7 +57,7 @@ public class CommitRisk {
    *
    * @return
    */
-  public String getLowFee() {
+  public Boolean getLowFee() {
     return lowFee;
   }
 
@@ -66,7 +66,7 @@ public class CommitRisk {
    *
    * @param lowFee
    */
-  public void setLowFee(String lowFee) {
+  public void setLowFee(Boolean lowFee) {
     this.lowFee = lowFee;
   }
 
