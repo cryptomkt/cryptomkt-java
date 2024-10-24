@@ -142,6 +142,13 @@ public class TestRestClientWalletManagement {
       fail();
     }
   }
+  @Test
+  public void testGetEstimateWithdrawFeesHash() throws CryptomarketSDKException {
+    String estimate = client.getFeesHash();
+    if (estimate.equals("")) {
+      fail();
+    }
+  }
 
   // @Test
   // public void testGetEstimateDepositFees() throws CryptomarketSDKException {

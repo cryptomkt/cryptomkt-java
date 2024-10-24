@@ -1401,6 +1401,21 @@ public interface CryptomarketRestClient extends Closeable {
    */
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
 
+
+  /**
+   * Gets the hash of withdrawal fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#get-withdrawal-fees-hash
+   *
+   * @return the fees hash
+   * @throws CryptomarketSDKException
+   */
+  public String getFeesHash() throws CryptomarketSDKException;
+
+  
+
   /**
    * Get an estimate of the deposit fee
    * <p>

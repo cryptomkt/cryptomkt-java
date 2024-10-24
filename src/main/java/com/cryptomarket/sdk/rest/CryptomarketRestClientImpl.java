@@ -54,6 +54,8 @@ import com.cryptomarket.sdk.models.Transaction;
 import com.cryptomarket.sdk.requests.OrderListRequest;
 import com.cryptomarket.sdk.requests.WithdrawRequest;
 
+import kotlin.OverloadResolutionByLambdaReturnType;
+
 public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   CloseableHttpClient httpClient;
   Adapter adapter = new Adapter();
@@ -912,7 +914,6 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
-
   @Override
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
     var payload = adapter.listToJson(feeRequests, FeeRequest.class);
@@ -922,33 +923,42 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
+  @OverloadResolutionByLambdaReturnType
+  public String getFeesHash() throws CryptomarketSDKException {
+    String jsonResponse = httpClient.get("wallet/crypto/fee/withdraw/hash", null);
+    return adapter.objectFromJsonValue(jsonResponse, "hash", String.class);
+  }
+
   // @Override
-  // public String getEstimateDepositFee(String currency, String amount, String networkCode)
-  //     throws CryptomarketSDKException {
-  //   return getEstimateDepositFee(new ParamsBuilder()
-  //       .currency(currency)
-  //       .networkCode(networkCode)
-  //       .amount(amount));
+  // public String getEstimateDepositFee(String currency, String amount, String
+  // networkCode)
+  // throws CryptomarketSDKException {
+  // return getEstimateDepositFee(new ParamsBuilder()
+  // .currency(currency)
+  // .networkCode(networkCode)
+  // .amount(amount));
   // }
 
   // @Override
-  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
-  //   paramsBuilder.checkRequired(Arrays.asList(
-  //       ArgNames.CURRENCY,
-  //       ArgNames.AMOUNT));
-  //   String jsonResponse = httpClient.get(
-  //       "wallet/crypto/fee/deposit/estimate",
-  //       paramsBuilder.build());
-  //   return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
+  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws
+  // CryptomarketSDKException {
+  // paramsBuilder.checkRequired(Arrays.asList(
+  // ArgNames.CURRENCY,
+  // ArgNames.AMOUNT));
+  // String jsonResponse = httpClient.get(
+  // "wallet/crypto/fee/deposit/estimate",
+  // paramsBuilder.build());
+  // return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
   // }
 
   // @Override
-  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
-  //   var payload = adapter.listToJson(feeRequests, FeeRequest.class);
-  //   String jsonResponse = httpClient.post(
-  //       "wallet/crypto/fee/deposit/estimate/bulk",
-  //       payload);
-  //   return adapter.listFromJson(jsonResponse, Fee.class);
+  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests)
+  // throws CryptomarketSDKException {
+  // var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+  // String jsonResponse = httpClient.post(
+  // "wallet/crypto/fee/deposit/estimate/bulk",
+  // payload);
+  // return adapter.listFromJson(jsonResponse, Fee.class);
   // }
 
   @Override
