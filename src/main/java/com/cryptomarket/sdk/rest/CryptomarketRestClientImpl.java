@@ -56,8 +56,6 @@ import com.cryptomarket.sdk.models.WhitelistedAddress;
 import com.cryptomarket.sdk.requests.OrderListRequest;
 import com.cryptomarket.sdk.requests.WithdrawRequest;
 
-import kotlin.OverloadResolutionByLambdaReturnType;
-
 public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   CloseableHttpClient httpClient;
   Adapter adapter = new Adapter();
@@ -938,7 +936,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
-  @OverloadResolutionByLambdaReturnType
+  @Override
   public String getFeesHash() throws CryptomarketSDKException {
     String jsonResponse = httpClient.get("wallet/crypto/fee/withdraw/hash", null);
     return adapter.objectFromJsonValue(jsonResponse, "hash", String.class);
