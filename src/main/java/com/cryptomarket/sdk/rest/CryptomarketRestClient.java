@@ -47,6 +47,7 @@ import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
+import com.cryptomarket.sdk.models.WhitelistedAddress;
 
 /**
  * Rest Client Interface for cryptomarket API V3.
@@ -1168,6 +1169,18 @@ public interface CryptomarketRestClient extends Closeable {
      * @throws CryptomarketSDKException
      */
     public Balance getWalletBalance(String currency) throws CryptomarketSDKException;
+
+    /**
+     * Gets the list of whitelisted addresses
+     * <p>
+     * Requires the "Payment information" API key Access Right
+     * <p>
+     * https://api.exchange.cryptomkt.com/#get-whitelisted-addresses
+     * 
+     * @return the list of white listed addresses
+     * @throws CryptomarketSDKException
+     */
+    public List<WhitelistedAddress> getWhitelistedAddresses() throws CryptomarketSDKException;
 
     /**
      * Get the current addresses of the user

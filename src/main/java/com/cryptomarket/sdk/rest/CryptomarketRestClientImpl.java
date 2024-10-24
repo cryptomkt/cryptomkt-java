@@ -51,6 +51,7 @@ import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
+import com.cryptomarket.sdk.models.WhitelistedAddress;
 import com.cryptomarket.sdk.requests.OrderListRequest;
 import com.cryptomarket.sdk.requests.WithdrawRequest;
 
@@ -764,6 +765,12 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   @Override
   public Balance getWalletBalance(String currency) throws CryptomarketSDKException {
     return getWalletBalanceByCurrency(currency);
+  }
+
+  @Override
+  public List<WhitelistedAddress> getWhitelistedAddresses() throws CryptomarketSDKException {
+    String jsonResponse = httpClient.get("wallet/crypto/address/white-list", null);
+    return adapter.listFromJson(jsonResponse, WhitelistedAddress.class);
   }
 
   @Override
