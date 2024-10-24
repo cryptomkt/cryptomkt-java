@@ -1210,6 +1210,28 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
+  public String transferToSuperAccount(String amount, String currency)
+      throws CryptomarketSDKException {
+    ParamsBuilder params = new ParamsBuilder()
+        .amount(amount)
+        .currency(currency);
+    String jsonResponse = httpClient.get("sub-account/transfer/sub-to-super", params.build());
+    return adapter.objectFromJsonValue(jsonResponse, "result", String.class);
+
+  }
+
+  @Override
+  public String transferToAnotherSubAccount(String subAccountId, String amount, String currency)
+      throws CryptomarketSDKException {
+    ParamsBuilder params = new ParamsBuilder()
+        .subAccountId(subAccountId)
+        .amount(amount)
+        .currency(currency);
+    String jsonResponse = httpClient.get("sub-account/transfer/sub-to-sub", params.build());
+    return adapter.objectFromJsonValue(jsonResponse, "result", String.class);
+  }
+
+  @Override
   public List<SubAccountSettings> getACLSettings(List<String> subAccountIds) throws CryptomarketSDKException {
     ParamsBuilder params = new ParamsBuilder()
         .subAccountIds(subAccountIds);
