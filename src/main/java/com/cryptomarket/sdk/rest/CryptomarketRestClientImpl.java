@@ -608,11 +608,13 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
       String newClientOrderId,
       String quantity,
       String price,
+      String stopPrice,
       Boolean strictValidate) throws CryptomarketSDKException {
     return replaceSpotOrder(new ParamsBuilder()
         .newClientOrderId(newClientOrderId)
         .quantity(quantity)
         .price(price)
+        .stopPrice(stopPrice)
         .strictValidate(strictValidate));
   }
 
