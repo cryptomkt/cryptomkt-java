@@ -30,7 +30,6 @@ import com.cryptomarket.sdk.ArgNames;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.AmountLock;
-import com.cryptomarket.sdk.models.ApiKey;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
@@ -743,14 +742,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         paramsBuilder.build());
     return adapter.listFromJson(jsonResponse, Trade.class);
   }
-  // USER MANAGEMENT
-
-  @Override
-  public List<ApiKey> getUserApiKeys() throws CryptomarketSDKException {
-    String jsonResponse = httpClient.get("user/api-keys",null);
-    return adapter.listFromJson(jsonResponse, ApiKey.class);
-  }
-
+  
   // WALLET MANAGEMENT
 
   @Override

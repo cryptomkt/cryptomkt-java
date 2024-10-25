@@ -26,7 +26,6 @@ import com.cryptomarket.params.UseOffchain;
 import com.cryptomarket.sdk.exceptions.CryptomarketSDKException;
 import com.cryptomarket.sdk.models.Address;
 import com.cryptomarket.sdk.models.AmountLock;
-import com.cryptomarket.sdk.models.ApiKey;
 import com.cryptomarket.sdk.models.Balance;
 import com.cryptomarket.sdk.models.Candle;
 import com.cryptomarket.sdk.models.Commission;
@@ -1130,9 +1129,6 @@ public interface CryptomarketRestClient extends Closeable {
   public List<Trade> getSpotTradesHistory(ParamsBuilder paramsBuilder)
       throws CryptomarketSDKException;
 
-  // USER MANAGEMENT
-
-  public List<ApiKey> getUserApiKeys() throws CryptomarketSDKException;
 
   // WALLET MANAGEMENT
 
