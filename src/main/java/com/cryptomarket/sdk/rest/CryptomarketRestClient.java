@@ -1848,7 +1848,7 @@ public interface CryptomarketRestClient extends Closeable {
      * <p>
      * Requires the "Withdraw cryptocurrencies" API key Access Right
      * <p>
-     * https://api.exchange.cryptomkt.com/#transfer-to-super-account
+     * https://api.exchange.cryptomkt.com/#transfer-across-subaccounts
      *
      * @param amount   the amount of currency to transfer
      * @param currency the currency to transfer
