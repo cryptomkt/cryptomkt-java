@@ -1429,7 +1429,7 @@ public interface CryptomarketRestClient extends Closeable {
      * @return the fees hash
      * @throws CryptomarketSDKException
      */
-    public String getFeesHash() throws CryptomarketSDKException;
+    public String getWithdrawalFeesHash() throws CryptomarketSDKException;
 
     /**
      * Get an estimate of the deposit fee

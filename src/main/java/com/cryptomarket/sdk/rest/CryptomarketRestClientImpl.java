@@ -937,7 +937,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   }
 
   @Override
-  public String getFeesHash() throws CryptomarketSDKException {
+  public String getWithdrawalFeesHash() throws CryptomarketSDKException {
     String jsonResponse = httpClient.get("wallet/crypto/fee/withdraw/hash", null);
     return adapter.objectFromJsonValue(jsonResponse, "hash", String.class);
   }

@@ -144,7 +144,7 @@ public class TestRestClientWalletManagement {
   }
   @Test
   public void testGetEstimateWithdrawFeesHash() throws CryptomarketSDKException {
-    String estimate = client.getFeesHash();
+    String estimate = client.getWithdrawalFeesHash();
     if (estimate.equals("")) {
       fail();
     }
