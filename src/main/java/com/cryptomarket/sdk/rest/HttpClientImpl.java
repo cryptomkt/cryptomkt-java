@@ -282,6 +282,7 @@ public class HttpClientImpl implements CloseableHttpClient {
     try {
       response.close();
     } catch (IOException e) {
+      throw new CryptomarketSDKException("unable to close api response. " + e.getMessage(), e);
     }
     if (isSuccessful)
       return responseBody;
