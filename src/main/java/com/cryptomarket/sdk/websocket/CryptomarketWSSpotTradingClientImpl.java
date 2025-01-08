@@ -212,12 +212,14 @@ public class CryptomarketWSSpotTradingClientImpl extends AuthClient implements C
 
   @Override
   public void replaceSpotOrder(String clientOrderId, String newClientOrderId, String quantity, String price,
+      String stopPrice,
       Boolean strictValidate, BiConsumer<Report, CryptomarketSDKException> resultBiConsumer) {
     ParamsBuilder paramsBuilder = new ParamsBuilder()
         .clientOrderId(clientOrderId)
         .newClientOrderId(newClientOrderId)
         .quantity(quantity)
         .price(price)
+        .stopPrice(stopPrice)
         .strictValidate(strictValidate);
     Interceptor interceptor = (resultBiConsumer == null)
         ? null

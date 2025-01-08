@@ -275,6 +275,9 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
    *                         be unique within the trading day
    * @param quantity         new order quantity
    * @param price            new order price
+   * @param stopPrice        Required if order type is 'stopLimit', 'stopMarket',
+   *                         'takeProfitLimit', or 'takeProfitMarket'. Order stop
+   *                         price
    * @param strictValidate   price and quantity will be checked for the
    *                         incrementation with tick size and quantity step. See
    *                         symbol's tick_size and quantity_increment
@@ -288,6 +291,7 @@ public interface CryptomarketWSSpotTradingClient extends CryptomarketWS {
       String newClientOrderId,
       @Nullable String quantity,
       @Nullable String price,
+      @Nullable String stopPrice,
       @Nullable Boolean strictValidate,
       @Nullable BiConsumer<Report, CryptomarketSDKException> resultBiConsumer);
 

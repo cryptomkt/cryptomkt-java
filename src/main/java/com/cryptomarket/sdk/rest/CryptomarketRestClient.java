@@ -47,6 +47,7 @@ import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
+import com.cryptomarket.sdk.models.WhitelistedAddress;
 
 /**
  * Rest Client Interface for cryptomarket API V3.
@@ -940,6 +941,9 @@ public interface CryptomarketRestClient extends Closeable {
    *                         the symbol's tick_size and quantity_increment
    * @param price            Required if order type is 'limit', 'stopLimit', or
    *                         'takeProfitLimit'. Order price
+   * @param stopPrice        Required if order type is 'stopLimit', 'stopMarket',
+   *                         'takeProfitLimit', or 'takeProfitMarket'. Order stop
+   *                         price
    * @return The new spot order
    * @throws CryptomarketSDKException
    */
@@ -948,6 +952,7 @@ public interface CryptomarketRestClient extends Closeable {
       String newClientOrderId,
       String quantity,
       @Nullable String price,
+      @Nullable String stopPrice,
       @Nullable Boolean strictValidate) throws CryptomarketSDKException;
 
   /**
@@ -1124,6 +1129,7 @@ public interface CryptomarketRestClient extends Closeable {
   public List<Trade> getSpotTradesHistory(ParamsBuilder paramsBuilder)
       throws CryptomarketSDKException;
 
+
   // WALLET MANAGEMENT
 
   /**
@@ -1168,6 +1174,18 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public Balance getWalletBalance(String currency) throws CryptomarketSDKException;
+
+  /**
+   * Gets the list of whitelisted addresses
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#get-whitelisted-addresses
+   * 
+   * @return the list of white listed addresses
+   * @throws CryptomarketSDKException
+   */
+  public List<WhitelistedAddress> getWhitelistedAddresses() throws CryptomarketSDKException;
 
   /**
    * Get the current addresses of the user
@@ -1400,6 +1418,18 @@ public interface CryptomarketRestClient extends Closeable {
    * @throws CryptomarketSDKException
    */
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException;
+
+  /**
+   * Gets the hash of withdrawal fees
+   * <p>
+   * Requires the "Payment information" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#get-withdrawal-fees-hash
+   *
+   * @return the fees hash
+   * @throws CryptomarketSDKException
+   */
+  public String getWithdrawalFeesHash() throws CryptomarketSDKException;
 
   /**
    * Get an estimate of the deposit fee
@@ -1783,6 +1813,50 @@ public interface CryptomarketRestClient extends Closeable {
    */
   public String transferFunds(String subAccountId, String amount, String currency,
       SubAccountTransferType transferType)
+      throws CryptomarketSDKException;
+
+  /**
+   * Creates and commits a transfer from a subaccount to its super account
+   * <p>
+   * Call is being sent by a subaccount
+   * <p>
+   * Created but not committed transfer will reserve pending amount on the sender
+   * wallet affecting their ability to withdraw or transfer crypto to another
+   * account. Incomplete withdrawals affect subaccount transfers the same way
+   * <p>
+   * Requires the "Withdraw cryptocurrencies" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#transfer-to-super-account
+   *
+   * @param amount   the amount of currency to transfer
+   * @param currency the currency to transfer
+   * @return The transaction id of the tranfer
+   * @throws CryptomarketSDKException
+   */
+  public String transferToSuperAccount(String amount, String currency)
+      throws CryptomarketSDKException;
+
+  /**
+   * Creates and commits a transfer between the user (subaccount) and another
+   * subaccount.
+   * <p>
+   * Call is being sent by a subaccount
+   * <p>
+   * Created but not committed transfer will reserve pending amount on the sender
+   * wallet affecting their ability to withdraw or transfer crypto to another
+   * account. Incomplete withdrawals affect subaccount transfers the same way
+   * <p>
+   * Requires the "Withdraw cryptocurrencies" API key Access Right
+   * <p>
+   * https://api.exchange.cryptomkt.com/#transfer-across-subaccounts
+   *
+   * @param amount   the amount of currency to transfer
+   * @param currency the currency to transfer
+   * @return The transaction id of the tranfer
+   * @throws CryptomarketSDKException
+   */
+
+  public String transferToAnotherSubAccount(String subAccountId, String amount, String currency)
       throws CryptomarketSDKException;
 
   /**

@@ -51,6 +51,7 @@ import com.cryptomarket.sdk.models.Ticker;
 import com.cryptomarket.sdk.models.TickerPrice;
 import com.cryptomarket.sdk.models.Trade;
 import com.cryptomarket.sdk.models.Transaction;
+import com.cryptomarket.sdk.models.WhitelistedAddress;
 import com.cryptomarket.sdk.requests.OrderListRequest;
 import com.cryptomarket.sdk.requests.WithdrawRequest;
 
@@ -606,11 +607,13 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
       String newClientOrderId,
       String quantity,
       String price,
+      String stopPrice,
       Boolean strictValidate) throws CryptomarketSDKException {
     return replaceSpotOrder(new ParamsBuilder()
         .newClientOrderId(newClientOrderId)
         .quantity(quantity)
         .price(price)
+        .stopPrice(stopPrice)
         .strictValidate(strictValidate));
   }
 
@@ -739,7 +742,7 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         paramsBuilder.build());
     return adapter.listFromJson(jsonResponse, Trade.class);
   }
-
+  
   // WALLET MANAGEMENT
 
   @Override
@@ -762,6 +765,12 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
   @Override
   public Balance getWalletBalance(String currency) throws CryptomarketSDKException {
     return getWalletBalanceByCurrency(currency);
+  }
+
+  @Override
+  public List<WhitelistedAddress> getWhitelistedAddresses() throws CryptomarketSDKException {
+    String jsonResponse = httpClient.get("wallet/crypto/address/white-list", null);
+    return adapter.listFromJson(jsonResponse, WhitelistedAddress.class);
   }
 
   @Override
@@ -912,7 +921,6 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
-
   @Override
   public List<Fee> getBulkEstimateWithdrawalFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
     var payload = adapter.listToJson(feeRequests, FeeRequest.class);
@@ -922,33 +930,42 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
     return adapter.listFromJson(jsonResponse, Fee.class);
   }
 
+  @Override
+  public String getWithdrawalFeesHash() throws CryptomarketSDKException {
+    String jsonResponse = httpClient.get("wallet/crypto/fee/withdraw/hash", null);
+    return adapter.objectFromJsonValue(jsonResponse, "hash", String.class);
+  }
+
   // @Override
-  // public String getEstimateDepositFee(String currency, String amount, String networkCode)
-  //     throws CryptomarketSDKException {
-  //   return getEstimateDepositFee(new ParamsBuilder()
-  //       .currency(currency)
-  //       .networkCode(networkCode)
-  //       .amount(amount));
+  // public String getEstimateDepositFee(String currency, String amount, String
+  // networkCode)
+  // throws CryptomarketSDKException {
+  // return getEstimateDepositFee(new ParamsBuilder()
+  // .currency(currency)
+  // .networkCode(networkCode)
+  // .amount(amount));
   // }
 
   // @Override
-  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws CryptomarketSDKException {
-  //   paramsBuilder.checkRequired(Arrays.asList(
-  //       ArgNames.CURRENCY,
-  //       ArgNames.AMOUNT));
-  //   String jsonResponse = httpClient.get(
-  //       "wallet/crypto/fee/deposit/estimate",
-  //       paramsBuilder.build());
-  //   return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
+  // public String getEstimateDepositFee(ParamsBuilder paramsBuilder) throws
+  // CryptomarketSDKException {
+  // paramsBuilder.checkRequired(Arrays.asList(
+  // ArgNames.CURRENCY,
+  // ArgNames.AMOUNT));
+  // String jsonResponse = httpClient.get(
+  // "wallet/crypto/fee/deposit/estimate",
+  // paramsBuilder.build());
+  // return adapter.objectFromJsonValue(jsonResponse, "fee", String.class);
   // }
 
   // @Override
-  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests) throws CryptomarketSDKException {
-  //   var payload = adapter.listToJson(feeRequests, FeeRequest.class);
-  //   String jsonResponse = httpClient.post(
-  //       "wallet/crypto/fee/deposit/estimate/bulk",
-  //       payload);
-  //   return adapter.listFromJson(jsonResponse, Fee.class);
+  // public List<Fee> getBulkEstimateDepositFees(List<FeeRequest> feeRequests)
+  // throws CryptomarketSDKException {
+  // var payload = adapter.listToJson(feeRequests, FeeRequest.class);
+  // String jsonResponse = httpClient.post(
+  // "wallet/crypto/fee/deposit/estimate/bulk",
+  // payload);
+  // return adapter.listFromJson(jsonResponse, Fee.class);
   // }
 
   @Override
@@ -1196,6 +1213,28 @@ public class CryptomarketRestClientImpl implements CryptomarketRestClient {
         .currency(currency)
         .transferType(transferType);
     String jsonResponse = httpClient.get("sub-account/transfer", params.build());
+    return adapter.objectFromJsonValue(jsonResponse, "result", String.class);
+  }
+
+  @Override
+  public String transferToSuperAccount(String amount, String currency)
+      throws CryptomarketSDKException {
+    ParamsBuilder params = new ParamsBuilder()
+        .amount(amount)
+        .currency(currency);
+    String jsonResponse = httpClient.get("sub-account/transfer/sub-to-super", params.build());
+    return adapter.objectFromJsonValue(jsonResponse, "result", String.class);
+
+  }
+
+  @Override
+  public String transferToAnotherSubAccount(String subAccountId, String amount, String currency)
+      throws CryptomarketSDKException {
+    ParamsBuilder params = new ParamsBuilder()
+        .subAccountId(subAccountId)
+        .amount(amount)
+        .currency(currency);
+    String jsonResponse = httpClient.get("sub-account/transfer/sub-to-sub", params.build());
     return adapter.objectFromJsonValue(jsonResponse, "result", String.class);
   }
 

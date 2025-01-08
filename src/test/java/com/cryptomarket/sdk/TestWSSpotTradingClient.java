@@ -110,6 +110,7 @@ public class TestWSSpotTradingClient {
         "0.02",
         "2000",
         null,
+        null,
         (report, exception) -> {
           if (exception != null) {
             fail();
