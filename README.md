@@ -4,7 +4,7 @@
 
 [Sign up in CryptoMarket](https://www.cryptomkt.com/account/register).
 
-# Installation
+## Installation
 
 Add the Maven dependency
 
@@ -12,17 +12,17 @@ Add the Maven dependency
 <dependency>
     <groupId>com.cryptomkt.api</groupId>
     <artifactId>cryptomarket</artifactId>
-    <version>3.1.3</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 
-# Documentation
+## Documentation
 
 This sdk makes use of the [api version 3](https://api.exchange.cryptomkt.com) of Cryptomarket.
 
-# Quick Start
+## Quick Start
 
-## Rest client
+### Rest client
 
 ```java
 
@@ -53,8 +53,8 @@ List<Balance> spotBalances = client.getSpotTradingBalances();
 
 // move balance from account to trading
 String result = client.transferBetweenWalletAndExchange(
-  'ETH', 
-  '3.2', 
+  'ETH',
+  '3.2',
   AccountType.WALLET,
   AccountType.SPOT);
 
@@ -80,11 +80,11 @@ import com.cryptomarket.params.ParamsBuilder;
 List<String> symbols = new ArrayList<String>(Arrays.asList("EOSETH", "ETHBTC"));
 // get candles
 Map<String, List<Candle>> candles = client.getCandles(
-  symbols, 
-  Period._4_HOURS, 
-  Sort.ASC, 
-  null, 
-  null, 
+  symbols,
+  Period._4_HOURS,
+  Sort.ASC,
+  null,
+  null,
   null);
 // is equivalent to:
 Map<String, List<Candle>> candles client.getCandles(new ParamsBuilder()
@@ -93,7 +93,7 @@ Map<String, List<Candle>> candles client.getCandles(new ParamsBuilder()
           .sort(Sort.ASC));
 ```
 
-## Exception handling
+### Exception handling
 
 ```java
 
@@ -111,7 +111,7 @@ try {
 
 ```
 
-## Websocket client
+### Websocket client
 
 There are three websocket clients, the market data client, the spot trading client and the wallet client.
 The market data client requires no authentication, while the spot trading client and the wallet client do require it.
@@ -143,10 +143,12 @@ BiConsumer<List<Report>, NotificationType> biConsumerExample = (data, notificati
 The documentation of a specific subscription explains which types of
 notification uses.
 
-### Websocket Lifetime
-There are hooks for the connection, close and faiule of the websockets. 
+#### Websocket Lifetime
+
+There are hooks for the connection, close and faiule of the websockets.
 
 On an authenticated client, onConnect is called after authentication, which happens automatically after connection.
+
 ```java
 // ws client lifetime
 CryptomarketWSSpotTradingClient wsClient;
@@ -157,10 +159,12 @@ CryptomarketWSSpotTradingClient wsClient;
     wsClient.connect();
 ```
 
-### Websocket Connection
-The websockets take some time (around one second) to connect, and authenticated sockets take a little more time to authenticate, so we must wait to the client to call onConnect first. 
+#### Websocket Connection
+
+The websockets take some time (around one second) to connect, and authenticated sockets take a little more time to authenticate, so we must wait to the client to call onConnect first.
 
 A way of doing this is using a future task
+
 ```java
 var wsClient = new CryptomarketWSSpotTradingClientImpl(KeyLoader.getApiKey(), KeyLoader.getApiSecret());
 var ft = new FutureTask<Object>(() -> {}, new Object());
@@ -170,6 +174,7 @@ ft.get();
 // here we are connected and authenticated already
 wsClient.getSpotTradingBalances((balances, err) -> {...});
 ```
+
 We can also run our logic inside the onConnect hook
 
 ```java
@@ -181,6 +186,7 @@ wsClient.onConnect(()-> {
 });
 wsClient.connect();
 ```
+
 Or we can sleep some time to wait connection
 
 ```java
@@ -192,7 +198,7 @@ TimeUnit.Seconds.sleep(3);
 wsClient.getSpotTradingBalances((balances, err) -> {...});
 ```
 
-### MarketDataClient
+#### MarketDataClient
 
 Example of use of the market data client
 
@@ -223,7 +229,7 @@ marketDataClient.subscribeToPartialOrderBook(
 
 ```
 
-### SpotTradingClient
+#### SpotTradingClient
 
 Example of use of the spot trading client
 
@@ -259,7 +265,7 @@ tradingClient.createSpotOrder(
       });
 ```
 
-### WalletClient
+#### WalletClient
 
 Example of use of the wallet client
 
@@ -293,12 +299,12 @@ walletClient.subscribeToTransactions(
   });
 ```
 
-# Constants
+## Constants
 
 All constants required for calls are in `com.cryptomarket.sdk.params`.
 each enum has the name of the argument that needs it.
 
-# Checkout our other SDKs
+## Checkout our other SDKs
 
 <!-- agregar links -->
 
