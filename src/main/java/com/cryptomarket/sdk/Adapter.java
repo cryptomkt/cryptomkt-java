@@ -25,18 +25,26 @@ import com.squareup.moshi.Types;
  * Json Adapter, uses moshi
  */
 public class Adapter {
-  private final Moshi moshi = new Moshi.Builder()
-      .add(new OrderBookLevelAdapter())
-      .add(new OrderStatusAdapter())
-      .add(new OrderTypeAdapter())
-      .add(new SideAdapter())
-      .add(new UseOffchainAdapter())
-      .add(new ReportTypeAdapter())
-      .add(new SubAccountStatusAdapter())
-      .build();
+  private final Moshi moshi;
+  private final ParameterizedType mapStringString;
+  private final JsonAdapter<Map<String, Object>> mapStrStrJsonAdapter;
 
-  private ParameterizedType mapStringString = Types.newParameterizedType(Map.class, String.class, Object.class);
-  private final JsonAdapter<Map<String, Object>> mapStrStrJsonAdapter = moshi.adapter(mapStringString);
+  /**
+   * 
+   */
+  public Adapter() {
+    moshi = new Moshi.Builder()
+        .add(new OrderBookLevelAdapter())
+        .add(new OrderStatusAdapter())
+        .add(new OrderTypeAdapter())
+        .add(new SideAdapter())
+        .add(new UseOffchainAdapter())
+        .add(new ReportTypeAdapter())
+        .add(new SubAccountStatusAdapter())
+        .build();
+    mapStringString = Types.newParameterizedType(Map.class, String.class, Object.class);
+    mapStrStrJsonAdapter = moshi.adapter(mapStringString);
+  }
 
   /**
    * Converts an object to its json representation

@@ -9,7 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Hex;
 
 /**
- *
+ * Generates the credential for authenticated communication with the server
  */
 public class HMAC {
   private static String HMAC_SHA256 = "HmacSHA256";
