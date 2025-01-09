@@ -956,7 +956,7 @@ public interface CryptomarketRestClient extends Closeable {
       @Nullable Boolean strictValidate) throws CryptomarketSDKException;
 
   /**
-   * @see #replaceSpotOrder(String, String, String, String, Boolean)
+   * @see #replaceSpotOrder(String, String, String, String, String, Boolean)
    * @param paramsBuilder
    * @throws CryptomarketSDKException
    */
